@@ -1,7 +1,7 @@
 # PoRW Blockchain
 
 Proof of Research Work Blockchain Implementation
-NOT IN A WORKING STAE BUT ITS GETTING THERE
+NOT IN A WORKING STATE BUT ITS GETTING THERE
 ## Overview
 
 This project implements a blockchain using a hybrid consensus mechanism:
