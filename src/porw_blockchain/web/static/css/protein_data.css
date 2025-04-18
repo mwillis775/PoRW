@@ -1,0 +1,158 @@
+/* Protein Data CSS Styles */
+
+/* Amino acid sequence display */
+.amino-sequence-display {
+    font-family: monospace;
+    font-size: 14px;
+    line-height: 1.5;
+    background-color: #f8f9fa;
+    padding: 15px;
+    border-radius: 4px;
+    white-space: pre-wrap;
+    word-break: break-all;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+/* Process steps for the science page */
+.process-steps {
+    counter-reset: step-counter;
+    list-style-type: none;
+    padding-left: 0;
+}
+
+.process-steps li {
+    position: relative;
+    padding: 0 0 25px 50px;
+    margin-bottom: 10px;
+}
+
+.process-steps li:before {
+    content: counter(step-counter);
+    counter-increment: step-counter;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 36px;
+    height: 36px;
+    line-height: 36px;
+    text-align: center;
+    background-color: #007bff;
+    color: white;
+    border-radius: 50%;
+    font-weight: bold;
+}
+
+.process-steps li:after {
+    content: "";
+    position: absolute;
+    left: 18px;
+    top: 36px;
+    height: calc(100% - 36px);
+    width: 2px;
+    background-color: #dee2e6;
+}
+
+.process-steps li:last-child:after {
+    display: none;
+}
+
+/* Impact statistics */
+.impact-stat {
+    padding: 20px;
+    border-radius: 8px;
+    background-color: #f8f9fa;
+    transition: transform 0.3s ease;
+}
+
+.impact-stat:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.impact-stat h2 {
+    color: #007bff;
+    margin-bottom: 5px;
+}
+
+.impact-stat p {
+    color: #6c757d;
+    font-weight: 500;
+    margin-bottom: 0;
+}
+
+/* Protein card in grid view */
+.protein-card {
+    height: 100%;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.protein-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.protein-card .card-img-top {
+    height: 180px;
+    object-fit: cover;
+    background-color: #f8f9fa;
+}
+
+.protein-card .protein-id {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: rgba(0, 0, 0, 0.6);
+    color: white;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+}
+
+/* Energy score badge */
+.energy-score {
+    display: inline-block;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-weight: 500;
+    font-size: 14px;
+}
+
+.energy-score.good {
+    background-color: rgba(40, 167, 69, 0.2);
+    color: #28a745;
+}
+
+.energy-score.medium {
+    background-color: rgba(255, 193, 7, 0.2);
+    color: #ffc107;
+}
+
+.energy-score.poor {
+    background-color: rgba(220, 53, 69, 0.2);
+    color: #dc3545;
+}
+
+/* 3D viewer controls */
+#protein-viewer {
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .process-steps li {
+        padding-left: 40px;
+    }
+    
+    .process-steps li:before {
+        width: 30px;
+        height: 30px;
+        line-height: 30px;
+    }
+    
+    .process-steps li:after {
+        left: 15px;
+        top: 30px;
+    }
+}

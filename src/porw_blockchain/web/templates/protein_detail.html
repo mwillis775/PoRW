@@ -1,0 +1,303 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/protein-data">Protein Data</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{{ protein.protein_id }}</li>
+        </ol>
+    </nav>
+
+    <div class="row">
+        <!-- Protein Information -->
+        <div class="col-md-4">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Protein Information</h5>
+                </div>
+                <div class="card-body">
+                    <h4>{{ protein.name }}</h4>
+                    <p class="text-muted">{{ protein.description }}</p>
+                    
+                    <table class="table table-sm">
+                        <tbody>
+                            <tr>
+                                <th scope="row">Protein ID</th>
+                                <td>{{ protein.protein_id }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Length</th>
+                                <td>{{ protein.amino_sequence|length }} amino acids</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Energy Score</th>
+                                <td>{{ protein.energy_score|round(2) }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Folding Method</th>
+                                <td>{{ protein.method_used }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Folding Time</th>
+                                <td>{{ protein.folding_time_ms / 1000 }} seconds</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Date Folded</th>
+                                <td>{{ protein.folding_timestamp|datetime }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Miner</th>
+                                <td>
+                                    {% if protein.miner_address %}
+                                    <a href="/address/{{ protein.miner_address }}" class="address">{{ protein.miner_address }}</a>
+                                    {% else %}
+                                    Unknown
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Block</th>
+                                <td>
+                                    {% if protein.block_hash %}
+                                    <a href="/block/{{ protein.block_hash }}" class="hash">{{ protein.block_hash }}</a>
+                                    {% else %}
+                                    Not yet included in blockchain
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                    <div class="d-grid gap-2 mt-3">
+                        <a href="/protein-data/{{ protein.protein_id }}/download" class="btn btn-primary">
+                            <i class="fas fa-download"></i> Download PDB File
+                        </a>
+                        <a href="/protein-data/{{ protein.protein_id }}/download?format=json" class="btn btn-outline-secondary">
+                            <i class="fas fa-code"></i> Download JSON Data
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Amino Acid Sequence -->
+            <div class="card mb-4">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Amino Acid Sequence</h5>
+                    <button class="btn btn-sm btn-outline-secondary" id="copy-sequence">
+                        <i class="fas fa-copy"></i> Copy
+                    </button>
+                </div>
+                <div class="card-body">
+                    <div class="amino-sequence-display">
+                        {{ protein.amino_sequence }}
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 3D Visualization -->
+        <div class="col-md-8">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">3D Structure Visualization</h5>
+                </div>
+                <div class="card-body p-0">
+                    <div id="protein-viewer" style="width: 100%; height: 500px;"></div>
+                </div>
+                <div class="card-footer">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="btn-group" role="group">
+                                <button type="button" class="btn btn-outline-primary" id="view-cartoon">Cartoon</button>
+                                <button type="button" class="btn btn-outline-primary" id="view-backbone">Backbone</button>
+                                <button type="button" class="btn btn-outline-primary" id="view-sphere">Sphere</button>
+                                <button type="button" class="btn btn-outline-primary" id="view-stick">Stick</button>
+                            </div>
+                        </div>
+                        <div class="col-md-6 text-end">
+                            <div class="btn-group" role="group">
+                                <button type="button" class="btn btn-outline-secondary" id="color-chain">Chain</button>
+                                <button type="button" class="btn btn-outline-secondary" id="color-residue">Residue</button>
+                                <button type="button" class="btn btn-outline-secondary" id="color-spectrum">Spectrum</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Energy Profile -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Energy Profile</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="energyProfileChart" width="400" height="200"></canvas>
+                </div>
+            </div>
+            
+            <!-- Scientific References -->
+            {% if protein.references and protein.references|length > 0 %}
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Scientific References</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="list-group list-group-flush">
+                        {% for reference in protein.references %}
+                        <li class="list-group-item">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h6 class="mb-1">{{ reference.title }}</h6>
+                                <small>{{ reference.year }}</small>
+                            </div>
+                            <p class="mb-1">{{ reference.authors }}</p>
+                            <small>
+                                <a href="{{ reference.url }}" target="_blank" rel="noopener noreferrer">
+                                    {{ reference.journal }}
+                                    <i class="fas fa-external-link-alt ms-1"></i>
+                                </a>
+                            </small>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<!-- Include 3Dmol.js for protein visualization -->
+<script src="https://3Dmol.org/build/3Dmol-min.js"></script>
+<script>
+    // Initialize the 3D viewer
+    document.addEventListener('DOMContentLoaded', function() {
+        // Set up the 3D viewer
+        let viewer = $3Dmol.createViewer(document.getElementById('protein-viewer'), {
+            backgroundColor: 'white'
+        });
+        
+        // Load the PDB data
+        fetch('/api/protein-data/{{ protein.protein_id }}/pdb')
+            .then(response => response.text())
+            .then(data => {
+                // Load the molecule
+                viewer.addModel(data, "pdb");
+                
+                // Set the initial style
+                viewer.setStyle({}, {cartoon: {color: 'spectrum'}});
+                
+                // Zoom to fit the molecule
+                viewer.zoomTo();
+                
+                // Render the scene
+                viewer.render();
+            })
+            .catch(error => {
+                console.error('Error loading protein structure:', error);
+                document.getElementById('protein-viewer').innerHTML = 
+                    '<div class="alert alert-danger m-3">Error loading protein structure</div>';
+            });
+        
+        // View style buttons
+        document.getElementById('view-cartoon').addEventListener('click', function() {
+            viewer.setStyle({}, {cartoon: {color: 'spectrum'}});
+            viewer.render();
+        });
+        
+        document.getElementById('view-backbone').addEventListener('click', function() {
+            viewer.setStyle({}, {backbone: {colorscheme: 'whiteCarbon'}});
+            viewer.render();
+        });
+        
+        document.getElementById('view-sphere').addEventListener('click', function() {
+            viewer.setStyle({}, {sphere: {}});
+            viewer.render();
+        });
+        
+        document.getElementById('view-stick').addEventListener('click', function() {
+            viewer.setStyle({}, {stick: {}});
+            viewer.render();
+        });
+        
+        // Color scheme buttons
+        document.getElementById('color-chain').addEventListener('click', function() {
+            viewer.setStyle({}, {cartoon: {color: 'chainHetatm'}});
+            viewer.render();
+        });
+        
+        document.getElementById('color-residue').addEventListener('click', function() {
+            viewer.setStyle({}, {cartoon: {color: 'residue'}});
+            viewer.render();
+        });
+        
+        document.getElementById('color-spectrum').addEventListener('click', function() {
+            viewer.setStyle({}, {cartoon: {color: 'spectrum'}});
+            viewer.render();
+        });
+        
+        // Copy sequence button
+        document.getElementById('copy-sequence').addEventListener('click', function() {
+            const sequence = '{{ protein.amino_sequence }}';
+            navigator.clipboard.writeText(sequence).then(function() {
+                // Show success message
+                const button = document.getElementById('copy-sequence');
+                const originalText = button.innerHTML;
+                button.innerHTML = '<i class="fas fa-check"></i> Copied!';
+                setTimeout(function() {
+                    button.innerHTML = originalText;
+                }, 2000);
+            });
+        });
+    });
+    
+    // Energy profile chart
+    const energyCtx = document.getElementById('energyProfileChart').getContext('2d');
+    const energyChart = new Chart(energyCtx, {
+        type: 'line',
+        data: {
+            labels: {{ energy_profile.positions|safe }},
+            datasets: [{
+                label: 'Energy Score',
+                data: {{ energy_profile.values|safe }},
+                backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                borderColor: 'rgba(255, 99, 132, 1)',
+                borderWidth: 1,
+                tension: 0.4
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    title: {
+                        display: true,
+                        text: 'Energy (kcal/mol)'
+                    }
+                },
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Residue Position'
+                    }
+                }
+            },
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Per-Residue Energy Profile'
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            const residue = '{{ protein.amino_sequence }}'.charAt(context.dataIndex);
+                            return `Residue ${context.label} (${residue}): ${context.raw.toFixed(2)} kcal/mol`;
+                        }
+                    }
+                }
+            }
+        }
+    });
+</script>
+{% endblock %}

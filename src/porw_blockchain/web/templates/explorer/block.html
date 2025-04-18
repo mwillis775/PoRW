@@ -1,0 +1,239 @@
+{% extends "base.html" %}
+
+{% block title %}Block #{{ block.height }} - Blockchain Explorer{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row mb-4">
+        <div class="col-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{{ url_for('explorer_index') }}">Explorer</a></li>
+                    <li class="breadcrumb-item"><a href="{{ url_for('explorer_blocks') }}">Blocks</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Block #{{ block.height }}</li>
+                </ol>
+            </nav>
+            <h1 class="mb-4">Block #{{ block.height }}</h1>
+        </div>
+    </div>
+
+    <!-- Block Details -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="card-title mb-0">Block Details</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <tbody>
+                                <tr>
+                                    <th style="width: 200px;">Height</th>
+                                    <td>{{ block.height }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Hash</th>
+                                    <td class="text-break">{{ block.hash }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Previous Hash</th>
+                                    <td class="text-break">
+                                        {% if block.height > 0 %}
+                                        <a href="{{ url_for('explorer_block', height=block.height-1) }}">{{ block.previous_hash }}</a>
+                                        {% else %}
+                                        {{ block.previous_hash }}
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Timestamp</th>
+                                    <td>{{ block.timestamp|timestamp_to_datetime }} ({{ block.timestamp|timestamp_to_age }} ago)</td>
+                                </tr>
+                                <tr>
+                                    <th>Block Type</th>
+                                    <td>
+                                        {% if block.block_type == 'PoRW' %}
+                                        <span class="badge bg-success">PoRW</span>
+                                        {% else %}
+                                        <span class="badge bg-info">PoRS</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Creator</th>
+                                    <td>
+                                        <a href="{{ url_for('explorer_address', address=block.creator) }}">{{ block.creator }}</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Merkle Root</th>
+                                    <td class="text-break">{{ block.merkle_root }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Nonce</th>
+                                    <td>{{ block.nonce }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Difficulty</th>
+                                    <td>{{ "%.8f"|format(block.difficulty) }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Size</th>
+                                    <td>{{ block.size|format_bytes }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Transaction Count</th>
+                                    <td>{{ block.transaction_count }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Version</th>
+                                    <td>{{ block.version }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Block-specific Data -->
+    {% if block.block_type == 'PoRW' and block.porw_data %}
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h5 class="card-title mb-0">Protein Folding Data</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <tbody>
+                                <tr>
+                                    <th style="width: 200px;">Protein ID</th>
+                                    <td>
+                                        <a href="{{ url_for('explorer_protein', protein_id=block.porw_data.protein_id) }}">{{ block.porw_data.protein_id }}</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Protein Name</th>
+                                    <td>{{ block.porw_data.protein_name }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Energy Score</th>
+                                    <td>{{ "%.4f"|format(block.porw_data.energy_score) }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Scientific Value</th>
+                                    <td>{{ "%.2f"|format(block.porw_data.scientific_value) }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Folding Method</th>
+                                    <td>{{ block.porw_data.folding_method }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    {% if block.block_type == 'PoRS' and block.pors_data %}
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-info text-white">
+                    <h5 class="card-title mb-0">Storage Proof Data</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <tbody>
+                                <tr>
+                                    <th style="width: 200px;">Storage Node ID</th>
+                                    <td>
+                                        <a href="{{ url_for('explorer_storage_node', node_id=block.pors_data.node_id) }}">{{ block.pors_data.node_id }}</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Challenge ID</th>
+                                    <td>{{ block.pors_data.challenge_id }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Data Size</th>
+                                    <td>{{ block.pors_data.data_size|format_bytes }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Quorum Size</th>
+                                    <td>{{ block.pors_data.quorum_size }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Verification Method</th>
+                                    <td>{{ block.pors_data.verification_method }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Transactions -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="card-title mb-0">Transactions ({{ block.transactions|length }})</h5>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Transaction ID</th>
+                                    <th>From</th>
+                                    <th>To</th>
+                                    <th>Amount</th>
+                                    <th>Fee</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for tx in block.transactions %}
+                                <tr>
+                                    <td>
+                                        <a href="{{ url_for('explorer_transaction', tx_id=tx.id) }}" class="text-truncate d-inline-block" style="max-width: 150px;">{{ tx.id }}</a>
+                                    </td>
+                                    <td>
+                                        <a href="{{ url_for('explorer_address', address=tx.sender) }}" class="text-truncate d-inline-block" style="max-width: 150px;">{{ tx.sender }}</a>
+                                    </td>
+                                    <td>
+                                        <a href="{{ url_for('explorer_address', address=tx.recipient) }}" class="text-truncate d-inline-block" style="max-width: 150px;">{{ tx.recipient }}</a>
+                                    </td>
+                                    <td>{{ "%.4f"|format(tx.amount) }}</td>
+                                    <td>{{ "%.4f"|format(tx.fee) }}</td>
+                                    <td>
+                                        {% if tx.status == 'confirmed' %}
+                                        <span class="badge bg-success">Confirmed</span>
+                                        {% elif tx.status == 'pending' %}
+                                        <span class="badge bg-warning">Pending</span>
+                                        {% else %}
+                                        <span class="badge bg-danger">Failed</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

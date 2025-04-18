@@ -9,7 +9,20 @@ The primary goals are:
 1.  **Incentivize Valuable Computation (PoRW):** Reward nodes for performing verifiable, computationally intensive tasks beneficial to scientific research (initially focused on protein folding). PoRW is responsible for minting all new currency based on the successful validation of this work, targeting a controlled inflation rate.
 2.  **Ensure Network Utility & Data Integrity (PoRS):** Provide a reliable and efficient layer for processing user transactions and ensuring the long-term integrity of stored data (including potentially large datasets from PoRW). PoRS blocks are generated at regular intervals, validated by quorum-based storage checks.
 
+<<<<<<< HEAD
 This hybrid approach separates concerns, aiming to create a blockchain that is both purposeful in its work validation and practical for everyday transactions and data storage.
+=======
+- Hybrid consensus mechanism (PoRW + PoRS)
+- Real protein folding computation for scientific research
+- Distributed storage system with challenge/response verification
+- Interactive shell for blockchain interaction
+- Web interface for managing wallet, mining, and storage nodes
+- Checkpoint system for faster validation
+- Efficient chain traversal functions
+- Pending transaction management
+- State management system
+- Docker containerization for easy deployment
+>>>>>>> 22a610e (Push all local changes and new files)
 
 ## Key Features
 
@@ -106,4 +119,50 @@ Once the server is running, interactive API documentation is automatically avail
 Run the test suite using Pytest via Poetry:
 
 ```bash
+<<<<<<< HEAD
+=======
+# Clone the repository
+git clone https://github.com/mwillis775/PoRW-PoRS.git
+cd PoRW-PoRS
+
+# Install dependencies
+poetry install
+```
+
+## Usage
+
+### Interactive Shell
+
+```bash
+# Run the interactive shell
+poetry run python -m porw_blockchain.cli.shell
+```
+
+### API Server
+
+```bash
+# Run the API server
+poetry run python -m porw_blockchain.bin.porw-api
+```
+
+### Web Interface
+
+```bash
+# Run the web interface
+./run_web_interface.sh
+```
+
+The web interface provides a user-friendly way to interact with the blockchain, including:
+
+- Dashboard with network statistics
+- Wallet management (create, import, send transactions)
+- Mining node management (start, stop, monitor performance)
+- Storage node management (start, stop, monitor storage usage)
+- Block explorer to view blockchain data
+
+## Development
+
+```bash
+# Run tests
+>>>>>>> 22a610e (Push all local changes and new files)
 poetry run pytest

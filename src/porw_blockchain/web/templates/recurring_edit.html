@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="mb-4">Edit Recurring Transaction</h1>
+    
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="card-title mb-0">Transaction ID: {{ transaction.transaction_id }}</h5>
+        </div>
+        <div class="card-body">
+            <form action="/recurring/{{ transaction.transaction_id }}/update" method="post">
+                <div class="mb-3">
+                    <label for="recipient" class="form-label">Recipient Address</label>
+                    <input type="text" class="form-control" id="recipient" name="recipient" value="{{ transaction.recipient }}" required>
+                </div>
+                <div class="mb-3">
+                    <label for="amount" class="form-label">Amount (PORW)</label>
+                    <input type="number" class="form-control" id="amount" name="amount" step="0.000001" min="0.000001" value="{{ transaction.amount }}" required>
+                </div>
+                <div class="mb-3">
+                    <label for="interval" class="form-label">Interval</label>
+                    <select class="form-select" id="interval" name="interval" required>
+                        <option value="daily" {% if transaction.interval == 'daily' %}selected{% endif %}>Daily</option>
+                        <option value="weekly" {% if transaction.interval == 'weekly' %}selected{% endif %}>Weekly</option>
+                        <option value="biweekly" {% if transaction.interval == 'biweekly' %}selected{% endif %}>Biweekly</option>
+                        <option value="monthly" {% if transaction.interval == 'monthly' %}selected{% endif %}>Monthly</option>
+                        <option value="quarterly" {% if transaction.interval == 'quarterly' %}selected{% endif %}>Quarterly</option>
+                        <option value="yearly" {% if transaction.interval == 'yearly' %}selected{% endif %}>Yearly</option>
+                        <option value="custom" {% if transaction.interval == 'custom' %}selected{% endif %}>Custom</option>
+                    </select>
+                </div>
+                <div class="mb-3 custom-days-container {% if transaction.interval != 'custom' %}d-none{% endif %}">
+                    <label for="custom_days" class="form-label">Custom Interval (days)</label>
+                    <input type="number" class="form-control" id="custom_days" name="custom_days" min="1" value="{{ transaction.custom_days or 30 }}">
+                </div>
+                <div class="mb-3">
+                    <label for="start_date" class="form-label">Start Date</label>
+                    <input type="date" class="form-control" id="start_date" name="start_date" value="{{ transaction.start_date|date('%Y-%m-%d') }}">
+                </div>
+                <div class="mb-3">
+                    <label for="end_date" class="form-label">End Date (Optional)</label>
+                    <input type="date" class="form-control" id="end_date" name="end_date" value="{% if transaction.end_date %}{{ transaction.end_date|date('%Y-%m-%d') }}{% endif %}">
+                </div>
+                <div class="mb-3">
+                    <label for="max_executions" class="form-label">Maximum Executions (Optional)</label>
+                    <input type="number" class="form-control" id="max_executions" name="max_executions" min="1" value="{{ transaction.max_executions or '' }}">
+                    <div class="form-text">Leave blank for unlimited executions</div>
+                </div>
+                <div class="mb-3">
+                    <label for="memo" class="form-label">Memo (Optional)</label>
+                    <textarea class="form-control" id="memo" name="memo" rows="2">{{ transaction.memo or '' }}</textarea>
+                </div>
+                <div class="mb-3">
+                    <label for="fee" class="form-label">Fee (Optional)</label>
+                    <input type="number" class="form-control" id="fee" name="fee" step="0.000001" min="0" value="{{ transaction.fee or '' }}">
+                    <div class="form-text">Leave blank for default fee</div>
+                </div>
+                <div class="mb-3 form-check">
+                    <input type="checkbox" class="form-check-input" id="enabled" name="enabled" value="true" {% if transaction.enabled %}checked{% endif %}>
+                    <label class="form-check-label" for="enabled">Enable this recurring transaction</label>
+                </div>
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                    <a href="/recurring/{{ transaction.transaction_id }}" class="btn btn-outline-secondary">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <div class="mb-4">
+        <a href="/recurring/{{ transaction.transaction_id }}" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left"></i> Back to Transaction Details
+        </a>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Handle interval selection for custom days
+        const intervalSelect = document.getElementById('interval');
+        const customDaysContainer = document.querySelector('.custom-days-container');
+        
+        intervalSelect.addEventListener('change', function() {
+            if (this.value === 'custom') {
+                customDaysContainer.classList.remove('d-none');
+            } else {
+                customDaysContainer.classList.add('d-none');
+            }
+        });
+    });
+</script>
+{% endblock %}

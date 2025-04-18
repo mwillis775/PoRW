@@ -1,0 +1,397 @@
+{% extends "base.html" %}
+
+{% block title %}Storage Node {{ node.id|truncate(10, True, '') }} - Blockchain Explorer{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row mb-4">
+        <div class="col-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{{ url_for('explorer_index') }}">Explorer</a></li>
+                    <li class="breadcrumb-item"><a href="{{ url_for('explorer_storage_nodes') }}">Storage Nodes</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Node {{ node.id|truncate(10, True, '') }}</li>
+                </ol>
+            </nav>
+            <h1 class="mb-4">Storage Node Details</h1>
+        </div>
+    </div>
+
+    <!-- Node Status -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body text-center">
+                    {% if node.status == 'online' %}
+                    <div class="alert alert-success mb-0" role="alert">
+                        <h4 class="alert-heading">Online</h4>
+                        <p class="mb-0">This storage node is currently online and accepting storage requests.</p>
+                    </div>
+                    {% elif node.status == 'syncing' %}
+                    <div class="alert alert-warning mb-0" role="alert">
+                        <h4 class="alert-heading">Syncing</h4>
+                        <p class="mb-0">This storage node is currently syncing data and will be online soon.</p>
+                    </div>
+                    {% else %}
+                    <div class="alert alert-danger mb-0" role="alert">
+                        <h4 class="alert-heading">Offline</h4>
+                        <p class="mb-0">This storage node is currently offline.</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Node Summary -->
+    <div class="row mb-4">
+        <div class="col-md-4 mb-4 mb-md-0">
+            <div class="card h-100">
+                <div class="card-header bg-info text-white">
+                    <h5 class="card-title mb-0">Node Information</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <tbody>
+                                <tr>
+                                    <th style="width: 150px;">Node ID</th>
+                                    <td class="text-break">{{ node.id }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Address</th>
+                                    <td>
+                                        <a href="{{ url_for('explorer_address', address=node.address) }}">{{ node.address }}</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Status</th>
+                                    <td>
+                                        {% if node.status == 'online' %}
+                                        <span class="badge bg-success">Online</span>
+                                        {% elif node.status == 'syncing' %}
+                                        <span class="badge bg-warning">Syncing</span>
+                                        {% else %}
+                                        <span class="badge bg-danger">Offline</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Version</th>
+                                    <td>{{ node.version }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Uptime</th>
+                                    <td>{{ node.uptime|format_duration }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Last Seen</th>
+                                    <td>{{ node.last_seen|timestamp_to_datetime }} ({{ node.last_seen|timestamp_to_age }} ago)</td>
+                                </tr>
+                                <tr>
+                                    <th>Reliability</th>
+                                    <td>
+                                        <div class="progress">
+                                            <div class="progress-bar bg-success" role="progressbar" style="width: {{ node.reliability }}%;" aria-valuenow="{{ node.reliability }}" aria-valuemin="0" aria-valuemax="100">{{ "%.1f"|format(node.reliability) }}%</div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-8">
+            <div class="card h-100">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="card-title mb-0">Storage Capacity</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-4">
+                        <div class="col-md-6 mb-3 mb-md-0">
+                            <div class="card h-100 border-0 shadow-sm">
+                                <div class="card-body text-center">
+                                    <h6 class="text-muted">Total Capacity</h6>
+                                    <h2 class="mb-0 text-primary">{{ node.capacity|format_bytes }}</h2>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card h-100 border-0 shadow-sm">
+                                <div class="card-body text-center">
+                                    <h6 class="text-muted">Used Space</h6>
+                                    <h2 class="mb-0 text-info">{{ node.used|format_bytes }}</h2>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <h6>Storage Usage</h6>
+                    <div class="progress mb-3" style="height: 25px;">
+                        <div class="progress-bar bg-info" role="progressbar" style="width: {{ node.usage_percentage }}%;" aria-valuenow="{{ node.usage_percentage }}" aria-valuemin="0" aria-valuemax="100">{{ "%.1f"|format(node.usage_percentage) }}%</div>
+                    </div>
+                    
+                    <div class="text-center mt-4">
+                        <div id="storage-chart" style="height: 250px;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Node Location -->
+    {% if node.location %}
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="card-title mb-0">Node Location</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="table-responsive">
+                                <table class="table table-bordered">
+                                    <tbody>
+                                        <tr>
+                                            <th style="width: 150px;">Country</th>
+                                            <td>{{ node.location.country }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Region</th>
+                                            <td>{{ node.location.region }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>City</th>
+                                            <td>{{ node.location.city }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>ISP</th>
+                                            <td>{{ node.location.isp }}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div id="location-map" style="height: 300px;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Stored Data -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-info text-white">
+                    <h5 class="card-title mb-0">Stored Data ({{ node.stored_data|length }} items)</h5>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Data ID</th>
+                                    <th>Type</th>
+                                    <th>Size</th>
+                                    <th>Added</th>
+                                    <th>Last Verified</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for data in node.stored_data %}
+                                <tr>
+                                    <td class="text-truncate" style="max-width: 200px;">{{ data.id }}</td>
+                                    <td>
+                                        {% if data.type == 'protein' %}
+                                        <span class="badge bg-success">Protein</span>
+                                        {% elif data.type == 'transaction' %}
+                                        <span class="badge bg-primary">Transaction</span>
+                                        {% elif data.type == 'block' %}
+                                        <span class="badge bg-info">Block</span>
+                                        {% else %}
+                                        <span class="badge bg-secondary">{{ data.type }}</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ data.size|format_bytes }}</td>
+                                    <td>{{ data.added|timestamp_to_age }} ago</td>
+                                    <td>{{ data.last_verified|timestamp_to_age }} ago</td>
+                                    <td>
+                                        {% if data.status == 'verified' %}
+                                        <span class="badge bg-success">Verified</span>
+                                        {% elif data.status == 'pending' %}
+                                        <span class="badge bg-warning">Pending</span>
+                                        {% else %}
+                                        <span class="badge bg-danger">{{ data.status }}</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Node Rewards -->
+    {% if node.rewards %}
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h5 class="card-title mb-0">Storage Rewards</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <div class="card h-100 border-0 shadow-sm">
+                                <div class="card-body text-center">
+                                    <h6 class="text-muted">Total Rewards</h6>
+                                    <h2 class="mb-0 text-success">{{ "%.4f"|format(node.rewards.total) }}</h2>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <div class="card h-100 border-0 shadow-sm">
+                                <div class="card-body text-center">
+                                    <h6 class="text-muted">Last 24 Hours</h6>
+                                    <h2 class="mb-0 text-success">{{ "%.4f"|format(node.rewards.last_24h) }}</h2>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <div class="card h-100 border-0 shadow-sm">
+                                <div class="card-body text-center">
+                                    <h6 class="text-muted">Last 7 Days</h6>
+                                    <h2 class="mb-0 text-success">{{ "%.4f"|format(node.rewards.last_7d) }}</h2>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="text-center mt-4">
+                        <div id="rewards-chart" style="height: 250px;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block head %}
+{{ super() }}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/apexcharts@3.35.0/dist/apexcharts.css">
+{% if node.location %}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+{% endif %}
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/apexcharts@3.35.0/dist/apexcharts.min.js"></script>
+{% if node.location %}
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+{% endif %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Storage usage chart
+        var storageOptions = {
+            series: [{{ node.usage_percentage }}, {{ 100 - node.usage_percentage }}],
+            chart: {
+                type: 'donut',
+                height: 250
+            },
+            labels: ['Used', 'Free'],
+            colors: ['#36a2eb', '#e2eaef'],
+            legend: {
+                position: 'bottom'
+            },
+            dataLabels: {
+                enabled: true,
+                formatter: function(val) {
+                    return val.toFixed(1) + "%";
+                }
+            },
+            tooltip: {
+                y: {
+                    formatter: function(val) {
+                        return val.toFixed(1) + "%";
+                    }
+                }
+            }
+        };
+        
+        var storageChart = new ApexCharts(document.getElementById('storage-chart'), storageOptions);
+        storageChart.render();
+        
+        {% if node.rewards %}
+        // Rewards chart
+        var rewardsOptions = {
+            series: [{
+                name: 'Daily Rewards',
+                data: {{ node.rewards.daily_history|tojson }}
+            }],
+            chart: {
+                type: 'area',
+                height: 250,
+                toolbar: {
+                    show: false
+                }
+            },
+            dataLabels: {
+                enabled: false
+            },
+            stroke: {
+                curve: 'smooth',
+                width: 2
+            },
+            xaxis: {
+                type: 'datetime',
+                categories: {{ node.rewards.daily_dates|tojson }}
+            },
+            tooltip: {
+                x: {
+                    format: 'dd MMM yyyy'
+                }
+            },
+            colors: ['#20c997'],
+            fill: {
+                type: 'gradient',
+                gradient: {
+                    shadeIntensity: 1,
+                    opacityFrom: 0.7,
+                    opacityTo: 0.3,
+                    stops: [0, 90, 100]
+                }
+            }
+        };
+        
+        var rewardsChart = new ApexCharts(document.getElementById('rewards-chart'), rewardsOptions);
+        rewardsChart.render();
+        {% endif %}
+        
+        {% if node.location %}
+        // Location map
+        var map = L.map('location-map').setView([{{ node.location.latitude }}, {{ node.location.longitude }}], 10);
+        
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+        
+        L.marker([{{ node.location.latitude }}, {{ node.location.longitude }}])
+            .addTo(map)
+            .bindPopup('{{ node.id|truncate(10, True, "") }}<br>{{ node.location.city }}, {{ node.location.country }}')
+            .openPopup();
+        {% endif %}
+    });
+</script>
+{% endblock %}

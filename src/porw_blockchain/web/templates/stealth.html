@@ -1,0 +1,234 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="mb-4">Stealth Addresses</h1>
+    
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Your Stealth Address</h5>
+                </div>
+                <div class="card-body">
+                    {% if stealth_address %}
+                    <p class="card-text">
+                        Your stealth address allows you to receive funds without revealing your identity on the blockchain.
+                        Share this address with others who want to send you funds privately.
+                    </p>
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" id="stealth-address" value="{{ stealth_address }}" readonly>
+                        <button class="btn btn-outline-secondary" type="button" onclick="copyToClipboard('stealth-address')">
+                            <i class="fas fa-copy"></i> Copy
+                        </button>
+                    </div>
+                    {% else %}
+                    <p class="card-text">
+                        You don't have a stealth address yet. Create one to receive funds privately.
+                    </p>
+                    <form action="/stealth/create" method="post">
+                        <button type="submit" class="btn btn-primary">Create Stealth Address</button>
+                    </form>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Send to Stealth Address</h5>
+                </div>
+                <div class="card-body">
+                    <p class="card-text">
+                        Send funds to someone's stealth address. The transaction will be private and cannot be linked to the recipient's identity.
+                    </p>
+                    <form action="/stealth/send" method="post">
+                        <div class="mb-3">
+                            <label for="recipient-stealth-address" class="form-label">Recipient's Stealth Address</label>
+                            <input type="text" class="form-control" id="recipient-stealth-address" name="recipient_stealth_address" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="amount" class="form-label">Amount</label>
+                            <div class="input-group">
+                                <input type="number" class="form-control" id="amount" name="amount" step="0.000001" min="0.000001" required>
+                                <span class="input-group-text">PORW</span>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="memo" class="form-label">Memo (Optional)</label>
+                            <textarea class="form-control" id="memo" name="memo" rows="2"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Send</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="card-title mb-0">Stealth Payments</h5>
+        </div>
+        <div class="card-body">
+            <p class="card-text">
+                These are payments sent to your stealth address. They are not visible to anyone else on the blockchain.
+            </p>
+            <div class="mb-3">
+                <button id="scan-button" class="btn btn-outline-primary">
+                    <i class="fas fa-search"></i> Scan for Payments
+                </button>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Transaction ID</th>
+                            <th>Sender</th>
+                            <th>Amount</th>
+                            <th>Memo</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody id="stealth-payments-table">
+                        {% if stealth_payments %}
+                            {% for payment in stealth_payments %}
+                            <tr>
+                                <td>{{ payment.transaction.transaction_id }}</td>
+                                <td>{{ payment.transaction.sender }}</td>
+                                <td>{{ payment.transaction.amount }} PORW</td>
+                                <td>
+                                    {% if payment.transaction.memo %}
+                                        {% if payment.transaction.is_memo_encrypted %}
+                                            <span class="badge bg-info" title="Encrypted memo">🔒 Encrypted</span>
+                                            <button class="btn btn-sm btn-outline-secondary decrypt-memo" data-tx-id="{{ payment.transaction.transaction_id }}">
+                                                <i class="fas fa-unlock"></i> Decrypt
+                                            </button>
+                                        {% else %}
+                                            {{ payment.transaction.memo }}
+                                        {% endif %}
+                                    {% endif %}
+                                </td>
+                                <td>{{ payment.transaction.timestamp }}</td>
+                            </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td colspan="5" class="text-center">No stealth payments found</td>
+                            </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function copyToClipboard(elementId) {
+        const element = document.getElementById(elementId);
+        element.select();
+        document.execCommand('copy');
+        
+        // Show a tooltip or some indication that the text was copied
+        const tooltip = document.createElement('div');
+        tooltip.className = 'tooltip';
+        tooltip.textContent = 'Copied!';
+        document.body.appendChild(tooltip);
+        
+        setTimeout(() => {
+            document.body.removeChild(tooltip);
+        }, 2000);
+    }
+    
+    document.addEventListener('DOMContentLoaded', function() {
+        // Handle scan button click
+        document.getElementById('scan-button').addEventListener('click', function() {
+            fetch('/api/stealth/scan')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.payments && data.payments.length > 0) {
+                        // Update the table with the new payments
+                        const tableBody = document.getElementById('stealth-payments-table');
+                        tableBody.innerHTML = '';
+                        
+                        data.payments.forEach(payment => {
+                            const tx = payment.transaction;
+                            const row = document.createElement('tr');
+                            
+                            // Transaction ID
+                            const idCell = document.createElement('td');
+                            idCell.textContent = tx.transaction_id;
+                            row.appendChild(idCell);
+                            
+                            // Sender
+                            const senderCell = document.createElement('td');
+                            senderCell.textContent = tx.sender;
+                            row.appendChild(senderCell);
+                            
+                            // Amount
+                            const amountCell = document.createElement('td');
+                            amountCell.textContent = `${tx.amount} PORW`;
+                            row.appendChild(amountCell);
+                            
+                            // Memo
+                            const memoCell = document.createElement('td');
+                            if (tx.memo) {
+                                if (tx.is_memo_encrypted) {
+                                    memoCell.innerHTML = `
+                                        <span class="badge bg-info" title="Encrypted memo">🔒 Encrypted</span>
+                                        <button class="btn btn-sm btn-outline-secondary decrypt-memo" data-tx-id="${tx.transaction_id}">
+                                            <i class="fas fa-unlock"></i> Decrypt
+                                        </button>
+                                    `;
+                                } else {
+                                    memoCell.textContent = tx.memo;
+                                }
+                            }
+                            row.appendChild(memoCell);
+                            
+                            // Date
+                            const dateCell = document.createElement('td');
+                            dateCell.textContent = new Date(tx.timestamp).toLocaleString();
+                            row.appendChild(dateCell);
+                            
+                            tableBody.appendChild(row);
+                        });
+                    } else {
+                        // No payments found
+                        const tableBody = document.getElementById('stealth-payments-table');
+                        tableBody.innerHTML = '<tr><td colspan="5" class="text-center">No stealth payments found</td></tr>';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error scanning for stealth payments:', error);
+                    alert('Error scanning for stealth payments. Please try again.');
+                });
+        });
+        
+        // Handle decrypt memo button click
+        document.body.addEventListener('click', function(event) {
+            if (event.target.classList.contains('decrypt-memo') || event.target.parentElement.classList.contains('decrypt-memo')) {
+                const button = event.target.classList.contains('decrypt-memo') ? event.target : event.target.parentElement;
+                const txId = button.getAttribute('data-tx-id');
+                
+                fetch(`/api/wallet/decrypt-memo?transaction_id=${txId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.decrypted_memo) {
+                            // Replace the button with the decrypted memo
+                            const cell = button.parentElement;
+                            cell.innerHTML = data.decrypted_memo;
+                        } else {
+                            alert('Error decrypting memo: ' + (data.error || 'Unknown error'));
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error decrypting memo:', error);
+                        alert('Error decrypting memo. Please try again.');
+                    });
+            }
+        });
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,493 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="mb-4">Coin Mixing Service</h1>
+    
+    <div class="alert alert-info">
+        <h4 class="alert-heading">What is Coin Mixing?</h4>
+        <p>
+            Coin mixing (also known as coin tumbling) is a privacy-enhancing technique that breaks the transaction graph
+            by mixing your coins with other users' coins. This makes it difficult for blockchain analysts to trace the
+            flow of funds and link transactions to specific users.
+        </p>
+        <p>
+            Our mixing service uses CoinJoin technology with blind signatures to ensure that even the mixing coordinator
+            cannot link inputs to outputs.
+        </p>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Create Mixing Session</h5>
+                </div>
+                <div class="card-body">
+                    <p class="card-text">
+                        Create a new mixing session to mix your coins with other users. You'll need to specify the
+                        denomination (amount to mix), minimum and maximum number of participants, and fee percentage.
+                    </p>
+                    <form action="/mixing/create" method="post">
+                        <div class="mb-3">
+                            <label for="denomination" class="form-label">Denomination (PORW)</label>
+                            <input type="number" class="form-control" id="denomination" name="denomination" step="0.01" min="0.1" value="1.0" required>
+                            <div class="form-text">The amount each participant will mix.</div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="min_participants" class="form-label">Minimum Participants</label>
+                            <input type="number" class="form-control" id="min_participants" name="min_participants" min="3" max="20" value="3" required>
+                            <div class="form-text">Minimum number of participants required (at least 3 for privacy).</div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="max_participants" class="form-label">Maximum Participants</label>
+                            <input type="number" class="form-control" id="max_participants" name="max_participants" min="3" max="50" value="20" required>
+                            <div class="form-text">Maximum number of participants allowed.</div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="fee_percent" class="form-label">Fee Percentage</label>
+                            <div class="input-group">
+                                <input type="number" class="form-control" id="fee_percent" name="fee_percent" step="0.001" min="0.001" max="1" value="0.005" required>
+                                <span class="input-group-text">%</span>
+                            </div>
+                            <div class="form-text">Fee percentage for the mixing service (default: 0.5%).</div>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Create Session</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Join Mixing Session</h5>
+                </div>
+                <div class="card-body">
+                    <p class="card-text">
+                        Join an existing mixing session to mix your coins with other users. You'll need to specify the
+                        session ID and optionally an output address.
+                    </p>
+                    <form action="/mixing/join" method="post">
+                        <div class="mb-3">
+                            <label for="session_id" class="form-label">Session ID</label>
+                            <input type="text" class="form-control" id="session_id" name="session_id" required>
+                            <div class="form-text">The ID of the session to join.</div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="output_address" class="form-label">Output Address (Optional)</label>
+                            <input type="text" class="form-control" id="output_address" name="output_address">
+                            <div class="form-text">Optional output address. If not provided, a new one will be generated.</div>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Join Session</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="card-title mb-0">Active Mixing Sessions</h5>
+        </div>
+        <div class="card-body">
+            <div class="mb-3">
+                <button id="refresh-sessions-button" class="btn btn-outline-primary">
+                    <i class="fas fa-sync"></i> Refresh Sessions
+                </button>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Session ID</th>
+                            <th>Denomination</th>
+                            <th>Participants</th>
+                            <th>Status</th>
+                            <th>Expires At</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="active-sessions-table">
+                        {% if active_sessions %}
+                            {% for session in active_sessions %}
+                            <tr>
+                                <td>{{ session.session_id }}</td>
+                                <td>{{ session.denomination }} PORW</td>
+                                <td>{{ session.participant_count }} / {{ session.max_participants }}</td>
+                                <td>
+                                    {% if session.status == "created" %}
+                                        <span class="badge bg-info">Created</span>
+                                    {% elif session.status == "registration" %}
+                                        <span class="badge bg-primary">Registration</span>
+                                    {% elif session.status == "verification" %}
+                                        <span class="badge bg-warning">Verification</span>
+                                    {% elif session.status == "signing" %}
+                                        <span class="badge bg-success">Signing</span>
+                                    {% elif session.status == "completed" %}
+                                        <span class="badge bg-success">Completed</span>
+                                    {% elif session.status == "failed" %}
+                                        <span class="badge bg-danger">Failed</span>
+                                    {% else %}
+                                        <span class="badge bg-secondary">{{ session.status }}</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ session.expires_at }}</td>
+                                <td>
+                                    <a href="/mixing/session/{{ session.session_id }}" class="btn btn-sm btn-outline-primary">
+                                        <i class="fas fa-info-circle"></i> Details
+                                    </a>
+                                    <a href="/mixing/join?session_id={{ session.session_id }}" class="btn btn-sm btn-outline-success">
+                                        <i class="fas fa-sign-in-alt"></i> Join
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td colspan="6" class="text-center">No active mixing sessions found</td>
+                            </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="card-title mb-0">My Mixing Sessions</h5>
+        </div>
+        <div class="card-body">
+            <div class="mb-3">
+                <button id="refresh-my-sessions-button" class="btn btn-outline-primary">
+                    <i class="fas fa-sync"></i> Refresh My Sessions
+                </button>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Session ID</th>
+                            <th>Denomination</th>
+                            <th>Status</th>
+                            <th>Created At</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="my-sessions-table">
+                        {% if my_sessions %}
+                            {% for session in my_sessions %}
+                            <tr>
+                                <td>{{ session.session_id }}</td>
+                                <td>{{ session.denomination }} PORW</td>
+                                <td>
+                                    {% if session.status == "created" %}
+                                        <span class="badge bg-info">Created</span>
+                                    {% elif session.status == "registration" %}
+                                        <span class="badge bg-primary">Registration</span>
+                                    {% elif session.status == "verification" %}
+                                        <span class="badge bg-warning">Verification</span>
+                                    {% elif session.status == "signing" %}
+                                        <span class="badge bg-success">Signing</span>
+                                    {% elif session.status == "completed" %}
+                                        <span class="badge bg-success">Completed</span>
+                                    {% elif session.status == "failed" %}
+                                        <span class="badge bg-danger">Failed</span>
+                                    {% else %}
+                                        <span class="badge bg-secondary">{{ session.status }}</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ session.created_at }}</td>
+                                <td>
+                                    <a href="/mixing/session/{{ session.session_id }}" class="btn btn-sm btn-outline-primary">
+                                        <i class="fas fa-info-circle"></i> Details
+                                    </a>
+                                    {% if session.status == "verification" %}
+                                        <button class="btn btn-sm btn-outline-warning get-signature-button" data-session-id="{{ session.session_id }}">
+                                            <i class="fas fa-signature"></i> Get Signature
+                                        </button>
+                                    {% elif session.status == "signing" %}
+                                        <button class="btn btn-sm btn-outline-success sign-transaction-button" data-session-id="{{ session.session_id }}">
+                                            <i class="fas fa-pen-fancy"></i> Sign Transaction
+                                        </button>
+                                    {% elif session.status == "completed" %}
+                                        <button class="btn btn-sm btn-outline-info submit-transaction-button" data-session-id="{{ session.session_id }}">
+                                            <i class="fas fa-paper-plane"></i> Submit Transaction
+                                        </button>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td colspan="5" class="text-center">No mixing sessions found</td>
+                            </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Handle refresh sessions button click
+        document.getElementById('refresh-sessions-button').addEventListener('click', function() {
+            fetch('/api/mixing/active-sessions')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.sessions && data.sessions.length > 0) {
+                        // Update the table with the new sessions
+                        const tableBody = document.getElementById('active-sessions-table');
+                        tableBody.innerHTML = '';
+                        
+                        data.sessions.forEach(session => {
+                            const row = document.createElement('tr');
+                            
+                            // Session ID
+                            const idCell = document.createElement('td');
+                            idCell.textContent = session.session_id;
+                            row.appendChild(idCell);
+                            
+                            // Denomination
+                            const denominationCell = document.createElement('td');
+                            denominationCell.textContent = `${session.denomination} PORW`;
+                            row.appendChild(denominationCell);
+                            
+                            // Participants
+                            const participantsCell = document.createElement('td');
+                            participantsCell.textContent = `${session.participant_count} / ${session.max_participants}`;
+                            row.appendChild(participantsCell);
+                            
+                            // Status
+                            const statusCell = document.createElement('td');
+                            let statusBadge = '';
+                            if (session.status === 'created') {
+                                statusBadge = '<span class="badge bg-info">Created</span>';
+                            } else if (session.status === 'registration') {
+                                statusBadge = '<span class="badge bg-primary">Registration</span>';
+                            } else if (session.status === 'verification') {
+                                statusBadge = '<span class="badge bg-warning">Verification</span>';
+                            } else if (session.status === 'signing') {
+                                statusBadge = '<span class="badge bg-success">Signing</span>';
+                            } else if (session.status === 'completed') {
+                                statusBadge = '<span class="badge bg-success">Completed</span>';
+                            } else if (session.status === 'failed') {
+                                statusBadge = '<span class="badge bg-danger">Failed</span>';
+                            } else {
+                                statusBadge = `<span class="badge bg-secondary">${session.status}</span>`;
+                            }
+                            statusCell.innerHTML = statusBadge;
+                            row.appendChild(statusCell);
+                            
+                            // Expires At
+                            const expiresCell = document.createElement('td');
+                            expiresCell.textContent = session.expires_at;
+                            row.appendChild(expiresCell);
+                            
+                            // Actions
+                            const actionsCell = document.createElement('td');
+                            actionsCell.innerHTML = `
+                                <a href="/mixing/session/${session.session_id}" class="btn btn-sm btn-outline-primary">
+                                    <i class="fas fa-info-circle"></i> Details
+                                </a>
+                                <a href="/mixing/join?session_id=${session.session_id}" class="btn btn-sm btn-outline-success">
+                                    <i class="fas fa-sign-in-alt"></i> Join
+                                </a>
+                            `;
+                            row.appendChild(actionsCell);
+                            
+                            tableBody.appendChild(row);
+                        });
+                    } else {
+                        // No sessions found
+                        const tableBody = document.getElementById('active-sessions-table');
+                        tableBody.innerHTML = '<tr><td colspan="6" class="text-center">No active mixing sessions found</td></tr>';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error refreshing sessions:', error);
+                    alert('Error refreshing sessions. Please try again.');
+                });
+        });
+        
+        // Handle refresh my sessions button click
+        document.getElementById('refresh-my-sessions-button').addEventListener('click', function() {
+            fetch('/api/mixing/my-sessions')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.sessions && data.sessions.length > 0) {
+                        // Update the table with the new sessions
+                        const tableBody = document.getElementById('my-sessions-table');
+                        tableBody.innerHTML = '';
+                        
+                        data.sessions.forEach(session => {
+                            const row = document.createElement('tr');
+                            
+                            // Session ID
+                            const idCell = document.createElement('td');
+                            idCell.textContent = session.session_id;
+                            row.appendChild(idCell);
+                            
+                            // Denomination
+                            const denominationCell = document.createElement('td');
+                            denominationCell.textContent = `${session.denomination} PORW`;
+                            row.appendChild(denominationCell);
+                            
+                            // Status
+                            const statusCell = document.createElement('td');
+                            let statusBadge = '';
+                            if (session.status === 'created') {
+                                statusBadge = '<span class="badge bg-info">Created</span>';
+                            } else if (session.status === 'registration') {
+                                statusBadge = '<span class="badge bg-primary">Registration</span>';
+                            } else if (session.status === 'verification') {
+                                statusBadge = '<span class="badge bg-warning">Verification</span>';
+                            } else if (session.status === 'signing') {
+                                statusBadge = '<span class="badge bg-success">Signing</span>';
+                            } else if (session.status === 'completed') {
+                                statusBadge = '<span class="badge bg-success">Completed</span>';
+                            } else if (session.status === 'failed') {
+                                statusBadge = '<span class="badge bg-danger">Failed</span>';
+                            } else {
+                                statusBadge = `<span class="badge bg-secondary">${session.status}</span>`;
+                            }
+                            statusCell.innerHTML = statusBadge;
+                            row.appendChild(statusCell);
+                            
+                            // Created At
+                            const createdCell = document.createElement('td');
+                            createdCell.textContent = session.created_at;
+                            row.appendChild(createdCell);
+                            
+                            // Actions
+                            const actionsCell = document.createElement('td');
+                            let actionsHtml = `
+                                <a href="/mixing/session/${session.session_id}" class="btn btn-sm btn-outline-primary">
+                                    <i class="fas fa-info-circle"></i> Details
+                                </a>
+                            `;
+                            
+                            if (session.status === 'verification') {
+                                actionsHtml += `
+                                    <button class="btn btn-sm btn-outline-warning get-signature-button" data-session-id="${session.session_id}">
+                                        <i class="fas fa-signature"></i> Get Signature
+                                    </button>
+                                `;
+                            } else if (session.status === 'signing') {
+                                actionsHtml += `
+                                    <button class="btn btn-sm btn-outline-success sign-transaction-button" data-session-id="${session.session_id}">
+                                        <i class="fas fa-pen-fancy"></i> Sign Transaction
+                                    </button>
+                                `;
+                            } else if (session.status === 'completed') {
+                                actionsHtml += `
+                                    <button class="btn btn-sm btn-outline-info submit-transaction-button" data-session-id="${session.session_id}">
+                                        <i class="fas fa-paper-plane"></i> Submit Transaction
+                                    </button>
+                                `;
+                            }
+                            
+                            actionsCell.innerHTML = actionsHtml;
+                            row.appendChild(actionsCell);
+                            
+                            tableBody.appendChild(row);
+                        });
+                    } else {
+                        // No sessions found
+                        const tableBody = document.getElementById('my-sessions-table');
+                        tableBody.innerHTML = '<tr><td colspan="5" class="text-center">No mixing sessions found</td></tr>';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error refreshing my sessions:', error);
+                    alert('Error refreshing my sessions. Please try again.');
+                });
+        });
+        
+        // Handle get signature button click
+        document.body.addEventListener('click', function(event) {
+            if (event.target.classList.contains('get-signature-button') || event.target.parentElement.classList.contains('get-signature-button')) {
+                const button = event.target.classList.contains('get-signature-button') ? event.target : event.target.parentElement;
+                const sessionId = button.getAttribute('data-session-id');
+                
+                // Get participant ID (in a real implementation, this would be stored in the session data)
+                // For demonstration, we'll prompt the user for the participant ID
+                const participantId = prompt('Enter your participant ID:');
+                if (!participantId) return;
+                
+                fetch(`/api/mixing/get-signature?session_id=${sessionId}&participant_id=${participantId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.is_valid) {
+                            alert('Successfully got blind signature. The session will now proceed to the signing phase.');
+                            // Refresh my sessions
+                            document.getElementById('refresh-my-sessions-button').click();
+                        } else {
+                            alert('Error getting blind signature: ' + (data.error || 'Unknown error'));
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error getting blind signature:', error);
+                        alert('Error getting blind signature. Please try again.');
+                    });
+            }
+        });
+        
+        // Handle sign transaction button click
+        document.body.addEventListener('click', function(event) {
+            if (event.target.classList.contains('sign-transaction-button') || event.target.parentElement.classList.contains('sign-transaction-button')) {
+                const button = event.target.classList.contains('sign-transaction-button') ? event.target : event.target.parentElement;
+                const sessionId = button.getAttribute('data-session-id');
+                
+                // Get participant ID (in a real implementation, this would be stored in the session data)
+                // For demonstration, we'll prompt the user for the participant ID
+                const participantId = prompt('Enter your participant ID:');
+                if (!participantId) return;
+                
+                fetch(`/api/mixing/sign-transaction?session_id=${sessionId}&participant_id=${participantId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.status === 'completed') {
+                            alert('Successfully signed transaction. The session is now completed.');
+                        } else {
+                            alert('Successfully signed transaction. Waiting for other participants to sign.');
+                        }
+                        // Refresh my sessions
+                        document.getElementById('refresh-my-sessions-button').click();
+                    })
+                    .catch(error => {
+                        console.error('Error signing transaction:', error);
+                        alert('Error signing transaction. Please try again.');
+                    });
+            }
+        });
+        
+        // Handle submit transaction button click
+        document.body.addEventListener('click', function(event) {
+            if (event.target.classList.contains('submit-transaction-button') || event.target.parentElement.classList.contains('submit-transaction-button')) {
+                const button = event.target.classList.contains('submit-transaction-button') ? event.target : event.target.parentElement;
+                const sessionId = button.getAttribute('data-session-id');
+                
+                fetch(`/api/mixing/submit-transaction?session_id=${sessionId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.status === 'submitted') {
+                            alert('Successfully submitted transaction. Transaction ID: ' + data.transaction_id);
+                        } else {
+                            alert('Error submitting transaction: ' + (data.error || 'Unknown error'));
+                        }
+                        // Refresh my sessions
+                        document.getElementById('refresh-my-sessions-button').click();
+                    })
+                    .catch(error => {
+                        console.error('Error submitting transaction:', error);
+                        alert('Error submitting transaction. Please try again.');
+                    });
+            }
+        });
+    });
+</script>
+{% endblock %}

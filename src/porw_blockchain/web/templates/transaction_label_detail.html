@@ -1,0 +1,150 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="mb-4">Transaction Label Details</h1>
+    
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="card-title mb-0">Transaction Information</h5>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <p><strong>Transaction ID:</strong></p>
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" value="{{ label.transaction_id }}" readonly>
+                        <button class="btn btn-outline-secondary copy-btn" data-clipboard-text="{{ label.transaction_id }}">
+                            <i class="fas fa-copy"></i> Copy
+                        </button>
+                    </div>
+                    
+                    <p><strong>Label:</strong> {{ label.label or 'Not specified' }}</p>
+                    <p><strong>Category:</strong> {{ label.category or 'Not specified' }}</p>
+                </div>
+                <div class="col-md-6">
+                    <p><strong>Notes:</strong></p>
+                    <p>{{ label.notes or 'No notes provided.' }}</p>
+                    
+                    <p><strong>Tags:</strong></p>
+                    <div class="mb-3">
+                        {% if label.tags %}
+                            {% for tag in label.tags %}
+                                <span class="badge bg-secondary">{{ tag }}</span>
+                            {% endfor %}
+                        {% else %}
+                            <p class="text-muted">No tags</p>
+                        {% endif %}
+                    </div>
+                    
+                    <p><strong>Created:</strong> {{ label.created_at|date }}</p>
+                    <p><strong>Last Updated:</strong> {{ label.updated_at|date }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="card-title mb-0">Manage Tags</h5>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <h6>Add Tag</h6>
+                    <form action="/transactions/labels/{{ label.transaction_id }}/add-tag" method="post" class="mb-3">
+                        <div class="input-group">
+                            <input type="text" class="form-control" name="tag" placeholder="Enter tag name" required>
+                            <button type="submit" class="btn btn-primary">Add</button>
+                        </div>
+                    </form>
+                </div>
+                <div class="col-md-6">
+                    <h6>Remove Tags</h6>
+                    {% if label.tags %}
+                        <div class="mb-3">
+                            {% for tag in label.tags %}
+                                <form action="/transactions/labels/{{ label.transaction_id }}/remove-tag" method="post" class="d-inline-block mb-2">
+                                    <input type="hidden" name="tag" value="{{ tag }}">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger">
+                                        <i class="fas fa-times"></i> {{ tag }}
+                                    </button>
+                                </form>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="text-muted">No tags to remove</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="card-title mb-0">Actions</h5>
+        </div>
+        <div class="card-body">
+            <div class="d-flex gap-2">
+                <a href="/transactions/{{ label.transaction_id }}" class="btn btn-primary">
+                    <i class="fas fa-info-circle"></i> View Transaction
+                </a>
+                <a href="/transactions/labels/{{ label.transaction_id }}/edit" class="btn btn-secondary">
+                    <i class="fas fa-edit"></i> Edit Label
+                </a>
+                <button type="button" class="btn btn-danger delete-label-btn" data-transaction-id="{{ label.transaction_id }}">
+                    <i class="fas fa-trash"></i> Delete Label
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="mb-4">
+        <a href="/transactions/labels" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left"></i> Back to Transaction Labels
+        </a>
+    </div>
+</div>
+
+<!-- Delete Label Modal -->
+<div class="modal fade" id="deleteLabelModal" tabindex="-1" aria-labelledby="deleteLabelModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteLabelModalLabel">Delete Transaction Label</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete the label for this transaction?</p>
+                <p>This action cannot be undone.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <form id="deleteLabelForm" action="/transactions/labels/delete" method="post">
+                    <input type="hidden" id="deleteTransactionId" name="transaction_id" value="{{ label.transaction_id }}">
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize clipboard.js
+        new ClipboardJS('.copy-btn');
+        
+        // Handle delete label button click
+        document.querySelector('.delete-label-btn').addEventListener('click', function() {
+            const transactionId = this.getAttribute('data-transaction-id');
+            
+            // Set values in modal
+            document.getElementById('deleteTransactionId').value = transactionId;
+            
+            // Show modal
+            const modal = new bootstrap.Modal(document.getElementById('deleteLabelModal'));
+            modal.show();
+        });
+    });
+</script>
+{% endblock %}

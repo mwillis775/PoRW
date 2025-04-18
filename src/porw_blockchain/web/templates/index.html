@@ -1,0 +1,196 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="jumbotron">
+    <h1 class="display-4">Welcome to PoRW Blockchain</h1>
+    <p class="lead">A blockchain system using Proof of Real Work (protein folding) and Proof of Reliable Storage.</p>
+    <hr class="my-4">
+    <p>Get started by creating a wallet, mining blocks, or providing storage to the network.</p>
+    <div class="d-flex gap-2">
+        {% if not wallet %}
+        <a class="btn btn-primary btn-lg" href="/wallet" role="button">Create Wallet</a>
+        {% else %}
+        <a class="btn btn-success btn-lg" href="/wallet" role="button">View Wallet</a>
+        {% endif %}
+        <a class="btn btn-info btn-lg" href="/mining" role="button">Start Mining</a>
+        <a class="btn btn-secondary btn-lg" href="/storage" role="button">Provide Storage</a>
+    </div>
+</div>
+
+<div class="row mt-5">
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Wallet Status</h5>
+            </div>
+            <div class="card-body">
+                {% if wallet %}
+                <p><strong>Address:</strong> {{ wallet.address }}</p>
+                <p><strong>Balance:</strong> {{ wallet.get_balance() }} PORW</p>
+                <a href="/wallet" class="btn btn-primary">Manage Wallet</a>
+                {% else %}
+                <p>No wallet found. Create one to get started.</p>
+                <a href="/wallet" class="btn btn-primary">Create Wallet</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Mining Status</h5>
+            </div>
+            <div class="card-body">
+                {% if miner and miner.running %}
+                <p><strong>Status:</strong> <span class="badge bg-success">Running</span></p>
+                <p><strong>Threads:</strong> {{ miner.config.mining_threads }}</p>
+                <p><strong>GPU:</strong> {% if miner.config.enable_gpu %}Enabled{% else %}Disabled{% endif %}</p>
+                <a href="/mining" class="btn btn-danger">Stop Mining</a>
+                {% else %}
+                <p><strong>Status:</strong> <span class="badge bg-secondary">Stopped</span></p>
+                <p>Start mining to earn PORW tokens by contributing protein folding calculations.</p>
+                <a href="/mining" class="btn btn-success">Start Mining</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Storage Status</h5>
+            </div>
+            <div class="card-body">
+                {% if storage_node and storage_node.running %}
+                <p><strong>Status:</strong> <span class="badge bg-success">Running</span></p>
+                <p><strong>Node ID:</strong> {{ storage_node.node_id }}</p>
+                <p><strong>Capacity:</strong> {{ storage_node.protocol.config.capacity // (1024*1024) }} MB</p>
+                <a href="/storage" class="btn btn-danger">Stop Storage Node</a>
+                {% else %}
+                <p><strong>Status:</strong> <span class="badge bg-secondary">Stopped</span></p>
+                <p>Provide storage to the network to earn PORW tokens.</p>
+                <a href="/storage" class="btn btn-success">Start Storage Node</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Network Status</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <p><strong>Node Status:</strong> 
+                            {% if node and node.running %}
+                            <span class="badge bg-success">Connected</span>
+                            {% else %}
+                            <span class="badge bg-danger">Disconnected</span>
+                            {% endif %}
+                        </p>
+                        <p><strong>Peers:</strong> {{ node.peers|length if node else 0 }}</p>
+                        <p><strong>Blockchain Height:</strong> {{ blockchain.height if blockchain else 0 }}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <canvas id="networkChart" width="400" height="200"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Sample data for the network chart
+    const ctx = document.getElementById('networkChart').getContext('2d');
+    const networkChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: ['1h ago', '50m ago', '40m ago', '30m ago', '20m ago', '10m ago', 'Now'],
+            datasets: [{
+                label: 'Network Peers',
+                data: [3, 4, 5, 4, 6, 7, {{ node.peers|length if node else 0 }}],
+                backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+
+    // Refresh status every 30 seconds
+    setInterval(() => {
+        fetch('/api/status')
+            .then(response => response.json())
+            .then(data => {
+                // Update wallet status
+                if (data.wallet.address) {
+                    document.querySelector('.card:nth-child(1) .card-body').innerHTML = `
+                        <p><strong>Address:</strong> ${data.wallet.address}</p>
+                        <p><strong>Balance:</strong> ${data.wallet.balance} PORW</p>
+                        <a href="/wallet" class="btn btn-primary">Manage Wallet</a>
+                    `;
+                }
+
+                // Update mining status
+                if (data.miner.running) {
+                    document.querySelector('.card:nth-child(2) .card-body').innerHTML = `
+                        <p><strong>Status:</strong> <span class="badge bg-success">Running</span></p>
+                        <p><strong>Threads:</strong> ${data.miner.status.mining_threads}</p>
+                        <p><strong>GPU:</strong> ${data.miner.status.enable_gpu ? 'Enabled' : 'Disabled'}</p>
+                        <a href="/mining" class="btn btn-danger">Stop Mining</a>
+                    `;
+                } else {
+                    document.querySelector('.card:nth-child(2) .card-body').innerHTML = `
+                        <p><strong>Status:</strong> <span class="badge bg-secondary">Stopped</span></p>
+                        <p>Start mining to earn PORW tokens by contributing protein folding calculations.</p>
+                        <a href="/mining" class="btn btn-success">Start Mining</a>
+                    `;
+                }
+
+                // Update storage status
+                if (data.storage_node.running) {
+                    document.querySelector('.card:nth-child(3) .card-body').innerHTML = `
+                        <p><strong>Status:</strong> <span class="badge bg-success">Running</span></p>
+                        <p><strong>Node ID:</strong> ${data.storage_node.status.node_id}</p>
+                        <p><strong>Capacity:</strong> ${Math.floor(data.storage_node.status.capacity / (1024*1024))} MB</p>
+                        <a href="/storage" class="btn btn-danger">Stop Storage Node</a>
+                    `;
+                } else {
+                    document.querySelector('.card:nth-child(3) .card-body').innerHTML = `
+                        <p><strong>Status:</strong> <span class="badge bg-secondary">Stopped</span></p>
+                        <p>Provide storage to the network to earn PORW tokens.</p>
+                        <a href="/storage" class="btn btn-success">Start Storage Node</a>
+                    `;
+                }
+
+                // Update network status
+                const nodeStatus = data.node.running ? 
+                    '<span class="badge bg-success">Connected</span>' : 
+                    '<span class="badge bg-danger">Disconnected</span>';
+                
+                document.querySelector('.col-md-6:first-child').innerHTML = `
+                    <p><strong>Node Status:</strong> ${nodeStatus}</p>
+                    <p><strong>Peers:</strong> ${data.node.peers}</p>
+                    <p><strong>Blockchain Height:</strong> ${data.blockchain.height}</p>
+                `;
+
+                // Update chart
+                networkChart.data.datasets[0].data.shift();
+                networkChart.data.datasets[0].data.push(data.node.peers);
+                networkChart.update();
+            });
+    }, 30000);
+</script>
+{% endblock %}

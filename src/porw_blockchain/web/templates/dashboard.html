@@ -1,0 +1,333 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1 class="mb-4">Dashboard</h1>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Blockchain Status</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <p><strong>Height:</strong> <span id="blockchain-height">{{ blockchain.height if blockchain else 0 }}</span></p>
+                        <p><strong>Last Block:</strong> <span id="last-block-time">{{ blockchain.last_block.timestamp|datetime if blockchain and blockchain.last_block else 'N/A' }}</span></p>
+                        <p><strong>Difficulty:</strong> <span id="blockchain-difficulty">{{ blockchain.difficulty if blockchain else 1 }}</span></p>
+                    </div>
+                    <div class="col-md-6">
+                        <canvas id="blockchainChart" width="400" height="200"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Network Status</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <p><strong>Node Status:</strong> 
+                            {% if node and node.running %}
+                            <span class="badge bg-success">Connected</span>
+                            {% else %}
+                            <span class="badge bg-danger">Disconnected</span>
+                            {% endif %}
+                        </p>
+                        <p><strong>Peers:</strong> <span id="peer-count">{{ node.peers|length if node else 0 }}</span></p>
+                        <p><strong>Version:</strong> 1.0.0</p>
+                    </div>
+                    <div class="col-md-6">
+                        <canvas id="networkChart" width="400" height="200"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Recent Blocks</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Height</th>
+                                <th>Hash</th>
+                                <th>Type</th>
+                                <th>Timestamp</th>
+                                <th>Protein ID</th>
+                                <th>Energy Score</th>
+                                <th>Minted</th>
+                            </tr>
+                        </thead>
+                        <tbody id="blocks-table">
+                            {% if blockchain and blockchain.blocks %}
+                                {% for block in blockchain.blocks[-10:] %}
+                                <tr>
+                                    <td>{{ block.index }}</td>
+                                    <td>{{ block.block_hash[:10] }}...</td>
+                                    <td>{{ block.block_type }}</td>
+                                    <td>{{ block.timestamp|datetime }}</td>
+                                    <td>{{ block.porw_proof.protein_id if block.block_type == 'PoRW' else 'N/A' }}</td>
+                                    <td>{{ block.porw_proof.energy_score if block.block_type == 'PoRW' else 'N/A' }}</td>
+                                    <td>{{ block.minted_amount if block.block_type == 'PoRW' else 'N/A' }}</td>
+                                </tr>
+                                {% endfor %}
+                            {% else %}
+                                <tr>
+                                    <td colspan="7" class="text-center">No blocks found</td>
+                                </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Mining Status</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <p><strong>Status:</strong> 
+                            {% if miner and miner.running %}
+                            <span class="badge bg-success">Running</span>
+                            {% else %}
+                            <span class="badge bg-secondary">Stopped</span>
+                            {% endif %}
+                        </p>
+                        <p><strong>Threads:</strong> <span id="mining-threads">{{ miner.config.mining_threads if miner else 0 }}</span></p>
+                        <p><strong>GPU:</strong> <span id="mining-gpu">{{ 'Enabled' if miner and miner.config.enable_gpu else 'Disabled' }}</span></p>
+                        <p><strong>Proteins:</strong> <span id="protein-count">{{ miner.protein_sequences|length if miner else 0 }}</span></p>
+                    </div>
+                    <div class="col-md-6">
+                        <canvas id="miningChart" width="400" height="200"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Storage Status</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <p><strong>Status:</strong> 
+                            {% if storage_node and storage_node.running %}
+                            <span class="badge bg-success">Running</span>
+                            {% else %}
+                            <span class="badge bg-secondary">Stopped</span>
+                            {% endif %}
+                        </p>
+                        <p><strong>Node ID:</strong> <span id="storage-node-id">{{ storage_node.node_id if storage_node else 'N/A' }}</span></p>
+                        <p><strong>Capacity:</strong> <span id="storage-capacity">{{ storage_node.protocol.config.capacity // (1024*1024) if storage_node else 0 }}</span> MB</p>
+                        <p><strong>Used:</strong> <span id="storage-used">{{ storage_node.protocol.data_manager.used_space // (1024*1024) if storage_node else 0 }}</span> MB</p>
+                    </div>
+                    <div class="col-md-6">
+                        <canvas id="storageChart" width="400" height="200"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Blockchain chart
+    const blockchainCtx = document.getElementById('blockchainChart').getContext('2d');
+    const blockchainChart = new Chart(blockchainCtx, {
+        type: 'line',
+        data: {
+            labels: ['1h ago', '50m ago', '40m ago', '30m ago', '20m ago', '10m ago', 'Now'],
+            datasets: [{
+                label: 'Blockchain Height',
+                data: [0, 0, 0, 0, 0, 0, {{ blockchain.height if blockchain else 0 }}],
+                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+
+    // Network chart
+    const networkCtx = document.getElementById('networkChart').getContext('2d');
+    const networkChart = new Chart(networkCtx, {
+        type: 'line',
+        data: {
+            labels: ['1h ago', '50m ago', '40m ago', '30m ago', '20m ago', '10m ago', 'Now'],
+            datasets: [{
+                label: 'Network Peers',
+                data: [0, 0, 0, 0, 0, 0, {{ node.peers|length if node else 0 }}],
+                backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+
+    // Mining chart
+    const miningCtx = document.getElementById('miningChart').getContext('2d');
+    const miningChart = new Chart(miningCtx, {
+        type: 'line',
+        data: {
+            labels: ['1h ago', '50m ago', '40m ago', '30m ago', '20m ago', '10m ago', 'Now'],
+            datasets: [{
+                label: 'Blocks Mined',
+                data: [0, 0, 0, 0, 0, 0, 0],
+                backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                borderColor: 'rgba(255, 99, 132, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+
+    // Storage chart
+    const storageCtx = document.getElementById('storageChart').getContext('2d');
+    const storageChart = new Chart(storageCtx, {
+        type: 'doughnut',
+        data: {
+            labels: ['Used', 'Free'],
+            datasets: [{
+                label: 'Storage',
+                data: [
+                    {{ storage_node.protocol.data_manager.used_space // (1024*1024) if storage_node else 0 }},
+                    {{ (storage_node.protocol.config.capacity - storage_node.protocol.data_manager.used_space) // (1024*1024) if storage_node else 1024 }}
+                ],
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.2)',
+                    'rgba(75, 192, 192, 0.2)'
+                ],
+                borderColor: [
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(75, 192, 192, 1)'
+                ],
+                borderWidth: 1
+            }]
+        }
+    });
+
+    // Refresh dashboard data every 10 seconds
+    setInterval(() => {
+        fetch('/api/status')
+            .then(response => response.json())
+            .then(data => {
+                // Update blockchain status
+                document.getElementById('blockchain-height').textContent = data.blockchain.height;
+                document.getElementById('blockchain-difficulty').textContent = data.blockchain.difficulty || 1;
+                
+                if (data.blockchain.last_block) {
+                    const lastBlockTime = new Date(data.blockchain.last_block.timestamp * 1000).toLocaleString();
+                    document.getElementById('last-block-time').textContent = lastBlockTime;
+                }
+
+                // Update network status
+                document.getElementById('peer-count').textContent = data.node.peers;
+
+                // Update mining status
+                if (data.miner.running) {
+                    document.getElementById('mining-threads').textContent = data.miner.status.mining_threads;
+                    document.getElementById('mining-gpu').textContent = data.miner.status.enable_gpu ? 'Enabled' : 'Disabled';
+                    document.getElementById('protein-count').textContent = data.miner.status.protein_sequences;
+                }
+
+                // Update storage status
+                if (data.storage_node.running) {
+                    document.getElementById('storage-node-id').textContent = data.storage_node.status.node_id;
+                    document.getElementById('storage-capacity').textContent = Math.floor(data.storage_node.status.capacity / (1024*1024));
+                    document.getElementById('storage-used').textContent = Math.floor(data.storage_node.status.used_space / (1024*1024));
+                    
+                    // Update storage chart
+                    storageChart.data.datasets[0].data = [
+                        Math.floor(data.storage_node.status.used_space / (1024*1024)),
+                        Math.floor((data.storage_node.status.capacity - data.storage_node.status.used_space) / (1024*1024))
+                    ];
+                    storageChart.update();
+                }
+
+                // Update blockchain chart
+                blockchainChart.data.datasets[0].data.shift();
+                blockchainChart.data.datasets[0].data.push(data.blockchain.height);
+                blockchainChart.update();
+
+                // Update network chart
+                networkChart.data.datasets[0].data.shift();
+                networkChart.data.datasets[0].data.push(data.node.peers);
+                networkChart.update();
+
+                // Update mining chart
+                miningChart.data.datasets[0].data.shift();
+                miningChart.data.datasets[0].data.push(data.miner.blocks_mined || 0);
+                miningChart.update();
+
+                // Update blocks table
+                if (data.blockchain.recent_blocks && data.blockchain.recent_blocks.length > 0) {
+                    const blocksTable = document.getElementById('blocks-table');
+                    let html = '';
+                    
+                    data.blockchain.recent_blocks.forEach(block => {
+                        const timestamp = new Date(block.timestamp * 1000).toLocaleString();
+                        const proteinId = block.block_type === 'PoRW' ? block.porw_proof.protein_id : 'N/A';
+                        const energyScore = block.block_type === 'PoRW' ? block.porw_proof.energy_score : 'N/A';
+                        const minted = block.block_type === 'PoRW' ? block.minted_amount : 'N/A';
+                        
+                        html += `
+                            <tr>
+                                <td>${block.index}</td>
+                                <td>${block.block_hash.substring(0, 10)}...</td>
+                                <td>${block.block_type}</td>
+                                <td>${timestamp}</td>
+                                <td>${proteinId}</td>
+                                <td>${energyScore}</td>
+                                <td>${minted}</td>
+                            </tr>
+                        `;
+                    });
+                    
+                    blocksTable.innerHTML = html;
+                }
+            });
+    }, 10000);
+</script>
+{% endblock %}

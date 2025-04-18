@@ -1,0 +1,260 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1 class="mb-4">Mining</h1>
+
+{% if not wallet %}
+<div class="alert alert-warning">
+    <p>You need to create a wallet before you can start mining.</p>
+    <a href="/wallet" class="btn btn-primary">Create Wallet</a>
+</div>
+{% else %}
+<div class="row">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Mining Status</h5>
+            </div>
+            <div class="card-body">
+                {% if miner and miner.running %}
+                <div class="alert alert-success">
+                    <p><strong>Mining is active!</strong> Your computer is contributing protein folding calculations to the network.</p>
+                </div>
+                <p><strong>Status:</strong> <span class="badge bg-success">Running</span></p>
+                <p><strong>Mining Wallet:</strong> {{ miner.wallet.address }}</p>
+                <p><strong>Blockchain Height:</strong> {{ miner.blockchain.height }}</p>
+                <p><strong>Last Block Hash:</strong> {{ miner.blockchain.last_block.block_hash }}</p>
+
+                <form action="/mining/stop" method="post">
+                    <button type="submit" class="btn btn-danger">Stop Mining</button>
+                </form>
+                {% else %}
+                <div class="alert alert-secondary">
+                    <p><strong>Mining is inactive.</strong> Start mining to earn PORW tokens by contributing protein folding calculations.</p>
+                </div>
+                <p><strong>Status:</strong> <span class="badge bg-secondary">Stopped</span></p>
+
+                <form action="/mining/start" method="post">
+                    <div class="mb-3">
+                        <label for="mining_threads" class="form-label">Mining Threads</label>
+                        <input type="number" class="form-control" id="mining_threads" name="mining_threads" value="4" min="1" max="16">
+                        <div class="form-text">Number of CPU threads to use for mining. Higher values may impact system performance.</div>
+                    </div>
+                    <div class="mb-3 form-check">
+                        <input type="checkbox" class="form-check-input" id="enable_gpu" name="enable_gpu">
+                        <label class="form-check-label" for="enable_gpu">Enable GPU Acceleration</label>
+                        <div class="form-text">Use GPU for protein folding calculations if available. Significantly improves performance.</div>
+                    </div>
+                    <button type="submit" class="btn btn-success">Start Mining</button>
+                </form>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Mining Performance</h5>
+            </div>
+            <div class="card-body">
+                <canvas id="miningPerformanceChart" width="400" height="200"></canvas>
+                <div class="mt-3">
+                    <p><strong>Blocks Mined:</strong> <span id="blocks-mined">{% if miner %}{{ miner.get_status().mined_blocks }}{% else %}0{% endif %}</span></p>
+                    <p><strong>Average Energy Score:</strong> <span id="avg-energy-score">-100.0</span></p>
+                    <p><strong>Average Folding Time:</strong> <span id="avg-folding-time">1000</span> ms</p>
+                    <p><strong>Total Minted:</strong> <span id="total-minted">{% if miner %}{{ miner.get_status().total_minted }}{% else %}0{% endif %}</span> PORW</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mt-4">
+            <div class="card-header">
+                <h5 class="card-title mb-0">About Protein Folding Mining</h5>
+            </div>
+            <div class="card-body">
+                <p>The PoRW blockchain uses protein folding as its proof-of-work mechanism. Instead of wasting computational resources on meaningless calculations, your computer contributes to scientific research by simulating protein folding.</p>
+                <p>Proteins are essential molecules that perform a vast array of functions in living organisms. Understanding how proteins fold into their three-dimensional structures is crucial for advancing medicine and biotechnology.</p>
+                <p>When you mine on the PoRW blockchain, your computer:</p>
+                <ol>
+                    <li>Receives a protein sequence from the network</li>
+                    <li>Simulates how that protein would fold in nature</li>
+                    <li>Submits the folding results as proof-of-work</li>
+                    <li>Earns PORW tokens based on the quality and efficiency of the folding</li>
+                </ol>
+                <p>The more accurate and efficient your protein folding calculations, the more PORW tokens you earn!</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card mt-4">
+    <div class="card-header">
+        <h5 class="card-title mb-0">Recent Mining Results</h5>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Protein ID</th>
+                        <th>Energy Score</th>
+                        <th>Folding Time</th>
+                        <th>Method Used</th>
+                        <th>Minted Amount</th>
+                        <th>Timestamp</th>
+                    </tr>
+                </thead>
+                <tbody id="mining-results-table">
+                    {% if miner and miner.running %}
+                        {% for block in miner.blockchain.blocks %}
+                        {% if block.block_type == "PoRW" %}
+                        <tr>
+                            <td>{{ block.porw_proof.protein_id }}</td>
+                            <td>{{ block.porw_proof.energy_score }}</td>
+                            <td>{{ block.porw_proof.folding_time_ms }} ms</td>
+                            <td>{{ block.porw_proof.method_used }}</td>
+                            <td>{{ block.minted_amount }} PORW</td>
+                            <td>{{ block.timestamp }}</td>
+                        </tr>
+                        {% endif %}
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="6" class="text-center">No mining results yet</td>
+                        </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Mining performance chart
+    const miningCtx = document.getElementById('miningPerformanceChart')?.getContext('2d');
+    let miningChart;
+
+    if (miningCtx) {
+        miningChart = new Chart(miningCtx, {
+            type: 'line',
+            data: {
+                labels: [],
+                datasets: [{
+                    label: 'Energy Score',
+                    data: [],
+                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    borderWidth: 1,
+                    yAxisID: 'y'
+                }, {
+                    label: 'Folding Time (ms)',
+                    data: [],
+                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1,
+                    yAxisID: 'y1'
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        type: 'linear',
+                        display: true,
+                        position: 'left',
+                        title: {
+                            display: true,
+                            text: 'Energy Score'
+                        }
+                    },
+                    y1: {
+                        type: 'linear',
+                        display: true,
+                        position: 'right',
+                        title: {
+                            display: true,
+                            text: 'Folding Time (ms)'
+                        },
+                        grid: {
+                            drawOnChartArea: false
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    // Refresh mining data every 5 seconds if mining is active
+    {% if miner and miner.running %}
+    const refreshInterval = setInterval(() => {
+        fetch('/api/status')
+            .then(response => response.json())
+            .then(data => {
+                if (!data.miner.running) {
+                    // Mining stopped, reload the page
+                    window.location.reload();
+                    return;
+                }
+
+                // Update mining status
+                document.querySelector('.card-body p:nth-child(3)').textContent = `Mining Threads: ${data.miner.status.mining_threads}`;
+                document.querySelector('.card-body p:nth-child(4)').textContent = `GPU Acceleration: ${data.miner.status.enable_gpu ? 'Enabled' : 'Disabled'}`;
+                document.querySelector('.card-body p:nth-child(5)').textContent = `Protein Sequences: ${data.miner.status.protein_sequences}`;
+                document.querySelector('.card-body p:nth-child(6)').textContent = `Current Protein: ${data.miner.status.current_protein_id || 'None'}`;
+                document.querySelector('.card-body p:nth-child(7)').textContent = `Folding Results: ${data.miner.status.folding_results}`;
+
+                // Update mining performance
+                document.getElementById('blocks-mined').textContent = data.miner.blocks_mined || 0;
+                document.getElementById('avg-energy-score').textContent = data.miner.avg_energy_score || 0;
+                document.getElementById('avg-folding-time').textContent = data.miner.avg_folding_time || 0;
+                document.getElementById('total-minted').textContent = data.miner.total_minted || 0;
+
+                // Update mining results table
+                if (data.miner.recent_results && data.miner.recent_results.length > 0) {
+                    const resultsTable = document.getElementById('mining-results-table');
+                    let html = '';
+
+                    data.miner.recent_results.forEach(result => {
+                        const timestamp = new Date(result.timestamp * 1000).toLocaleString();
+
+                        html += `
+                            <tr>
+                                <td>${result.protein_id}</td>
+                                <td>${result.energy_score}</td>
+                                <td>${result.folding_time_ms} ms</td>
+                                <td>${result.method_used}</td>
+                                <td>${result.minted_amount} PORW</td>
+                                <td>${timestamp}</td>
+                            </tr>
+                        `;
+
+                        // Add to chart
+                        if (miningChart) {
+                            // Add timestamp to labels
+                            const time = new Date(result.timestamp * 1000).toLocaleTimeString();
+                            miningChart.data.labels.push(time);
+
+                            // Add energy score and folding time
+                            miningChart.data.datasets[0].data.push(result.energy_score);
+                            miningChart.data.datasets[1].data.push(result.folding_time_ms);
+
+                            // Keep only the last 10 points
+                            if (miningChart.data.labels.length > 10) {
+                                miningChart.data.labels.shift();
+                                miningChart.data.datasets[0].data.shift();
+                                miningChart.data.datasets[1].data.shift();
+                            }
+
+                            miningChart.update();
+                        }
+                    });
+
+                    resultsTable.innerHTML = html;
+                }
+            });
+    }, 5000);
+    {% endif %}
+</script>
+{% endblock %}

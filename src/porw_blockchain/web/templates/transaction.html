@@ -1,0 +1,210 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="mb-4">Transaction Details</h1>
+    
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="card-title mb-0">Transaction Information</h5>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <p><strong>Transaction ID:</strong></p>
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" value="{{ transaction.transaction_id }}" readonly>
+                        <button class="btn btn-outline-secondary copy-btn" data-clipboard-text="{{ transaction.transaction_id }}">
+                            <i class="fas fa-copy"></i> Copy
+                        </button>
+                    </div>
+                    
+                    <p><strong>Sender:</strong> {{ transaction.sender }}</p>
+                    <p><strong>Recipient:</strong> {{ transaction.recipient }}</p>
+                    <p><strong>Amount:</strong> {{ transaction.amount }} PORW</p>
+                </div>
+                <div class="col-md-6">
+                    <p><strong>Fee:</strong> {{ transaction.fee }} PORW</p>
+                    <p><strong>Timestamp:</strong> {{ transaction.timestamp|date }}</p>
+                    <p><strong>Block:</strong> {{ transaction.block_number or 'Pending' }}</p>
+                    <p><strong>Status:</strong>
+                        {% if transaction.confirmed %}
+                            <span class="badge bg-success">Confirmed</span>
+                        {% else %}
+                            <span class="badge bg-warning">Pending</span>
+                        {% endif %}
+                    </p>
+                </div>
+            </div>
+            
+            {% if transaction.memo %}
+            <div class="mt-3">
+                <p><strong>Memo:</strong></p>
+                <div class="alert alert-secondary">
+                    {{ transaction.memo }}
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    
+    <div class="card mb-4">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="card-title mb-0">Transaction Label</h5>
+            {% if label %}
+                <a href="/transactions/labels/{{ transaction.transaction_id }}" class="btn btn-sm btn-outline-primary">
+                    <i class="fas fa-tag"></i> View Label Details
+                </a>
+            {% endif %}
+        </div>
+        <div class="card-body">
+            {% if label %}
+                <div class="row">
+                    <div class="col-md-6">
+                        <p><strong>Label:</strong> {{ label.label or 'Not specified' }}</p>
+                        <p><strong>Category:</strong> 
+                            {% if label.category %}
+                                <span class="badge bg-info">{{ label.category }}</span>
+                            {% else %}
+                                Not specified
+                            {% endif %}
+                        </p>
+                    </div>
+                    <div class="col-md-6">
+                        <p><strong>Tags:</strong></p>
+                        <div>
+                            {% if label.tags %}
+                                {% for tag in label.tags %}
+                                    <span class="badge bg-secondary">{{ tag }}</span>
+                                {% endfor %}
+                            {% else %}
+                                <p class="text-muted">No tags</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                
+                {% if label.notes %}
+                <div class="mt-3">
+                    <p><strong>Notes:</strong></p>
+                    <div class="alert alert-secondary">
+                        {{ label.notes }}
+                    </div>
+                </div>
+                {% endif %}
+                
+                <div class="mt-3">
+                    <a href="/transactions/labels/{{ transaction.transaction_id }}/edit" class="btn btn-outline-secondary">
+                        <i class="fas fa-edit"></i> Edit Label
+                    </a>
+                    <button type="button" class="btn btn-outline-danger delete-label-btn" data-transaction-id="{{ transaction.transaction_id }}">
+                        <i class="fas fa-trash"></i> Delete Label
+                    </button>
+                </div>
+            {% else %}
+                <p>No label has been added to this transaction yet.</p>
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addLabelModal">
+                    <i class="fas fa-tag"></i> Add Label
+                </button>
+            {% endif %}
+        </div>
+    </div>
+    
+    <div class="mb-4">
+        <a href="/wallet" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left"></i> Back to Wallet
+        </a>
+        <a href="/transactions/labels" class="btn btn-outline-primary">
+            <i class="fas fa-tags"></i> View All Labels
+        </a>
+    </div>
+</div>
+
+<!-- Add Label Modal -->
+<div class="modal fade" id="addLabelModal" tabindex="-1" aria-labelledby="addLabelModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addLabelModalLabel">Add Transaction Label</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="addLabelForm" action="/transactions/labels/add" method="post">
+                    <input type="hidden" name="transaction_id" value="{{ transaction.transaction_id }}">
+                    <div class="mb-3">
+                        <label for="label" class="form-label">Label</label>
+                        <input type="text" class="form-control" id="label" name="label">
+                    </div>
+                    <div class="mb-3">
+                        <label for="category" class="form-label">Category</label>
+                        <input type="text" class="form-control" id="category" name="category" list="categories">
+                        <datalist id="categories">
+                            {% for category in all_categories %}
+                                <option value="{{ category }}">
+                            {% endfor %}
+                        </datalist>
+                    </div>
+                    <div class="mb-3">
+                        <label for="notes" class="form-label">Notes</label>
+                        <textarea class="form-control" id="notes" name="notes" rows="3"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="tags" class="form-label">Tags</label>
+                        <input type="text" class="form-control" id="tags" name="tags">
+                        <div class="form-text">Enter tags separated by commas (e.g., income, salary, monthly)</div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="submit" form="addLabelForm" class="btn btn-primary">Add Label</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Label Modal -->
+<div class="modal fade" id="deleteLabelModal" tabindex="-1" aria-labelledby="deleteLabelModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteLabelModalLabel">Delete Transaction Label</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete the label for this transaction?</p>
+                <p>This action cannot be undone.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <form id="deleteLabelForm" action="/transactions/labels/delete" method="post">
+                    <input type="hidden" id="deleteTransactionId" name="transaction_id" value="{{ transaction.transaction_id }}">
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize clipboard.js
+        new ClipboardJS('.copy-btn');
+        
+        // Handle delete label button click
+        const deleteLabelBtn = document.querySelector('.delete-label-btn');
+        if (deleteLabelBtn) {
+            deleteLabelBtn.addEventListener('click', function() {
+                const transactionId = this.getAttribute('data-transaction-id');
+                
+                // Set values in modal
+                document.getElementById('deleteTransactionId').value = transactionId;
+                
+                // Show modal
+                const modal = new bootstrap.Modal(document.getElementById('deleteLabelModal'));
+                modal.show();
+            });
+        }
+    });
+</script>
+{% endblock %}

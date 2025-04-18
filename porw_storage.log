@@ -1,0 +1,25 @@
+2025-04-09 11:32:06,208 - porw_blockchain.storage.pors.data - INFO - Initialized data manager with storage at /home/michael/.porw/pors_node/storage
+2025-04-09 11:32:06,208 - porw_blockchain.storage.pors.protocol - INFO - Initialized PoRS storage protocol with 1073741824 bytes capacity
+2025-04-09 11:32:06,208 - porw_blockchain.storage.pors.node - INFO - Initialized storage node 6c610810-bb73-4d0c-867b-779ae84f3634
+2025-04-09 11:32:06,208 - porw_blockchain.storage.pors.node - INFO - Starting storage node 6c610810-bb73-4d0c-867b-779ae84f3634
+2025-04-09 11:32:06,208 - porw_blockchain.storage.pors.protocol - INFO - Starting PoRS storage protocol
+2025-04-09 11:32:06,208 - porw_blockchain.storage.pors.data - INFO - Initializing data manager
+2025-04-09 11:32:06,209 - porw_blockchain.storage.pors.data - INFO - Data manager initialized with 0 chunks and 0 contracts
+2025-04-09 11:32:06,209 - porw_blockchain.storage.pors.protocol - INFO - PoRS storage protocol started
+2025-04-09 11:32:06,209 - porw_blockchain.storage.pors.node - INFO - Storage node 6c610810-bb73-4d0c-867b-779ae84f3634 started
+2025-04-09 11:32:06,209 - porw_blockchain.storage.pors.protocol - INFO - Starting challenge loop
+2025-04-09 11:32:06,209 - porw_blockchain.storage.pors.protocol - INFO - Starting sync loop
+2025-04-09 11:32:06,209 - porw_blockchain.storage.pors.node - INFO - Starting stats update loop
+2025-04-09 11:40:11,410 - porw_blockchain.storage.pors.cli - INFO - Would connect to blockchain node at 127.0.0.1:3000
+2025-04-09 11:40:11,410 - porw_blockchain.storage.pors.data - INFO - Initialized data manager with storage at /home/michael/.porw/pors_storage_node/storage
+2025-04-09 11:40:11,410 - porw_blockchain.storage.pors.protocol - INFO - Initialized PoRS storage protocol with 1073741824 bytes capacity
+2025-04-09 11:40:11,410 - porw_blockchain.storage.pors.node - INFO - Initialized storage node storage_node
+2025-04-09 11:40:11,411 - porw_blockchain.storage.pors.node - INFO - Starting storage node storage_node
+2025-04-09 11:40:11,411 - porw_blockchain.storage.pors.protocol - INFO - Starting PoRS storage protocol
+2025-04-09 11:40:11,411 - porw_blockchain.storage.pors.data - INFO - Initializing data manager
+2025-04-09 11:40:11,411 - porw_blockchain.storage.pors.data - INFO - Data manager initialized with 0 chunks and 0 contracts
+2025-04-09 11:40:11,411 - porw_blockchain.storage.pors.protocol - INFO - PoRS storage protocol started
+2025-04-09 11:40:11,411 - porw_blockchain.storage.pors.node - INFO - Storage node storage_node started
+2025-04-09 11:40:11,412 - porw_blockchain.storage.pors.protocol - INFO - Starting challenge loop
+2025-04-09 11:40:11,412 - porw_blockchain.storage.pors.protocol - INFO - Starting sync loop
+2025-04-09 11:40:11,412 - porw_blockchain.storage.pors.node - INFO - Starting stats update loop

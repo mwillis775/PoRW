@@ -1,0 +1,76 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: porw-web-interface
+  labels:
+    app: porw-web-interface
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: porw-web-interface
+  template:
+    metadata:
+      labels:
+        app: porw-web-interface
+    spec:
+      containers:
+      - name: porw-web-interface
+        image: porwblockchain/porw-web-interface:latest
+        ports:
+        - containerPort: 8080  # Web interface port
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "200m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+        volumeMounts:
+        - name: porw-web-data
+          mountPath: /data
+        env:
+        - name: HOST
+          value: "0.0.0.0"
+        - name: PORT
+          value: "8080"
+        - name: NODE_HOST
+          value: "porw-node-service"
+        - name: NODE_PORT
+          value: "8333"
+        - name: MINING_NODE_HOST
+          value: "porw-mining-node-service"
+        - name: MINING_NODE_PORT
+          value: "3000"
+        - name: STORAGE_NODE_HOST
+          value: "porw-storage-node-service"
+        - name: STORAGE_NODE_PORT
+          value: "3500"
+      volumes:
+      - name: porw-web-data
+        persistentVolumeClaim:
+          claimName: porw-web-data-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: porw-web-interface-service
+spec:
+  selector:
+    app: porw-web-interface
+  ports:
+  - name: web
+    port: 80
+    targetPort: 8080
+  type: LoadBalancer
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: porw-web-data-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi

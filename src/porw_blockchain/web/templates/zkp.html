@@ -1,0 +1,189 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="mb-4">Zero-Knowledge Proofs</h1>
+    
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Confidential Transactions</h5>
+                </div>
+                <div class="card-body">
+                    <p class="card-text">
+                        Create a transaction with hidden amounts using zero-knowledge proofs.
+                        The transaction amount will be hidden from public view, but the network
+                        can still verify that the transaction is valid.
+                    </p>
+                    <form action="/zkp/confidential-transaction" method="post">
+                        <div class="mb-3">
+                            <label for="recipient" class="form-label">Recipient Address</label>
+                            <input type="text" class="form-control" id="recipient" name="recipient" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="amount" class="form-label">Amount</label>
+                            <div class="input-group">
+                                <input type="number" class="form-control" id="amount" name="amount" step="0.000001" min="0.000001" required>
+                                <span class="input-group-text">PORW</span>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="memo" class="form-label">Memo (Optional)</label>
+                            <textarea class="form-control" id="memo" name="memo" rows="2"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Send Confidential Transaction</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Identity Verification</h5>
+                </div>
+                <div class="card-body">
+                    <p class="card-text">
+                        Create a zero-knowledge proof of identity. This allows you to prove
+                        you possess certain identity attributes without revealing the actual values.
+                    </p>
+                    <form action="/zkp/identity-proof" method="post">
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Name</label>
+                            <input type="text" class="form-control" id="name" name="name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="age" class="form-label">Age</label>
+                            <input type="number" class="form-control" id="age" name="age" min="0" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="country" class="form-label">Country</label>
+                            <input type="text" class="form-control" id="country" name="country" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="id_number" class="form-label">ID Number</label>
+                            <input type="text" class="form-control" id="id_number" name="id_number" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Public Attributes</label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="public_name" name="public_attributes" value="name">
+                                <label class="form-check-label" for="public_name">Name</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="public_age" name="public_attributes" value="age">
+                                <label class="form-check-label" for="public_age">Age</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="public_country" name="public_attributes" value="country">
+                                <label class="form-check-label" for="public_country">Country</label>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Create Identity Proof</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Private Smart Contract Execution</h5>
+                </div>
+                <div class="card-body">
+                    <p class="card-text">
+                        Create a zero-knowledge proof of private smart contract execution.
+                        This allows you to prove that a smart contract was executed correctly
+                        with certain inputs, without revealing the private inputs or the
+                        intermediate state.
+                    </p>
+                    <form action="/zkp/contract-proof" method="post">
+                        <div class="mb-3">
+                            <label for="contract_code" class="form-label">Contract Code</label>
+                            <textarea class="form-control" id="contract_code" name="contract_code" rows="4" required></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="contract_inputs" class="form-label">Public Inputs (JSON)</label>
+                            <textarea class="form-control" id="contract_inputs" name="contract_inputs" rows="2" required></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="private_inputs" class="form-label">Private Inputs (JSON)</label>
+                            <textarea class="form-control" id="private_inputs" name="private_inputs" rows="2" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Create Contract Proof</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Protein Folding Verification</h5>
+                </div>
+                <div class="card-body">
+                    <p class="card-text">
+                        Create a zero-knowledge proof of protein folding computation.
+                        This allows you to prove that you correctly computed a protein folding
+                        result without revealing the intermediate steps or proprietary algorithms.
+                    </p>
+                    <form action="/zkp/protein-proof" method="post">
+                        <div class="mb-3">
+                            <label for="protein_sequence" class="form-label">Protein Sequence</label>
+                            <textarea class="form-control" id="protein_sequence" name="protein_sequence" rows="2" required></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="folding_result" class="form-label">Folding Result (JSON)</label>
+                            <textarea class="form-control" id="folding_result" name="folding_result" rows="4" required></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="folding_parameters" class="form-label">Folding Parameters (JSON)</label>
+                            <textarea class="form-control" id="folding_parameters" name="folding_parameters" rows="2" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Create Protein Folding Proof</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="card-title mb-0">Proof Verification</h5>
+        </div>
+        <div class="card-body">
+            <p class="card-text">
+                Verify a zero-knowledge proof. Paste the proof JSON below to verify it.
+            </p>
+            <form action="/zkp/verify" method="post">
+                <div class="mb-3">
+                    <label for="proof_json" class="form-label">Proof JSON</label>
+                    <textarea class="form-control" id="proof_json" name="proof_json" rows="6" required></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Verify Proof</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Add any JavaScript for the ZKP page here
+    document.addEventListener('DOMContentLoaded', function() {
+        // Example: Format JSON inputs
+        const jsonInputs = document.querySelectorAll('textarea[name$="_inputs"], textarea[name$="_result"], textarea[name$="_parameters"]');
+        jsonInputs.forEach(input => {
+            input.addEventListener('blur', function() {
+                try {
+                    const json = JSON.parse(this.value);
+                    this.value = JSON.stringify(json, null, 2);
+                } catch (e) {
+                    // Not valid JSON, leave as is
+                }
+            });
+        });
+    });
+</script>
+{% endblock %}

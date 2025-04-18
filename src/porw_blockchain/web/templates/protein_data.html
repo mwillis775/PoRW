@@ -1,0 +1,226 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <h1 class="mb-4">Protein Data Repository</h1>
+    <p class="lead">
+        Browse and explore protein structures that have been folded through the Proof of Real Work mining process.
+        These structures contribute to scientific research while securing the blockchain.
+    </p>
+
+    <!-- Search and Filter -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="mb-0">Search and Filter</h5>
+        </div>
+        <div class="card-body">
+            <form id="protein-search-form" method="get" action="/protein-data">
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <label for="search" class="form-label">Search</label>
+                        <input type="text" class="form-control" id="search" name="search" placeholder="Protein ID or name" value="{{ search }}">
+                    </div>
+                    <div class="col-md-3">
+                        <label for="sort" class="form-label">Sort By</label>
+                        <select class="form-select" id="sort" name="sort">
+                            <option value="date_desc" {% if sort == 'date_desc' %}selected{% endif %}>Newest First</option>
+                            <option value="date_asc" {% if sort == 'date_asc' %}selected{% endif %}>Oldest First</option>
+                            <option value="energy_asc" {% if sort == 'energy_asc' %}selected{% endif %}>Best Energy Score</option>
+                            <option value="size_desc" {% if sort == 'size_desc' %}selected{% endif %}>Largest Proteins</option>
+                            <option value="size_asc" {% if sort == 'size_asc' %}selected{% endif %}>Smallest Proteins</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label for="limit" class="form-label">Results Per Page</label>
+                        <select class="form-select" id="limit" name="limit">
+                            <option value="10" {% if limit == 10 %}selected{% endif %}>10</option>
+                            <option value="25" {% if limit == 25 %}selected{% endif %}>25</option>
+                            <option value="50" {% if limit == 50 %}selected{% endif %}>50</option>
+                            <option value="100" {% if limit == 100 %}selected{% endif %}>100</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2 d-flex align-items-end">
+                        <button type="submit" class="btn btn-primary w-100">Apply</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Protein Data List -->
+    <div class="card mb-4">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Protein Structures</h5>
+            <span class="badge bg-primary">{{ total_proteins }} Total</span>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Protein ID</th>
+                            <th>Name</th>
+                            <th>Amino Acid Length</th>
+                            <th>Energy Score</th>
+                            <th>Method</th>
+                            <th>Date Folded</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for protein in proteins %}
+                        <tr>
+                            <td><span class="badge bg-secondary">{{ protein.protein_id }}</span></td>
+                            <td>{{ protein.name }}</td>
+                            <td>{{ protein.amino_sequence|length }}</td>
+                            <td>{{ protein.energy_score|round(2) }}</td>
+                            <td>{{ protein.method_used }}</td>
+                            <td>{{ protein.folding_timestamp|datetime }}</td>
+                            <td>
+                                <div class="btn-group btn-group-sm" role="group">
+                                    <a href="/protein-data/{{ protein.protein_id }}" class="btn btn-outline-primary">View</a>
+                                    <a href="/protein-data/{{ protein.protein_id }}/download" class="btn btn-outline-secondary">Download</a>
+                                </div>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="7" class="text-center py-4">
+                                <div class="alert alert-info mb-0">
+                                    No protein structures found. Start mining to contribute to the protein data repository.
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pagination -->
+    {% if total_pages > 1 %}
+    <nav aria-label="Protein data pagination">
+        <ul class="pagination justify-content-center">
+            <li class="page-item {% if page == 1 %}disabled{% endif %}">
+                <a class="page-link" href="{{ pagination_url(page-1) }}" tabindex="-1" aria-disabled="{{ 'true' if page == 1 else 'false' }}">Previous</a>
+            </li>
+            
+            {% for p in range(1, total_pages + 1) %}
+                {% if p == page %}
+                <li class="page-item active" aria-current="page">
+                    <span class="page-link">{{ p }}</span>
+                </li>
+                {% elif p <= 3 or p >= total_pages - 2 or (p >= page - 1 and p <= page + 1) %}
+                <li class="page-item">
+                    <a class="page-link" href="{{ pagination_url(p) }}">{{ p }}</a>
+                </li>
+                {% elif p == 4 and page > 5 or p == total_pages - 3 and page < total_pages - 4 %}
+                <li class="page-item disabled">
+                    <span class="page-link">...</span>
+                </li>
+                {% endif %}
+            {% endfor %}
+            
+            <li class="page-item {% if page == total_pages %}disabled{% endif %}">
+                <a class="page-link" href="{{ pagination_url(page+1) }}">Next</a>
+            </li>
+        </ul>
+    </nav>
+    {% endif %}
+
+    <!-- Statistics -->
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Protein Folding Statistics</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="proteinStatsChart" width="400" height="250"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Scientific Impact</h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex justify-content-around text-center">
+                        <div>
+                            <h3 class="display-5">{{ total_proteins }}</h3>
+                            <p class="text-muted">Proteins Folded</p>
+                        </div>
+                        <div>
+                            <h3 class="display-5">{{ total_amino_acids }}</h3>
+                            <p class="text-muted">Amino Acids Processed</p>
+                        </div>
+                        <div>
+                            <h3 class="display-5">{{ total_compute_hours|round(1) }}</h3>
+                            <p class="text-muted">Compute Hours</p>
+                        </div>
+                    </div>
+                    <hr>
+                    <p class="text-center">
+                        Your mining contributes to scientific research while securing the blockchain.
+                        <a href="/science" class="btn btn-sm btn-outline-primary mt-2">Learn More</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Protein stats chart
+    const statsCtx = document.getElementById('proteinStatsChart').getContext('2d');
+    const statsChart = new Chart(statsCtx, {
+        type: 'bar',
+        data: {
+            labels: ['Last 7 Days', '8-14 Days Ago', '15-21 Days Ago', '22-28 Days Ago'],
+            datasets: [{
+                label: 'Proteins Folded',
+                data: {{ protein_stats_data|safe }},
+                backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Number of Proteins'
+                    }
+                },
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Time Period'
+                    }
+                }
+            },
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Protein Folding Activity'
+                }
+            }
+        }
+    });
+
+    // Auto-submit form when sort or limit changes
+    document.getElementById('sort').addEventListener('change', function() {
+        document.getElementById('protein-search-form').submit();
+    });
+    
+    document.getElementById('limit').addEventListener('change', function() {
+        document.getElementById('protein-search-form').submit();
+    });
+</script>
+{% endblock %}

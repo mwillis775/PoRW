@@ -1,0 +1,218 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/contracts">Smart Contracts</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Deploy Contract</li>
+        </ol>
+    </nav>
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Deploy New Contract</h5>
+                </div>
+                <div class="card-body">
+                    <form id="deploy-form" action="/contracts/deploy" method="post">
+                        <!-- Contract Information -->
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Contract Name</label>
+                            <input type="text" class="form-control" id="name" name="name" value="{{ template.name if template else '' }}" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Description</label>
+                            <textarea class="form-control" id="description" name="description" rows="2">{{ template.description if template else '' }}</textarea>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="language" class="form-label">Language</label>
+                            <select class="form-select" id="language" name="language" required>
+                                <option value="python" {% if template and template.language == 'python' %}selected{% endif %}>Python</option>
+                                <option value="json" {% if template and template.language == 'json' %}selected{% endif %}>JSON</option>
+                                <option value="wasm" {% if template and template.language == 'wasm' %}selected{% endif %} disabled>WebAssembly (Coming Soon)</option>
+                            </select>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="code" class="form-label">Contract Code</label>
+                            <textarea class="form-control code-editor" id="code" name="code" rows="15" required>{{ template.code if template else '' }}</textarea>
+                            <div class="form-text">Write your contract code here. Use the templates on the right for examples.</div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="abi" class="form-label">Contract ABI</label>
+                            <textarea class="form-control code-editor" id="abi" name="abi" rows="10" required>{{ template.abi|tojson(indent=2) if template else '{"functions": []}' }}</textarea>
+                            <div class="form-text">Define the Application Binary Interface (ABI) for your contract.</div>
+                        </div>
+                        
+                        <!-- Deployment Options -->
+                        <div class="card mb-3">
+                            <div class="card-header">
+                                <h6 class="mb-0">Deployment Options</h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label for="sender" class="form-label">Sender Address</label>
+                                    <input type="text" class="form-control" id="sender" name="sender" value="{{ wallet.address if wallet else '' }}" required>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="private_key" class="form-label">Private Key</label>
+                                    <input type="password" class="form-control" id="private_key" name="private_key" required>
+                                    <div class="form-text">Your private key is needed to sign the deployment transaction. It is not stored or transmitted to any server.</div>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="value" class="form-label">Initial Value (PORW)</label>
+                                    <input type="number" class="form-control" id="value" name="value" value="0" min="0" step="0.000001">
+                                    <div class="form-text">Amount of PORW tokens to send to the contract upon deployment.</div>
+                                </div>
+                                
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="gas_limit" class="form-label">Gas Limit</label>
+                                            <input type="number" class="form-control" id="gas_limit" name="gas_limit" value="2000000" min="100000" step="100000">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="gas_price" class="form-label">Gas Price (PORW)</label>
+                                            <input type="number" class="form-control" id="gas_price" name="gas_price" value="0.0000001" min="0.0000001" step="0.0000001">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary">Deploy Contract</button>
+                            <a href="/contracts" class="btn btn-outline-secondary">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <!-- Template Selection -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Contract Templates</h5>
+                </div>
+                <div class="card-body">
+                    <div class="list-group">
+                        <a href="/contracts/deploy?template=token" class="list-group-item list-group-item-action {% if template_name == 'token' %}active{% endif %}">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h6 class="mb-1">Token Contract</h6>
+                                <small>Python</small>
+                            </div>
+                            <p class="mb-1">A standard token contract with transfer, approve, and transferFrom functionality.</p>
+                        </a>
+                        <a href="/contracts/deploy?template=token_json" class="list-group-item list-group-item-action {% if template_name == 'token_json' %}active{% endif %}">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h6 class="mb-1">Token Contract</h6>
+                                <small>JSON</small>
+                            </div>
+                            <p class="mb-1">A JSON-based token contract with basic functionality.</p>
+                        </a>
+                        <a href="/contracts/deploy?template=crowdfunding" class="list-group-item list-group-item-action {% if template_name == 'crowdfunding' %}active{% endif %}">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h6 class="mb-1">Crowdfunding Contract</h6>
+                                <small>Python</small>
+                            </div>
+                            <p class="mb-1">A crowdfunding contract with goal, deadline, and refund functionality.</p>
+                        </a>
+                        <a href="/contracts/deploy?template=storage" class="list-group-item list-group-item-action {% if template_name == 'storage' %}active{% endif %}">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h6 class="mb-1">Data Storage Contract</h6>
+                                <small>Python</small>
+                            </div>
+                            <p class="mb-1">A contract for storing and retrieving data on the blockchain.</p>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Deployment Guide -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Deployment Guide</h5>
+                </div>
+                <div class="card-body">
+                    <ol class="mb-0">
+                        <li class="mb-2">Select a template or write your own contract code.</li>
+                        <li class="mb-2">Define the contract's ABI (Application Binary Interface).</li>
+                        <li class="mb-2">Enter your wallet address and private key to sign the deployment transaction.</li>
+                        <li class="mb-2">Set the initial value, gas limit, and gas price for the deployment.</li>
+                        <li class="mb-2">Click "Deploy Contract" to deploy your contract to the blockchain.</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/python/python.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/javascript/javascript.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/edit/matchbrackets.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/monokai.min.css">
+
+<script>
+    // Initialize code editors
+    document.addEventListener('DOMContentLoaded', function() {
+        // Code editor
+        const codeEditor = CodeMirror.fromTextArea(document.getElementById('code'), {
+            lineNumbers: true,
+            mode: document.getElementById('language').value === 'python' ? 'python' : 'javascript',
+            theme: 'monokai',
+            matchBrackets: true,
+            indentUnit: 4,
+            tabSize: 4,
+            lineWrapping: true,
+            extraKeys: {"Tab": "indentMore", "Shift-Tab": "indentLess"}
+        });
+        
+        // ABI editor
+        const abiEditor = CodeMirror.fromTextArea(document.getElementById('abi'), {
+            lineNumbers: true,
+            mode: 'javascript',
+            theme: 'monokai',
+            matchBrackets: true,
+            indentUnit: 2,
+            tabSize: 2,
+            lineWrapping: true,
+            extraKeys: {"Tab": "indentMore", "Shift-Tab": "indentLess"}
+        });
+        
+        // Update code editor mode when language changes
+        document.getElementById('language').addEventListener('change', function() {
+            codeEditor.setOption('mode', this.value === 'python' ? 'python' : 'javascript');
+        });
+        
+        // Update form data before submission
+        document.getElementById('deploy-form').addEventListener('submit', function() {
+            codeEditor.save();
+            abiEditor.save();
+            
+            // Validate ABI JSON
+            try {
+                JSON.parse(document.getElementById('abi').value);
+            } catch (e) {
+                alert('Invalid ABI JSON: ' + e.message);
+                return false;
+            }
+            
+            return true;
+        });
+    });
+</script>
+{% endblock %}

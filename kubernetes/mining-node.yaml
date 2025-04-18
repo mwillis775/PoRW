@@ -1,0 +1,88 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: porw-mining-node
+  labels:
+    app: porw-mining-node
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: porw-mining-node
+  template:
+    metadata:
+      labels:
+        app: porw-mining-node
+    spec:
+      containers:
+      - name: porw-mining-node
+        image: porwblockchain/porw-mining-node:latest
+        ports:
+        - containerPort: 3000  # P2P port
+        resources:
+          requests:
+            memory: "1Gi"
+            cpu: "1000m"
+          limits:
+            memory: "4Gi"
+            cpu: "4000m"
+        volumeMounts:
+        - name: porw-mining-data
+          mountPath: /data
+        - name: porw-protein-data
+          mountPath: /data/protein_data
+        env:
+        - name: NODE_HOST
+          value: "0.0.0.0"
+        - name: P2P_PORT
+          value: "3000"
+        - name: LOG_LEVEL
+          value: "INFO"
+        - name: ENABLE_MINING
+          value: "true"
+        - name: MINING_THREADS
+          value: "4"
+        - name: ENABLE_GPU
+          value: "true"
+      volumes:
+      - name: porw-mining-data
+        persistentVolumeClaim:
+          claimName: porw-mining-data-pvc
+      - name: porw-protein-data
+        persistentVolumeClaim:
+          claimName: porw-protein-data-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: porw-mining-node-service
+spec:
+  selector:
+    app: porw-mining-node
+  ports:
+  - name: p2p
+    port: 3000
+    targetPort: 3000
+  type: ClusterIP
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: porw-mining-data-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: porw-protein-data-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 20Gi

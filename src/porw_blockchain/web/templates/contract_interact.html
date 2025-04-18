@@ -1,0 +1,358 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/contracts">Smart Contracts</a></li>
+            <li class="breadcrumb-item"><a href="/contracts/{{ contract.contract_id }}">{{ contract.name }}</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Interact</li>
+        </ol>
+    </nav>
+
+    <div class="row">
+        <div class="col-md-4">
+            <!-- Contract Information -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Contract Information</h5>
+                </div>
+                <div class="card-body">
+                    <h4>{{ contract.name }}</h4>
+                    <p class="text-muted">{{ contract.description }}</p>
+                    
+                    <table class="table table-sm">
+                        <tbody>
+                            <tr>
+                                <th scope="row">Contract ID</th>
+                                <td>{{ contract.contract_id }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">State</th>
+                                <td>
+                                    {% if contract.state == "active" %}
+                                    <span class="badge bg-success">Active</span>
+                                    {% elif contract.state == "paused" %}
+                                    <span class="badge bg-warning">Paused</span>
+                                    {% elif contract.state == "terminated" %}
+                                    <span class="badge bg-danger">Terminated</span>
+                                    {% else %}
+                                    <span class="badge bg-secondary">{{ contract.state }}</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Balance</th>
+                                <td>{{ contract.balance }} PORW</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                    <div class="d-grid gap-2 mt-3">
+                        <a href="/contracts/{{ contract.contract_id }}" class="btn btn-outline-secondary">
+                            <i class="fas fa-info-circle"></i> View Contract Details
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Transaction History -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Transaction History</h5>
+                </div>
+                <div class="card-body p-0">
+                    <div class="list-group list-group-flush">
+                        {% for tx in transaction_history %}
+                        <div class="list-group-item">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h6 class="mb-1">{{ tx.function if tx.function else "Transfer" }}</h6>
+                                <small>{{ tx.timestamp|datetime }}</small>
+                            </div>
+                            <p class="mb-1">
+                                {% if tx.function %}
+                                Called by <span class="address">{{ tx.sender }}</span>
+                                {% else %}
+                                <span class="address">{{ tx.sender }}</span> sent {{ tx.value }} PORW
+                                {% endif %}
+                            </p>
+                            <small>
+                                <a href="/transaction/{{ tx.transaction_id }}" class="text-muted">
+                                    {{ tx.transaction_id[:8] }}...{{ tx.transaction_id[-8:] }}
+                                </a>
+                                {% if tx.success %}
+                                <span class="badge bg-success">Success</span>
+                                {% else %}
+                                <span class="badge bg-danger">Failed</span>
+                                {% endif %}
+                            </small>
+                        </div>
+                        {% else %}
+                        <div class="list-group-item text-center py-4">
+                            <div class="text-muted">No transactions yet</div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-8">
+            <!-- Function Interaction -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Interact with Contract</h5>
+                </div>
+                <div class="card-body">
+                    {% if contract.state != "active" %}
+                    <div class="alert alert-warning">
+                        <i class="fas fa-exclamation-triangle"></i> This contract is currently {{ contract.state }}. You cannot interact with it until it is active.
+                    </div>
+                    {% else %}
+                    <ul class="nav nav-tabs" id="functionTabs" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="call-tab" data-bs-toggle="tab" data-bs-target="#call" type="button" role="tab" aria-controls="call" aria-selected="true">Call Function</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="transfer-tab" data-bs-toggle="tab" data-bs-target="#transfer" type="button" role="tab" aria-controls="transfer" aria-selected="false">Send PORW</button>
+                        </li>
+                    </ul>
+                    <div class="tab-content p-3 border border-top-0 rounded-bottom" id="functionTabsContent">
+                        <!-- Call Function Tab -->
+                        <div class="tab-pane fade show active" id="call" role="tabpanel" aria-labelledby="call-tab">
+                            <form id="call-form" action="/contracts/{{ contract.contract_id }}/call" method="post">
+                                <div class="mb-3">
+                                    <label for="function" class="form-label">Function</label>
+                                    <select class="form-select" id="function" name="function" required>
+                                        <option value="">Select a function</option>
+                                        {% for function in contract.abi.functions %}
+                                        <option value="{{ function.name }}" data-params="{{ function.params|tojson }}" data-constant="{{ function.constant|default(false) }}">
+                                            {{ function.name }}
+                                            {% if function.constant %}(View){% endif %}
+                                        </option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                
+                                <div id="function-params">
+                                    <!-- Function parameters will be dynamically added here -->
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="sender" class="form-label">Sender Address</label>
+                                    <input type="text" class="form-control" id="sender" name="sender" value="{{ wallet.address if wallet else '' }}" required>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="private_key" class="form-label">Private Key</label>
+                                    <input type="password" class="form-control" id="private_key" name="private_key" required>
+                                    <div class="form-text">Your private key is needed to sign the transaction. It is not stored or transmitted to any server.</div>
+                                </div>
+                                
+                                <div id="transaction-options" style="display: none;">
+                                    <div class="mb-3">
+                                        <label for="value" class="form-label">Value to Send (PORW)</label>
+                                        <input type="number" class="form-control" id="value" name="value" value="0" min="0" step="0.000001">
+                                    </div>
+                                    
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label for="gas_limit" class="form-label">Gas Limit</label>
+                                                <input type="number" class="form-control" id="gas_limit" name="gas_limit" value="1000000" min="100000" step="100000">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label for="gas_price" class="form-label">Gas Price (PORW)</label>
+                                                <input type="number" class="form-control" id="gas_price" name="gas_price" value="0.0000001" min="0.0000001" step="0.0000001">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="d-grid gap-2">
+                                    <button type="submit" class="btn btn-primary">Call Function</button>
+                                </div>
+                            </form>
+                        </div>
+                        
+                        <!-- Transfer Tab -->
+                        <div class="tab-pane fade" id="transfer" role="tabpanel" aria-labelledby="transfer-tab">
+                            <form id="transfer-form" action="/contracts/{{ contract.contract_id }}/transfer" method="post">
+                                <div class="mb-3">
+                                    <label for="transfer_value" class="form-label">Amount to Send (PORW)</label>
+                                    <input type="number" class="form-control" id="transfer_value" name="value" value="1" min="0.000001" step="0.000001" required>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="transfer_sender" class="form-label">Sender Address</label>
+                                    <input type="text" class="form-control" id="transfer_sender" name="sender" value="{{ wallet.address if wallet else '' }}" required>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="transfer_private_key" class="form-label">Private Key</label>
+                                    <input type="password" class="form-control" id="transfer_private_key" name="private_key" required>
+                                    <div class="form-text">Your private key is needed to sign the transaction. It is not stored or transmitted to any server.</div>
+                                </div>
+                                
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="transfer_gas_limit" class="form-label">Gas Limit</label>
+                                            <input type="number" class="form-control" id="transfer_gas_limit" name="gas_limit" value="100000" min="100000" step="100000">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="transfer_gas_price" class="form-label">Gas Price (PORW)</label>
+                                            <input type="number" class="form-control" id="transfer_gas_price" name="gas_price" value="0.0000001" min="0.0000001" step="0.0000001">
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="d-grid gap-2">
+                                    <button type="submit" class="btn btn-primary">Send PORW</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <!-- Function Result -->
+            {% if result %}
+            <div class="card mb-4">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Function Result</h5>
+                    <span class="badge {% if result.success %}bg-success{% else %}bg-danger{% endif %}">
+                        {% if result.success %}Success{% else %}Failed{% endif %}
+                    </span>
+                </div>
+                <div class="card-body">
+                    {% if result.success %}
+                    <div class="mb-3">
+                        <h6>Return Value:</h6>
+                        <pre><code>{{ result.return_value|tojson(indent=2) }}</code></pre>
+                    </div>
+                    {% else %}
+                    <div class="alert alert-danger">
+                        <h6>Error:</h6>
+                        <p>{{ result.error }}</p>
+                    </div>
+                    {% endif %}
+                    
+                    <div class="mb-3">
+                        <h6>Gas Used:</h6>
+                        <p>{{ result.gas_used }} gas units ({{ (result.gas_used * result.gas_price)|round(8) }} PORW)</p>
+                    </div>
+                    
+                    {% if result.logs %}
+                    <div class="mb-3">
+                        <h6>Logs:</h6>
+                        <ul class="list-group">
+                            {% for log in result.logs %}
+                            <li class="list-group-item">{{ log }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    {% endif %}
+                    
+                    {% if result.events %}
+                    <div class="mb-3">
+                        <h6>Events:</h6>
+                        <ul class="list-group">
+                            {% for event in result.events %}
+                            <li class="list-group-item">
+                                <strong>{{ event.name }}</strong>
+                                <pre><code>{{ event.data|tojson(indent=2) }}</code></pre>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    {% endif %}
+                    
+                    <div class="mb-3">
+                        <h6>Transaction ID:</h6>
+                        <p>
+                            <a href="/transaction/{{ result.transaction_id }}" class="transaction-id">
+                                {{ result.transaction_id }}
+                            </a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Function parameter handling
+    document.addEventListener('DOMContentLoaded', function() {
+        const functionSelect = document.getElementById('function');
+        const functionParams = document.getElementById('function-params');
+        const transactionOptions = document.getElementById('transaction-options');
+        
+        functionSelect.addEventListener('change', function() {
+            // Clear existing parameters
+            functionParams.innerHTML = '';
+            
+            // Get selected function
+            const selectedOption = this.options[this.selectedIndex];
+            const params = JSON.parse(selectedOption.dataset.params || '[]');
+            const isConstant = selectedOption.dataset.constant === 'true';
+            
+            // Show/hide transaction options based on function type
+            transactionOptions.style.display = isConstant ? 'none' : 'block';
+            
+            // Add parameter fields
+            params.forEach((param, index) => {
+                const div = document.createElement('div');
+                div.className = 'mb-3';
+                
+                const label = document.createElement('label');
+                label.className = 'form-label';
+                label.htmlFor = `param_${index}`;
+                label.textContent = `${param.name} (${param.type})`;
+                
+                const input = document.createElement('input');
+                input.type = param.type === 'number' ? 'number' : 'text';
+                input.className = 'form-control';
+                input.id = `param_${index}`;
+                input.name = `arguments[${index}]`;
+                input.required = true;
+                
+                if (param.type === 'number') {
+                    input.step = 'any';
+                }
+                
+                div.appendChild(label);
+                div.appendChild(input);
+                functionParams.appendChild(div);
+            });
+        });
+        
+        // Format addresses
+        const addresses = document.querySelectorAll('.address');
+        addresses.forEach(address => {
+            const fullAddress = address.textContent;
+            if (fullAddress.length > 16) {
+                address.textContent = `${fullAddress.substring(0, 8)}...${fullAddress.substring(fullAddress.length - 8)}`;
+                address.setAttribute('title', fullAddress);
+                address.setAttribute('data-bs-toggle', 'tooltip');
+                address.setAttribute('data-bs-placement', 'top');
+            }
+        });
+        
+        // Initialize tooltips
+        const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        tooltipTriggerList.map(function(tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl);
+        });
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,224 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="mb-4">Mixing Session Details</h1>
+    
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="card-title mb-0">Session Information</h5>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <p><strong>Session ID:</strong> {{ session.session_id }}</p>
+                    <p><strong>Denomination:</strong> {{ session.denomination }} PORW</p>
+                    <p><strong>Fee:</strong> {{ session.fee_amount }} PORW ({{ session.fee_percent * 100 }}%)</p>
+                    <p><strong>Created At:</strong> {{ session.created_at }}</p>
+                </div>
+                <div class="col-md-6">
+                    <p><strong>Status:</strong>
+                        {% if session.status == "created" %}
+                            <span class="badge bg-info">Created</span>
+                        {% elif session.status == "registration" %}
+                            <span class="badge bg-primary">Registration</span>
+                        {% elif session.status == "verification" %}
+                            <span class="badge bg-warning">Verification</span>
+                        {% elif session.status == "signing" %}
+                            <span class="badge bg-success">Signing</span>
+                        {% elif session.status == "completed" %}
+                            <span class="badge bg-success">Completed</span>
+                        {% elif session.status == "failed" %}
+                            <span class="badge bg-danger">Failed</span>
+                        {% else %}
+                            <span class="badge bg-secondary">{{ session.status }}</span>
+                        {% endif %}
+                    </p>
+                    <p><strong>Participants:</strong> {{ session.participant_count }} / {{ session.max_participants }}</p>
+                    <p><strong>Minimum Participants:</strong> {{ session.min_participants }}</p>
+                    <p><strong>Expires At:</strong> {{ session.expires_at }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="card-title mb-0">My Participants</h5>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Participant ID</th>
+                            <th>Input Address</th>
+                            <th>Output Address</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if participants %}
+                            {% for participant in participants %}
+                            <tr>
+                                <td>{{ participant.participant_id }}</td>
+                                <td>{{ participant.input_address }}</td>
+                                <td>{{ participant.output_address }}</td>
+                                <td>
+                                    {% if session.status == "verification" %}
+                                        <button class="btn btn-sm btn-outline-warning get-signature-button" data-session-id="{{ session.session_id }}" data-participant-id="{{ participant.participant_id }}">
+                                            <i class="fas fa-signature"></i> Get Signature
+                                        </button>
+                                    {% elif session.status == "signing" %}
+                                        <button class="btn btn-sm btn-outline-success sign-transaction-button" data-session-id="{{ session.session_id }}" data-participant-id="{{ participant.participant_id }}">
+                                            <i class="fas fa-pen-fancy"></i> Sign Transaction
+                                        </button>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td colspan="4" class="text-center">No participants found</td>
+                            </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    
+    {% if session.status == "completed" %}
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="card-title mb-0">Final Transaction</h5>
+        </div>
+        <div class="card-body">
+            <div class="mb-3">
+                <button id="get-transaction-button" class="btn btn-outline-primary" data-session-id="{{ session.session_id }}">
+                    <i class="fas fa-file-alt"></i> Get Transaction
+                </button>
+                <button id="submit-transaction-button" class="btn btn-outline-success" data-session-id="{{ session.session_id }}">
+                    <i class="fas fa-paper-plane"></i> Submit Transaction
+                </button>
+            </div>
+            <div id="transaction-details" class="d-none">
+                <h6>Transaction Details</h6>
+                <pre id="transaction-json" class="bg-light p-3 rounded"></pre>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    
+    <div class="mb-4">
+        <a href="/mixing" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left"></i> Back to Mixing
+        </a>
+        
+        {% if session.status == "registration" %}
+        <a href="/mixing/join?session_id={{ session.session_id }}" class="btn btn-outline-success">
+            <i class="fas fa-sign-in-alt"></i> Join Session
+        </a>
+        {% endif %}
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Handle get signature button click
+        document.body.addEventListener('click', function(event) {
+            if (event.target.classList.contains('get-signature-button') || event.target.parentElement.classList.contains('get-signature-button')) {
+                const button = event.target.classList.contains('get-signature-button') ? event.target : event.target.parentElement;
+                const sessionId = button.getAttribute('data-session-id');
+                const participantId = button.getAttribute('data-participant-id');
+                
+                fetch(`/api/mixing/get-signature?session_id=${sessionId}&participant_id=${participantId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.is_valid) {
+                            alert('Successfully got blind signature. The session will now proceed to the signing phase.');
+                            // Reload the page to show updated status
+                            window.location.reload();
+                        } else {
+                            alert('Error getting blind signature: ' + (data.error || 'Unknown error'));
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error getting blind signature:', error);
+                        alert('Error getting blind signature. Please try again.');
+                    });
+            }
+        });
+        
+        // Handle sign transaction button click
+        document.body.addEventListener('click', function(event) {
+            if (event.target.classList.contains('sign-transaction-button') || event.target.parentElement.classList.contains('sign-transaction-button')) {
+                const button = event.target.classList.contains('sign-transaction-button') ? event.target : event.target.parentElement;
+                const sessionId = button.getAttribute('data-session-id');
+                const participantId = button.getAttribute('data-participant-id');
+                
+                fetch(`/api/mixing/sign-transaction?session_id=${sessionId}&participant_id=${participantId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.status === 'completed') {
+                            alert('Successfully signed transaction. The session is now completed.');
+                        } else {
+                            alert('Successfully signed transaction. Waiting for other participants to sign.');
+                        }
+                        // Reload the page to show updated status
+                        window.location.reload();
+                    })
+                    .catch(error => {
+                        console.error('Error signing transaction:', error);
+                        alert('Error signing transaction. Please try again.');
+                    });
+            }
+        });
+        
+        // Handle get transaction button click
+        const getTransactionButton = document.getElementById('get-transaction-button');
+        if (getTransactionButton) {
+            getTransactionButton.addEventListener('click', function() {
+                const sessionId = this.getAttribute('data-session-id');
+                
+                fetch(`/api/mixing/get-transaction?session_id=${sessionId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        // Show transaction details
+                        const transactionDetails = document.getElementById('transaction-details');
+                        const transactionJson = document.getElementById('transaction-json');
+                        
+                        transactionDetails.classList.remove('d-none');
+                        transactionJson.textContent = JSON.stringify(data, null, 2);
+                    })
+                    .catch(error => {
+                        console.error('Error getting transaction:', error);
+                        alert('Error getting transaction. Please try again.');
+                    });
+            });
+        }
+        
+        // Handle submit transaction button click
+        const submitTransactionButton = document.getElementById('submit-transaction-button');
+        if (submitTransactionButton) {
+            submitTransactionButton.addEventListener('click', function() {
+                const sessionId = this.getAttribute('data-session-id');
+                
+                fetch(`/api/mixing/submit-transaction?session_id=${sessionId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.status === 'submitted') {
+                            alert('Successfully submitted transaction. Transaction ID: ' + data.transaction_id);
+                        } else {
+                            alert('Error submitting transaction: ' + (data.error || 'Unknown error'));
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error submitting transaction:', error);
+                        alert('Error submitting transaction. Please try again.');
+                    });
+            });
+        }
+    });
+</script>
+{% endblock %}

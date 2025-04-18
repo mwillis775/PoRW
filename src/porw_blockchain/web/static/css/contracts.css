@@ -1,0 +1,104 @@
+/* Smart Contracts CSS Styles */
+
+/* Contract code display */
+.contract-code {
+    font-family: monospace;
+    font-size: 14px;
+    line-height: 1.5;
+    background-color: #272822;
+    color: #f8f8f2;
+    padding: 15px;
+    border-radius: 4px;
+    white-space: pre-wrap;
+    word-break: break-all;
+    max-height: 400px;
+    overflow-y: auto;
+    margin: 0;
+}
+
+/* CodeMirror customizations */
+.CodeMirror {
+    height: auto;
+    min-height: 200px;
+    border: 1px solid #ced4da;
+    border-radius: 0.25rem;
+}
+
+/* Contract card */
+.contract-card {
+    height: 100%;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.contract-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Contract state badges */
+.badge.bg-success {
+    background-color: #28a745 !important;
+}
+
+.badge.bg-warning {
+    background-color: #ffc107 !important;
+    color: #212529 !important;
+}
+
+.badge.bg-danger {
+    background-color: #dc3545 !important;
+}
+
+.badge.bg-secondary {
+    background-color: #6c757d !important;
+}
+
+/* Function parameters */
+#function-params {
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+/* Transaction history */
+.transaction-id {
+    font-family: monospace;
+    font-size: 0.9em;
+}
+
+/* Address display */
+.address {
+    font-family: monospace;
+    font-size: 0.9em;
+}
+
+/* Function result */
+pre code {
+    display: block;
+    background-color: #f8f9fa;
+    padding: 10px;
+    border-radius: 4px;
+    white-space: pre-wrap;
+    word-break: break-all;
+}
+
+/* Contract templates */
+.template-card {
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.template-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .contract-code {
+        font-size: 12px;
+    }
+    
+    .CodeMirror {
+        min-height: 150px;
+    }
+}

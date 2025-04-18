@@ -1,0 +1,351 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1 class="mb-4">Wallet</h1>
+
+{% if not wallet %}
+<div class="alert alert-info">
+    <p>You don't have a wallet yet. Create a new one or import an existing one.</p>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Create New Wallet</h5>
+            </div>
+            <div class="card-body">
+                <p>Create a new wallet with a randomly generated private key.</p>
+                <form action="/wallet/create" method="post">
+                    <button type="submit" class="btn btn-primary">Create Wallet</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Import Existing Wallet</h5>
+            </div>
+            <div class="card-body">
+                <p>Import an existing wallet using your private key.</p>
+                <form action="/wallet/import" method="post">
+                    <div class="mb-3">
+                        <label for="private_key" class="form-label">Private Key</label>
+                        <input type="text" class="form-control" id="private_key" name="private_key" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Import Wallet</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% else %}
+<div class="row">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Wallet Information</h5>
+            </div>
+            <div class="card-body">
+                <p><strong>Address:</strong> <span id="wallet-address">{{ wallet.address }}</span>
+                    <button class="btn btn-sm btn-outline-secondary" onclick="copyToClipboard('wallet-address')">
+                        <i class="fas fa-copy"></i>
+                    </button>
+                </p>
+                <p><strong>Balance:</strong> <span id="wallet-balance">{{ balance }}</span> PORW</p>
+                <p><strong>Public Key:</strong> <span id="wallet-public-key">{{ wallet.public_key.to_string("compressed").hex() }}</span>
+                    <button class="btn btn-sm btn-outline-secondary" onclick="copyToClipboard('wallet-public-key')">
+                        <i class="fas fa-copy"></i>
+                    </button>
+                </p>
+                <div class="mb-3">
+                    <label for="private_key_display" class="form-label">Private Key (Keep this secret!)</label>
+                    <div class="input-group">
+                        <input type="password" class="form-control" id="private_key_display" value="{{ wallet.private_key.to_string().hex() }}" readonly>
+                        <button class="btn btn-outline-secondary" type="button" id="toggle_private_key">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                        <button class="btn btn-outline-secondary" type="button" onclick="copyToClipboard('private_key_display')">
+                            <i class="fas fa-copy"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="alert alert-warning">
+                    <strong>Warning:</strong> Never share your private key with anyone. Anyone with your private key can access your funds.
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Send Tokens</h5>
+            </div>
+            <div class="card-body">
+                <form action="/wallet/send" method="post">
+                    <div class="mb-3">
+                        <label for="recipient" class="form-label">Recipient Address</label>
+                        <input type="text" class="form-control" id="recipient" name="recipient" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="amount" class="form-label">Amount</label>
+                        <div class="input-group">
+                            <input type="number" class="form-control" id="amount" name="amount" step="0.000001" min="0.000001" required>
+                            <span class="input-group-text">PORW</span>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="memo" class="form-label">Memo (Optional)</label>
+                        <textarea class="form-control" id="memo" name="memo" rows="2"></textarea>
+                    </div>
+                    <div class="mb-3 form-check">
+                        <input type="checkbox" class="form-check-input" id="encrypt_memo" name="encrypt_memo">
+                        <label class="form-check-label" for="encrypt_memo">Encrypt Memo</label>
+                    </div>
+                    <div class="mb-3 recipient-public-key-section" style="display: none;">
+                        <label for="recipient_public_key" class="form-label">Recipient's Public Key</label>
+                        <input type="text" class="form-control" id="recipient_public_key" name="recipient_public_key">
+                        <small class="form-text text-muted">Required for encrypted memos. The recipient must provide their public key.</small>
+                    </div>
+                    <div class="mb-3 form-check">
+                        <input type="checkbox" class="form-check-input" id="confidential" name="confidential">
+                        <label class="form-check-label" for="confidential">Confidential Transaction</label>
+                        <small class="form-text text-muted d-block">Hides the transaction amount from public view.</small>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Send</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card mt-4">
+    <div class="card-header">
+        <h5 class="card-title mb-0">Transaction History</h5>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Transaction ID</th>
+                        <th>Type</th>
+                        <th>From/To</th>
+                        <th>Amount</th>
+                        <th>Memo</th>
+                        <th>Timestamp</th>
+                    </tr>
+                </thead>
+                <tbody id="transaction-table">
+                    {% if wallet and wallet.transactions %}
+                        {% for tx in wallet.transactions %}
+                        <tr>
+                            <td>{{ tx.id }}</td>
+                            <td>
+                                {% if tx.sender == wallet.address %}
+                                <span class="badge bg-danger">Sent</span>
+                                {% else %}
+                                <span class="badge bg-success">Received</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if tx.sender == wallet.address %}
+                                {{ tx.recipient }}
+                                {% else %}
+                                {{ tx.sender }}
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if tx.is_confidential %}
+                                    <span class="badge bg-primary" title="Confidential transaction">🔐 Confidential</span>
+                                {% else %}
+                                    {{ tx.amount }} PORW
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if tx.memo %}
+                                    {% if tx.is_memo_encrypted %}
+                                        <span class="badge bg-info" title="Encrypted memo">🔒 Encrypted</span>
+                                        <button class="btn btn-sm btn-outline-secondary decrypt-memo" data-tx-id="{{ tx.id }}">
+                                            <i class="fas fa-unlock"></i> Decrypt
+                                        </button>
+                                    {% else %}
+                                        {{ tx.memo }}
+                                    {% endif %}
+                                {% endif %}
+                            </td>
+                            <td>{{ tx.timestamp }}</td>
+                        </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="5" class="text-center">No transactions found</td>
+                        </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Toggle private key visibility
+    document.getElementById('toggle_private_key')?.addEventListener('click', function() {
+        const privateKeyInput = document.getElementById('private_key_display');
+        const icon = this.querySelector('i');
+
+        if (privateKeyInput.type === 'password') {
+            privateKeyInput.type = 'text';
+            icon.classList.remove('fa-eye');
+            icon.classList.add('fa-eye-slash');
+        } else {
+            privateKeyInput.type = 'password';
+            icon.classList.remove('fa-eye-slash');
+            icon.classList.add('fa-eye');
+        }
+    });
+
+    // Handle decrypting encrypted memos
+    document.addEventListener('click', function(event) {
+        if (event.target.closest('.decrypt-memo')) {
+            const button = event.target.closest('.decrypt-memo');
+            const txId = button.getAttribute('data-tx-id');
+
+            // Ask for sender's public key (optional)
+            const senderPublicKey = prompt('Enter sender\'s public key (optional):', '');
+
+            // Call API to decrypt memo
+            fetch(`/api/wallet/decrypt-memo?tx_id=${txId}&sender_public_key=${encodeURIComponent(senderPublicKey || '')}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        alert(`Error: ${data.error}`);
+                    } else {
+                        // Replace the button with the decrypted memo
+                        const cell = button.closest('td');
+                        cell.innerHTML = data.decrypted_memo;
+                    }
+                })
+                .catch(error => {
+                    alert(`Error: ${error.message}`);
+                });
+        }
+    });
+
+    // Show/hide recipient public key field based on encrypt memo checkbox
+    document.getElementById('encrypt_memo')?.addEventListener('change', function() {
+        const recipientPublicKeySection = document.querySelector('.recipient-public-key-section');
+        if (this.checked) {
+            recipientPublicKeySection.style.display = 'block';
+            document.getElementById('recipient_public_key').setAttribute('required', 'required');
+        } else {
+            recipientPublicKeySection.style.display = 'none';
+            document.getElementById('recipient_public_key').removeAttribute('required');
+        }
+    });
+
+    // Copy to clipboard function
+    function copyToClipboard(elementId) {
+        const element = document.getElementById(elementId);
+        const text = element.textContent || element.value;
+
+        navigator.clipboard.writeText(text).then(() => {
+            // Show a temporary tooltip
+            const tooltip = document.createElement('div');
+            tooltip.textContent = 'Copied!';
+            tooltip.style.position = 'absolute';
+            tooltip.style.backgroundColor = '#333';
+            tooltip.style.color = '#fff';
+            tooltip.style.padding = '5px 10px';
+            tooltip.style.borderRadius = '3px';
+            tooltip.style.zIndex = '1000';
+
+            // Position the tooltip near the element
+            const rect = element.getBoundingClientRect();
+            tooltip.style.top = `${rect.top - 30}px`;
+            tooltip.style.left = `${rect.left + rect.width / 2 - 30}px`;
+
+            document.body.appendChild(tooltip);
+
+            // Remove the tooltip after 2 seconds
+            setTimeout(() => {
+                document.body.removeChild(tooltip);
+            }, 2000);
+        });
+    }
+
+    // Refresh wallet data every 30 seconds
+    {% if wallet %}
+    setInterval(() => {
+        // Update balance
+        fetch('/api/wallet/balance')
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('wallet-balance').textContent = data.balance;
+            });
+
+        // Update transactions
+        fetch('/api/wallet/transactions')
+            .then(response => response.json())
+            .then(data => {
+                const transactionTable = document.getElementById('transaction-table');
+                if (data.transactions.length === 0) {
+                    transactionTable.innerHTML = '<tr><td colspan="5" class="text-center">No transactions found</td></tr>';
+                    return;
+                }
+
+                let html = '';
+                data.transactions.forEach(tx => {
+                    const type = tx.sender === '{{ wallet.address }}' ?
+                        '<span class="badge bg-danger">Sent</span>' :
+                        '<span class="badge bg-success">Received</span>';
+
+                    const partner = tx.sender === '{{ wallet.address }}' ? tx.recipient : tx.sender;
+
+                    const date = new Date(tx.timestamp * 1000).toLocaleString();
+
+                    // Handle amount display
+                    let amountHtml = '';
+                    if (tx.is_confidential) {
+                        amountHtml = `<span class="badge bg-primary" title="Confidential transaction">🔐 Confidential</span>`;
+                    } else {
+                        amountHtml = `${tx.amount} PORW`;
+                    }
+
+                    // Handle memo display
+                    let memoHtml = '';
+                    if (tx.memo) {
+                        if (tx.is_memo_encrypted) {
+                            memoHtml = `
+                                <span class="badge bg-info" title="Encrypted memo">🔒 Encrypted</span>
+                                <button class="btn btn-sm btn-outline-secondary decrypt-memo" data-tx-id="${tx.id}">
+                                    <i class="fas fa-unlock"></i> Decrypt
+                                </button>
+                            `;
+                        } else {
+                            memoHtml = tx.memo;
+                        }
+                    }
+
+                    html += `
+                        <tr>
+                            <td>${tx.id}</td>
+                            <td>${type}</td>
+                            <td>${partner}</td>
+                            <td>${amountHtml}</td>
+                            <td>${memoHtml}</td>
+                            <td>${date}</td>
+                        </tr>
+                    `;
+                });
+
+                transactionTable.innerHTML = html;
+            });
+    }, 30000);
+    {% endif %}
+</script>
+{% endblock %}

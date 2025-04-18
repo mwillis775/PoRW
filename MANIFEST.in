@@ -1,0 +1,22 @@
+include LICENSE
+include README.md
+include pyproject.toml
+include poetry.lock
+include MANIFEST.in
+include setup.py
+include .env.example
+
+recursive-include src/porw_blockchain/web/templates *.html
+recursive-include src/porw_blockchain/web/static *.css *.js *.png *.jpg *.svg *.ico
+recursive-include docs *.md *.rst *.py *.txt
+recursive-include kubernetes *.yaml *.md
+recursive-include cloud *.yaml *.json *.md *.sh
+
+recursive-exclude tests *
+recursive-exclude .github *
+recursive-exclude __pycache__ *
+recursive-exclude *.py[cod] *
+recursive-exclude *.so *
+recursive-exclude .git *
+recursive-exclude .vscode *
+recursive-exclude .idea *

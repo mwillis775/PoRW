@@ -1,0 +1,380 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'PoRW Blockchain Deployment on AWS'
+
+Parameters:
+  EnvironmentName:
+    Description: Environment name (e.g., dev, staging, prod)
+    Type: String
+    Default: dev
+  
+  KeyName:
+    Description: Name of an existing EC2 KeyPair to enable SSH access
+    Type: AWS::EC2::KeyPair::KeyName
+    ConstraintDescription: Must be the name of an existing EC2 KeyPair
+
+  InstanceType:
+    Description: EC2 instance type for the blockchain node
+    Type: String
+    Default: t3.medium
+    AllowedValues:
+      - t3.small
+      - t3.medium
+      - t3.large
+      - m5.large
+      - c5.large
+    ConstraintDescription: Must be a valid EC2 instance type
+
+  MiningInstanceType:
+    Description: EC2 instance type for the mining node
+    Type: String
+    Default: c5.2xlarge
+    AllowedValues:
+      - c5.large
+      - c5.xlarge
+      - c5.2xlarge
+      - c5.4xlarge
+      - g4dn.xlarge
+    ConstraintDescription: Must be a valid EC2 instance type
+
+  StorageInstanceType:
+    Description: EC2 instance type for the storage node
+    Type: String
+    Default: m5.large
+    AllowedValues:
+      - t3.medium
+      - m5.large
+      - m5.xlarge
+      - r5.large
+    ConstraintDescription: Must be a valid EC2 instance type
+
+  StorageSize:
+    Description: Size of the EBS volume for the storage node (GB)
+    Type: Number
+    Default: 100
+    MinValue: 20
+    MaxValue: 1000
+
+Resources:
+  VPC:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: 10.0.0.0/16
+      EnableDnsSupport: true
+      EnableDnsHostnames: true
+      Tags:
+        - Key: Name
+          Value: !Sub ${EnvironmentName}-porw-vpc
+
+  InternetGateway:
+    Type: AWS::EC2::InternetGateway
+    Properties:
+      Tags:
+        - Key: Name
+          Value: !Sub ${EnvironmentName}-porw-igw
+
+  InternetGatewayAttachment:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties:
+      InternetGatewayId: !Ref InternetGateway
+      VpcId: !Ref VPC
+
+  PublicSubnet:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref VPC
+      AvailabilityZone: !Select [0, !GetAZs '']
+      CidrBlock: 10.0.1.0/24
+      MapPublicIpOnLaunch: true
+      Tags:
+        - Key: Name
+          Value: !Sub ${EnvironmentName}-porw-public-subnet
+
+  PublicRouteTable:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref VPC
+      Tags:
+        - Key: Name
+          Value: !Sub ${EnvironmentName}-porw-public-rt
+
+  DefaultPublicRoute:
+    Type: AWS::EC2::Route
+    DependsOn: InternetGatewayAttachment
+    Properties:
+      RouteTableId: !Ref PublicRouteTable
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId: !Ref InternetGateway
+
+  PublicSubnetRouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId: !Ref PublicRouteTable
+      SubnetId: !Ref PublicSubnet
+
+  BlockchainNodeSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Security group for PoRW blockchain node
+      VpcId: !Ref VPC
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 8080
+          ToPort: 8080
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 8333
+          ToPort: 8333
+          CidrIp: 0.0.0.0/0
+
+  MiningNodeSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Security group for PoRW mining node
+      VpcId: !Ref VPC
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 3000
+          ToPort: 3000
+          CidrIp: 0.0.0.0/0
+
+  StorageNodeSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Security group for PoRW storage node
+      VpcId: !Ref VPC
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 3500
+          ToPort: 3500
+          CidrIp: 0.0.0.0/0
+
+  BlockchainNodeInstance:
+    Type: AWS::EC2::Instance
+    Properties:
+      InstanceType: !Ref InstanceType
+      SecurityGroupIds:
+        - !Ref BlockchainNodeSecurityGroup
+      KeyName: !Ref KeyName
+      ImageId: ami-0c55b159cbfafe1f0  # Amazon Linux 2 AMI (adjust for your region)
+      SubnetId: !Ref PublicSubnet
+      BlockDeviceMappings:
+        - DeviceName: /dev/xvda
+          Ebs:
+            VolumeSize: 20
+            VolumeType: gp3
+      UserData:
+        Fn::Base64: !Sub |
+          #!/bin/bash -xe
+          yum update -y
+          amazon-linux-extras install docker -y
+          service docker start
+          usermod -a -G docker ec2-user
+          chkconfig docker on
+          
+          # Install Docker Compose
+          curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+          chmod +x /usr/local/bin/docker-compose
+          
+          # Create data directory
+          mkdir -p /data/porw
+          
+          # Create docker-compose.yml
+          cat > /data/porw/docker-compose.yml << 'EOF'
+          version: '3'
+          services:
+            porw-node:
+              image: porwblockchain/porw-node:latest
+              container_name: porw-node
+              ports:
+                - "8333:8333"
+                - "8080:8080"
+              volumes:
+                - porw-data:/data
+              restart: unless-stopped
+              command: start
+          
+          volumes:
+            porw-data:
+          EOF
+          
+          # Start the blockchain node
+          cd /data/porw
+          docker-compose up -d
+      Tags:
+        - Key: Name
+          Value: !Sub ${EnvironmentName}-porw-blockchain-node
+
+  MiningNodeInstance:
+    Type: AWS::EC2::Instance
+    Properties:
+      InstanceType: !Ref MiningInstanceType
+      SecurityGroupIds:
+        - !Ref MiningNodeSecurityGroup
+      KeyName: !Ref KeyName
+      ImageId: ami-0c55b159cbfafe1f0  # Amazon Linux 2 AMI (adjust for your region)
+      SubnetId: !Ref PublicSubnet
+      BlockDeviceMappings:
+        - DeviceName: /dev/xvda
+          Ebs:
+            VolumeSize: 30
+            VolumeType: gp3
+      UserData:
+        Fn::Base64: !Sub |
+          #!/bin/bash -xe
+          yum update -y
+          amazon-linux-extras install docker -y
+          service docker start
+          usermod -a -G docker ec2-user
+          chkconfig docker on
+          
+          # Install Docker Compose
+          curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+          chmod +x /usr/local/bin/docker-compose
+          
+          # Create data directory
+          mkdir -p /data/porw-mining
+          mkdir -p /data/porw-mining/protein_data
+          
+          # Create docker-compose.yml
+          cat > /data/porw-mining/docker-compose.yml << 'EOF'
+          version: '3'
+          services:
+            porw-mining-node:
+              image: porwblockchain/porw-mining-node:latest
+              container_name: porw-mining-node
+              ports:
+                - "3000:3000"
+              volumes:
+                - porw-mining-data:/data
+                - porw-protein-data:/data/protein_data
+              restart: unless-stopped
+              environment:
+                - NODE_HOST=0.0.0.0
+                - P2P_PORT=3000
+                - ENABLE_MINING=true
+                - MINING_THREADS=4
+                - ENABLE_GPU=true
+                - BOOTSTRAP_NODE=${BlockchainNodeInstance.PrivateIp}:8333
+          
+          volumes:
+            porw-mining-data:
+            porw-protein-data:
+          EOF
+          
+          # Start the mining node
+          cd /data/porw-mining
+          docker-compose up -d
+      Tags:
+        - Key: Name
+          Value: !Sub ${EnvironmentName}-porw-mining-node
+
+  StorageNodeEBSVolume:
+    Type: AWS::EC2::Volume
+    Properties:
+      AvailabilityZone: !Select [0, !GetAZs '']
+      Size: !Ref StorageSize
+      VolumeType: gp3
+      Tags:
+        - Key: Name
+          Value: !Sub ${EnvironmentName}-porw-storage-volume
+
+  StorageNodeInstance:
+    Type: AWS::EC2::Instance
+    Properties:
+      InstanceType: !Ref StorageInstanceType
+      SecurityGroupIds:
+        - !Ref StorageNodeSecurityGroup
+      KeyName: !Ref KeyName
+      ImageId: ami-0c55b159cbfafe1f0  # Amazon Linux 2 AMI (adjust for your region)
+      SubnetId: !Ref PublicSubnet
+      BlockDeviceMappings:
+        - DeviceName: /dev/xvda
+          Ebs:
+            VolumeSize: 20
+            VolumeType: gp3
+      UserData:
+        Fn::Base64: !Sub |
+          #!/bin/bash -xe
+          yum update -y
+          amazon-linux-extras install docker -y
+          service docker start
+          usermod -a -G docker ec2-user
+          chkconfig docker on
+          
+          # Install Docker Compose
+          curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+          chmod +x /usr/local/bin/docker-compose
+          
+          # Create data directory
+          mkdir -p /data/porw-storage
+          mkdir -p /data/porw-storage/storage
+          
+          # Create docker-compose.yml
+          cat > /data/porw-storage/docker-compose.yml << 'EOF'
+          version: '3'
+          services:
+            porw-storage-node:
+              image: porwblockchain/porw-storage-node:latest
+              container_name: porw-storage-node
+              ports:
+                - "3500:3500"
+              volumes:
+                - porw-storage-data:/data/storage
+              restart: unless-stopped
+              environment:
+                - NODE_HOST=${BlockchainNodeInstance.PrivateIp}
+                - NODE_PORT=8333
+                - STORAGE_PORT=3500
+                - MAX_STORAGE=${StorageSize}000
+                - MIN_REPLICATION=3
+          
+          volumes:
+            porw-storage-data:
+          EOF
+          
+          # Start the storage node
+          cd /data/porw-storage
+          docker-compose up -d
+      Tags:
+        - Key: Name
+          Value: !Sub ${EnvironmentName}-porw-storage-node
+
+  StorageNodeVolumeAttachment:
+    Type: AWS::EC2::VolumeAttachment
+    Properties:
+      InstanceId: !Ref StorageNodeInstance
+      VolumeId: !Ref StorageNodeEBSVolume
+      Device: /dev/sdf
+
+Outputs:
+  BlockchainNodePublicIP:
+    Description: Public IP address of the blockchain node
+    Value: !GetAtt BlockchainNodeInstance.PublicIp
+  
+  BlockchainNodePublicDNS:
+    Description: Public DNS name of the blockchain node
+    Value: !GetAtt BlockchainNodeInstance.PublicDnsName
+  
+  WebInterfaceURL:
+    Description: URL for the web interface
+    Value: !Sub http://${BlockchainNodeInstance.PublicDnsName}:8080
+  
+  MiningNodePublicIP:
+    Description: Public IP address of the mining node
+    Value: !GetAtt MiningNodeInstance.PublicIp
+  
+  StorageNodePublicIP:
+    Description: Public IP address of the storage node
+    Value: !GetAtt StorageNodeInstance.PublicIp

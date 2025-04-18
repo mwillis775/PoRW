@@ -1,0 +1,72 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: porw-storage-node
+  labels:
+    app: porw-storage-node
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: porw-storage-node
+  template:
+    metadata:
+      labels:
+        app: porw-storage-node
+    spec:
+      containers:
+      - name: porw-storage-node
+        image: porwblockchain/porw-storage-node:latest
+        ports:
+        - containerPort: 3500  # Storage port
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "500m"
+          limits:
+            memory: "2Gi"
+            cpu: "1000m"
+        volumeMounts:
+        - name: porw-storage-data
+          mountPath: /data/storage
+        env:
+        - name: NODE_HOST
+          value: "porw-node-service"
+        - name: NODE_PORT
+          value: "8333"
+        - name: STORAGE_PORT
+          value: "3500"
+        - name: MAX_STORAGE
+          value: "10240"  # 10GB in MB
+        - name: MIN_REPLICATION
+          value: "3"
+        - name: LOG_LEVEL
+          value: "INFO"
+      volumes:
+      - name: porw-storage-data
+        persistentVolumeClaim:
+          claimName: porw-storage-data-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: porw-storage-node-service
+spec:
+  selector:
+    app: porw-storage-node
+  ports:
+  - name: storage
+    port: 3500
+    targetPort: 3500
+  type: ClusterIP
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: porw-storage-data-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 20Gi

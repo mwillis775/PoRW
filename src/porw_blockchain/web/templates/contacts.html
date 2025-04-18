@@ -1,0 +1,192 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="mb-4">Address Book</h1>
+    
+    <div class="alert alert-info">
+        <h4 class="alert-heading">What is the Address Book?</h4>
+        <p>
+            The address book allows you to save and organize blockchain addresses with names and additional information.
+            This makes it easier to send transactions to frequently used addresses and keep track of your contacts.
+        </p>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Add Contact</h5>
+                </div>
+                <div class="card-body">
+                    <form action="/contacts/add" method="post">
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Name</label>
+                            <input type="text" class="form-control" id="name" name="name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="address" class="form-label">Address</label>
+                            <input type="text" class="form-control" id="address" name="address" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email (Optional)</label>
+                            <input type="email" class="form-control" id="email" name="email">
+                        </div>
+                        <div class="mb-3">
+                            <label for="phone" class="form-label">Phone (Optional)</label>
+                            <input type="text" class="form-control" id="phone" name="phone">
+                        </div>
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Description (Optional)</label>
+                            <textarea class="form-control" id="description" name="description" rows="2"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="tags" class="form-label">Tags (Optional)</label>
+                            <input type="text" class="form-control" id="tags" name="tags" placeholder="Comma-separated tags">
+                            <div class="form-text">Enter tags separated by commas (e.g., friend, business, family)</div>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Add Contact</button>
+                    </form>
+                </div>
+            </div>
+            
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Search Contacts</h5>
+                </div>
+                <div class="card-body">
+                    <form action="/contacts" method="get">
+                        <div class="mb-3">
+                            <label for="query" class="form-label">Search Query</label>
+                            <input type="text" class="form-control" id="query" name="query" value="{{ query }}">
+                            <div class="form-text">Search by name, address, email, or description</div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="filter_tags" class="form-label">Filter by Tags</label>
+                            <select class="form-select" id="filter_tags" name="tags" multiple>
+                                {% for tag in all_tags %}
+                                    <option value="{{ tag }}" {% if tag in selected_tags %}selected{% endif %}>{{ tag }}</option>
+                                {% endfor %}
+                            </select>
+                            <div class="form-text">Hold Ctrl/Cmd to select multiple tags</div>
+                        </div>
+                        <button type="submit" class="btn btn-outline-primary">Search</button>
+                        <a href="/contacts" class="btn btn-outline-secondary">Clear Filters</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-8">
+            <div class="card mb-4">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="card-title mb-0">Contacts</h5>
+                    <span class="badge bg-primary">{{ contacts|length }} Contact(s)</span>
+                </div>
+                <div class="card-body">
+                    {% if contacts %}
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Address</th>
+                                        <th>Tags</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for contact in contacts %}
+                                    <tr>
+                                        <td>{{ contact.name }}</td>
+                                        <td>
+                                            <div class="input-group">
+                                                <input type="text" class="form-control form-control-sm" value="{{ contact.address }}" readonly>
+                                                <button class="btn btn-sm btn-outline-secondary copy-btn" data-clipboard-text="{{ contact.address }}">
+                                                    <i class="fas fa-copy"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            {% for tag in contact.tags %}
+                                                <span class="badge bg-secondary">{{ tag }}</span>
+                                            {% endfor %}
+                                        </td>
+                                        <td>
+                                            <div class="btn-group">
+                                                <a href="/contacts/{{ contact.contact_id }}" class="btn btn-sm btn-outline-primary">
+                                                    <i class="fas fa-info-circle"></i>
+                                                </a>
+                                                <a href="/contacts/{{ contact.contact_id }}/edit" class="btn btn-sm btn-outline-secondary">
+                                                    <i class="fas fa-edit"></i>
+                                                </a>
+                                                <button type="button" class="btn btn-sm btn-outline-danger delete-contact-btn" data-contact-id="{{ contact.contact_id }}" data-contact-name="{{ contact.name }}">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                                <a href="/wallet/send?recipient={{ contact.address }}&contact_name={{ contact.name }}" class="btn btn-sm btn-outline-success">
+                                                    <i class="fas fa-paper-plane"></i>
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <div class="alert alert-info">
+                            No contacts found. Add your first contact using the form on the left.
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Contact Modal -->
+<div class="modal fade" id="deleteContactModal" tabindex="-1" aria-labelledby="deleteContactModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteContactModalLabel">Delete Contact</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete the contact <strong id="deleteContactName"></strong>?</p>
+                <p>This action cannot be undone.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <form id="deleteContactForm" action="/contacts/delete" method="post">
+                    <input type="hidden" id="deleteContactId" name="contact_id">
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize clipboard.js
+        new ClipboardJS('.copy-btn');
+        
+        // Handle delete contact button click
+        document.querySelectorAll('.delete-contact-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const contactId = this.getAttribute('data-contact-id');
+                const contactName = this.getAttribute('data-contact-name');
+                
+                // Set values in modal
+                document.getElementById('deleteContactId').value = contactId;
+                document.getElementById('deleteContactName').textContent = contactName;
+                
+                // Show modal
+                const modal = new bootstrap.Modal(document.getElementById('deleteContactModal'));
+                modal.show();
+            });
+        });
+    });
+</script>
+{% endblock %}

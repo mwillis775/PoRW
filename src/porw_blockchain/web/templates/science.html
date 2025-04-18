@@ -1,0 +1,195 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <h1 class="mb-4">Scientific Impact</h1>
+    <p class="lead">
+        The PoRW blockchain uses protein folding as its Proof of Real Work mechanism, contributing to scientific research
+        while securing the blockchain network.
+    </p>
+
+    <!-- Overview -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="mb-0">Overview</h5>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-8">
+                    <p>
+                        Protein folding is one of the most important unsolved problems in biology. Proteins are essential molecules
+                        that perform a vast array of functions in living organisms. Their function is determined by their three-dimensional
+                        structure, which is in turn determined by their amino acid sequence.
+                    </p>
+                    <p>
+                        Understanding how proteins fold is crucial for:
+                    </p>
+                    <ul>
+                        <li>Developing new drugs and treatments for diseases</li>
+                        <li>Engineering proteins with new functions</li>
+                        <li>Understanding the fundamental processes of life</li>
+                    </ul>
+                    <p>
+                        By mining on the PoRW blockchain, you contribute computational resources to solving protein folding problems,
+                        which helps advance scientific research while earning cryptocurrency rewards.
+                    </p>
+                </div>
+                <div class="col-md-4">
+                    <img src="/static/images/protein_folding.png" alt="Protein Folding Illustration" class="img-fluid rounded">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- How It Works -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="mb-0">How It Works</h5>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-12">
+                    <ol class="process-steps">
+                        <li>
+                            <h5>Protein Selection</h5>
+                            <p>The network selects proteins for folding based on scientific relevance and computational requirements.</p>
+                        </li>
+                        <li>
+                            <h5>Distributed Computation</h5>
+                            <p>Miners across the network perform protein folding simulations using their computational resources.</p>
+                        </li>
+                        <li>
+                            <h5>Validation</h5>
+                            <p>Results are validated by the network based on energy scores and conformational stability.</p>
+                        </li>
+                        <li>
+                            <h5>Blockchain Integration</h5>
+                            <p>Validated results are incorporated into the blockchain as Proof of Real Work.</p>
+                        </li>
+                        <li>
+                            <h5>Scientific Contribution</h5>
+                            <p>The results are made available to the scientific community for further research.</p>
+                        </li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Current Impact -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="mb-0">Current Impact</h5>
+        </div>
+        <div class="card-body">
+            <div class="row text-center mb-4">
+                <div class="col-md-4">
+                    <div class="impact-stat">
+                        <h2 class="display-4">{{ total_proteins }}</h2>
+                        <p>Proteins Folded</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="impact-stat">
+                        <h2 class="display-4">{{ total_compute_hours|round(1) }}</h2>
+                        <p>Compute Hours</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="impact-stat">
+                        <h2 class="display-4">{{ scientific_citations }}</h2>
+                        <p>Scientific Citations</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>Research Areas</h5>
+                    <ul>
+                        <li>Protein structure prediction</li>
+                        <li>Drug discovery and development</li>
+                        <li>Understanding disease mechanisms</li>
+                        <li>Protein engineering</li>
+                        <li>Synthetic biology</li>
+                    </ul>
+                </div>
+                <div class="col-md-6">
+                    <h5>Collaborations</h5>
+                    <ul>
+                        <li>Academic research institutions</li>
+                        <li>Pharmaceutical companies</li>
+                        <li>Biotechnology startups</li>
+                        <li>Open science initiatives</li>
+                        <li>Distributed computing projects</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Research Publications -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="mb-0">Research Publications</h5>
+        </div>
+        <div class="card-body">
+            <div class="list-group">
+                {% for publication in publications %}
+                <div class="list-group-item">
+                    <div class="d-flex w-100 justify-content-between">
+                        <h5 class="mb-1">{{ publication.title }}</h5>
+                        <small>{{ publication.date }}</small>
+                    </div>
+                    <p class="mb-1">{{ publication.authors }}</p>
+                    <small>
+                        <a href="{{ publication.url }}" target="_blank" rel="noopener noreferrer">
+                            {{ publication.journal }} {{ publication.volume }}{% if publication.issue %}({{ publication.issue }}){% endif %}: {{ publication.pages }}
+                            <i class="fas fa-external-link-alt ms-1"></i>
+                        </a>
+                    </small>
+                </div>
+                {% else %}
+                <div class="alert alert-info">
+                    No research publications available yet. As the network grows, scientific publications using our data will be listed here.
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Get Involved -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="mb-0">Get Involved</h5>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>For Miners</h5>
+                    <p>
+                        Start mining on the PoRW blockchain to contribute your computational resources to protein folding research.
+                        You'll earn cryptocurrency rewards while helping advance scientific knowledge.
+                    </p>
+                    <a href="/mining" class="btn btn-primary">Start Mining</a>
+                </div>
+                <div class="col-md-6">
+                    <h5>For Researchers</h5>
+                    <p>
+                        Access our protein folding data for your research projects. All data is freely available and can be
+                        downloaded in standard formats. If you're interested in collaborating, please contact us.
+                    </p>
+                    <a href="/protein-data" class="btn btn-primary">Access Data</a>
+                    <a href="/contact" class="btn btn-outline-secondary">Contact Us</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Add any JavaScript needed for the science page
+</script>
+{% endblock %}

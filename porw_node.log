@@ -1,0 +1,710 @@
+2025-04-09 11:27:19,933 - porw_blockchain.network.node - INFO - Initialized node f8fe754b-b1a2-463d-addb-548eae49970b on 0.0.0.0:2025
+2025-04-09 11:27:19,933 - porw_blockchain.network.node - INFO - Starting node f8fe754b-b1a2-463d-addb-548eae49970b
+2025-04-09 11:27:19,934 - porw_blockchain.network.node - INFO - Node listening on 0.0.0.0:2025
+2025-04-09 11:27:19,934 - porw_blockchain.network.discovery - INFO - Started peer discovery
+2025-04-09 11:27:19,934 - porw_blockchain.network.discovery - INFO - Looking for 1 more peers
+2025-04-09 11:27:19,934 - porw_blockchain.network.discovery - INFO - Trying DNS seeds
+2025-04-09 11:27:20,068 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed1.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 11:27:20,143 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed2.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 11:27:20,220 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed3.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 11:27:20,220 - porw_blockchain.network.discovery - INFO - Saved 0 peers to database
+2025-04-09 11:27:30,293 - porw_blockchain.network.node - INFO - Initialized node 394d18c9-3054-4d13-bfdf-fe2c727ac594 on 0.0.0.0:2525
+2025-04-09 11:27:30,293 - porw_blockchain.network.node - INFO - Starting node 394d18c9-3054-4d13-bfdf-fe2c727ac594
+2025-04-09 11:27:30,293 - porw_blockchain.network.node - INFO - Node listening on 0.0.0.0:2525
+2025-04-09 11:27:30,293 - porw_blockchain.network.discovery - INFO - Started peer discovery
+2025-04-09 11:27:30,293 - porw_blockchain.network.discovery - INFO - Looking for 1 more peers
+2025-04-09 11:27:30,293 - porw_blockchain.network.discovery - INFO - Trying bootstrap nodes
+2025-04-09 11:27:30,293 - porw_blockchain.network.discovery - INFO - Added new peer: Peer(porw_nod@127.0.0.1:2025, DISCONNECTED, rep:50)
+2025-04-09 11:27:30,294 - porw_blockchain.network.peer - INFO - Connected to peer Peer(porw_nod@127.0.0.1:2025, CONNECTED, rep:50)
+2025-04-09 11:27:30,294 - porw_blockchain.network.discovery - INFO - Successfully connected to peer Peer(porw_nod@127.0.0.1:2025, CONNECTED, rep:50)
+2025-04-09 11:27:30,294 - porw_blockchain.network.node - INFO - Incoming connection from 127.0.0.1:48882
+2025-04-09 11:27:30,294 - porw_blockchain.network.peer - INFO - Starting message loop for Peer(porw_nod@127.0.0.1:2025, CONNECTED, rep:50)
+2025-04-09 11:27:30,294 - porw_blockchain.network.node - WARNING - Did not receive HELLO message from Peer(temp-127@127.0.0.1:48882, CONNECTED, rep:50), closing connection
+2025-04-09 11:27:30,294 - porw_blockchain.network.peer - INFO - Disconnecting from peer Peer(temp-127@127.0.0.1:48882, DISCONNECTING, rep:50): No HELLO message received
+2025-04-09 11:27:30,295 - porw_blockchain.network.peer - WARNING - Connection closed by peer Peer(porw_nod@127.0.0.1:2025, CONNECTED, rep:50)
+2025-04-09 11:27:30,295 - porw_blockchain.network.peer - INFO - Disconnecting from peer Peer(porw_nod@127.0.0.1:2025, DISCONNECTING, rep:50): Connection closed by peer
+2025-04-09 11:27:40,304 - porw_blockchain.network.peer - WARNING - Request GET_PEERS to Peer(porw_nod@127.0.0.1:2025, DISCONNECTED, rep:50) timed out
+2025-04-09 11:27:40,305 - porw_blockchain.network.discovery - INFO - Saved 1 peers to database
+2025-04-09 11:28:20,270 - porw_blockchain.network.discovery - INFO - Looking for 1 more peers
+2025-04-09 11:28:20,270 - porw_blockchain.network.discovery - INFO - Trying DNS seeds
+2025-04-09 11:28:20,389 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed1.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 11:28:20,446 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed2.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 11:28:20,489 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed3.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 11:28:20,490 - porw_blockchain.network.discovery - INFO - Saved 0 peers to database
+2025-04-09 11:28:40,364 - porw_blockchain.network.peer - WARNING - Cannot send message to Peer(porw_nod@127.0.0.1:2025, DISCONNECTED, rep:51): not connected
+2025-04-09 11:28:40,365 - porw_blockchain.network.discovery - INFO - Saved 1 peers to database
+2025-04-09 11:28:48,005 - porw_blockchain.network.discovery - INFO - Loaded 1 peers from database
+2025-04-09 11:28:48,006 - porw_blockchain.network.node - INFO - Initialized node fb74b44d-c2f2-4ec7-abd1-bde00513f8e0 on 0.0.0.0:3500
+2025-04-09 11:28:48,006 - porw_blockchain.network.node - INFO - Starting node fb74b44d-c2f2-4ec7-abd1-bde00513f8e0
+2025-04-09 11:28:48,006 - porw_blockchain.network.node - INFO - Node listening on 0.0.0.0:3500
+2025-04-09 11:28:48,006 - porw_blockchain.network.discovery - INFO - Started peer discovery
+2025-04-09 11:28:48,006 - porw_blockchain.network.discovery - INFO - Looking for 1 more peers
+2025-04-09 11:28:48,006 - porw_blockchain.network.discovery - INFO - Found 1 connectable peers
+2025-04-09 11:28:48,007 - porw_blockchain.network.peer - WARNING - Failed to connect to peer Peer(porw_nod@127.0.0.1:2025, CONNECTING, rep:51): [Errno 111] Connect call failed ('127.0.0.1', 2025)
+2025-04-09 11:28:48,007 - porw_blockchain.network.discovery - WARNING - Failed to connect to peer Peer(porw_nod@127.0.0.1:2025, DISCONNECTED, rep:51)
+2025-04-09 11:28:48,007 - porw_blockchain.network.discovery - INFO - Trying DNS seeds
+2025-04-09 11:28:48,387 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed1.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 11:28:48,546 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed2.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 11:28:48,707 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed3.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 11:28:48,708 - porw_blockchain.network.discovery - INFO - Saved 1 peers to database
+2025-04-09 11:29:06,949 - porw_blockchain.network.discovery - INFO - Loaded 0 peers from database
+2025-04-09 11:29:06,949 - porw_blockchain.network.node - INFO - Initialized node d52f965a-11d4-4a26-b72a-de61bebb477e on 0.0.0.0:3000
+2025-04-09 11:29:06,949 - porw_blockchain.network.node - INFO - Starting node d52f965a-11d4-4a26-b72a-de61bebb477e
+2025-04-09 11:29:06,949 - porw_blockchain.network.node - INFO - Node listening on 0.0.0.0:3000
+2025-04-09 11:29:06,950 - porw_blockchain.network.discovery - INFO - Started peer discovery
+2025-04-09 11:29:06,950 - porw_blockchain.network.discovery - INFO - Looking for 1 more peers
+2025-04-09 11:29:06,950 - porw_blockchain.network.discovery - INFO - Trying bootstrap nodes
+2025-04-09 11:29:06,950 - porw_blockchain.network.discovery - INFO - Added new peer: Peer(pors_nod@127.0.0.1:3500, DISCONNECTED, rep:50)
+2025-04-09 11:29:06,950 - porw_blockchain.network.peer - INFO - Connected to peer Peer(pors_nod@127.0.0.1:3500, CONNECTED, rep:50)
+2025-04-09 11:29:06,950 - porw_blockchain.network.discovery - INFO - Successfully connected to peer Peer(pors_nod@127.0.0.1:3500, CONNECTED, rep:50)
+2025-04-09 11:29:06,950 - porw_blockchain.network.node - INFO - Incoming connection from 127.0.0.1:50062
+2025-04-09 11:29:06,951 - porw_blockchain.network.peer - INFO - Starting message loop for Peer(pors_nod@127.0.0.1:3500, CONNECTED, rep:50)
+2025-04-09 11:29:06,951 - porw_blockchain.network.node - WARNING - Did not receive HELLO message from Peer(temp-127@127.0.0.1:50062, CONNECTED, rep:50), closing connection
+2025-04-09 11:29:06,951 - porw_blockchain.network.peer - INFO - Disconnecting from peer Peer(temp-127@127.0.0.1:50062, DISCONNECTING, rep:50): No HELLO message received
+2025-04-09 11:29:06,951 - porw_blockchain.network.peer - WARNING - Connection closed by peer Peer(pors_nod@127.0.0.1:3500, CONNECTED, rep:50)
+2025-04-09 11:29:06,951 - porw_blockchain.network.peer - INFO - Disconnecting from peer Peer(pors_nod@127.0.0.1:3500, DISCONNECTING, rep:50): Connection closed by peer
+2025-04-09 11:29:16,961 - porw_blockchain.network.peer - WARNING - Request GET_PEERS to Peer(pors_nod@127.0.0.1:3500, DISCONNECTED, rep:50) timed out
+2025-04-09 11:29:16,962 - porw_blockchain.network.discovery - INFO - Saved 1 peers to database
+2025-04-09 11:29:48,751 - porw_blockchain.network.discovery - INFO - Looking for 1 more peers
+2025-04-09 11:29:48,751 - porw_blockchain.network.discovery - INFO - Found 1 connectable peers
+2025-04-09 11:29:48,751 - porw_blockchain.network.peer - WARNING - Failed to connect to peer Peer(porw_nod@127.0.0.1:2025, CONNECTING, rep:50): [Errno 111] Connect call failed ('127.0.0.1', 2025)
+2025-04-09 11:29:48,751 - porw_blockchain.network.discovery - WARNING - Failed to connect to peer Peer(porw_nod@127.0.0.1:2025, DISCONNECTED, rep:50)
+2025-04-09 11:29:48,751 - porw_blockchain.network.discovery - INFO - Trying DNS seeds
+2025-04-09 11:29:48,784 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed1.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 11:29:48,827 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed2.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 11:29:48,871 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed3.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 11:29:48,872 - porw_blockchain.network.discovery - INFO - Saved 1 peers to database
+2025-04-09 11:30:17,021 - porw_blockchain.network.peer - WARNING - Cannot send message to Peer(pors_nod@127.0.0.1:3500, DISCONNECTED, rep:51): not connected
+2025-04-09 11:30:17,022 - porw_blockchain.network.discovery - INFO - Saved 1 peers to database
+2025-04-09 11:30:48,932 - porw_blockchain.network.discovery - INFO - Looking for 1 more peers
+2025-04-09 11:30:48,932 - porw_blockchain.network.discovery - INFO - Found 1 connectable peers
+2025-04-09 11:30:48,933 - porw_blockchain.network.peer - WARNING - Failed to connect to peer Peer(porw_nod@127.0.0.1:2025, CONNECTING, rep:50): [Errno 111] Connect call failed ('127.0.0.1', 2025)
+2025-04-09 11:30:48,933 - porw_blockchain.network.discovery - WARNING - Failed to connect to peer Peer(porw_nod@127.0.0.1:2025, DISCONNECTED, rep:50)
+2025-04-09 11:30:48,933 - porw_blockchain.network.discovery - INFO - Trying DNS seeds
+2025-04-09 11:30:48,967 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed1.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 11:30:54,355 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed2.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 11:30:54,564 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed3.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 11:30:54,565 - porw_blockchain.network.discovery - INFO - Saved 1 peers to database
+2025-04-09 11:32:16,208 - porw_blockchain.network.discovery - INFO - Loaded 1 peers from database
+2025-04-09 11:32:16,209 - porw_blockchain.network.node - INFO - Initialized node 60379d82-5204-42e4-b16b-e4c00d7a1baa on 0.0.0.0:3000
+2025-04-09 11:32:16,209 - porw_blockchain.network.node - INFO - Starting node 60379d82-5204-42e4-b16b-e4c00d7a1baa
+2025-04-09 11:32:16,209 - porw_blockchain.network.node - INFO - Node listening on 0.0.0.0:3000
+2025-04-09 11:32:16,209 - porw_blockchain.network.discovery - INFO - Started peer discovery
+2025-04-09 11:32:16,209 - porw_blockchain.network.discovery - INFO - Looking for 1 more peers
+2025-04-09 11:32:16,209 - porw_blockchain.network.discovery - INFO - Found 1 connectable peers
+2025-04-09 11:32:16,210 - porw_blockchain.network.peer - WARNING - Failed to connect to peer Peer(pors_nod@127.0.0.1:3500, CONNECTING, rep:51): [Errno 111] Connect call failed ('127.0.0.1', 3500)
+2025-04-09 11:32:16,210 - porw_blockchain.network.discovery - WARNING - Failed to connect to peer Peer(pors_nod@127.0.0.1:3500, DISCONNECTED, rep:51)
+2025-04-09 11:32:16,210 - porw_blockchain.network.discovery - INFO - Trying DNS seeds
+2025-04-09 11:32:16,473 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed1.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 11:32:16,579 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed2.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 11:32:16,622 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed3.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 11:32:16,623 - porw_blockchain.network.discovery - INFO - Saved 1 peers to database
+2025-04-09 11:33:16,682 - porw_blockchain.network.discovery - INFO - Looking for 1 more peers
+2025-04-09 11:33:16,683 - porw_blockchain.network.discovery - INFO - Found 1 connectable peers
+2025-04-09 11:33:16,683 - porw_blockchain.network.peer - WARNING - Failed to connect to peer Peer(pors_nod@127.0.0.1:3500, CONNECTING, rep:50): [Errno 111] Connect call failed ('127.0.0.1', 3500)
+2025-04-09 11:33:16,684 - porw_blockchain.network.discovery - WARNING - Failed to connect to peer Peer(pors_nod@127.0.0.1:3500, DISCONNECTED, rep:50)
+2025-04-09 11:33:16,684 - porw_blockchain.network.discovery - INFO - Trying DNS seeds
+2025-04-09 11:33:16,721 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed1.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 11:33:16,765 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed2.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 11:33:16,808 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed3.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 11:33:16,808 - porw_blockchain.network.discovery - INFO - Saved 1 peers to database
+2025-04-09 11:34:16,867 - porw_blockchain.network.discovery - INFO - Looking for 1 more peers
+2025-04-09 11:34:16,868 - porw_blockchain.network.discovery - INFO - Found 1 connectable peers
+2025-04-09 11:34:16,868 - porw_blockchain.network.peer - WARNING - Failed to connect to peer Peer(pors_nod@127.0.0.1:3500, CONNECTING, rep:50): [Errno 111] Connect call failed ('127.0.0.1', 3500)
+2025-04-09 11:34:16,868 - porw_blockchain.network.discovery - WARNING - Failed to connect to peer Peer(pors_nod@127.0.0.1:3500, DISCONNECTED, rep:50)
+2025-04-09 11:34:16,868 - porw_blockchain.network.discovery - INFO - Trying DNS seeds
+2025-04-09 11:34:16,902 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed1.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 11:34:16,937 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed2.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 11:34:16,972 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed3.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 11:34:16,972 - porw_blockchain.network.discovery - INFO - Saved 1 peers to database
+2025-04-09 11:35:17,032 - porw_blockchain.network.discovery - INFO - Looking for 1 more peers
+2025-04-09 11:35:17,033 - porw_blockchain.network.discovery - INFO - Found 1 connectable peers
+2025-04-09 11:35:17,034 - porw_blockchain.network.peer - WARNING - Failed to connect to peer Peer(pors_nod@127.0.0.1:3500, CONNECTING, rep:50): [Errno 111] Connect call failed ('127.0.0.1', 3500)
+2025-04-09 11:35:17,034 - porw_blockchain.network.discovery - WARNING - Failed to connect to peer Peer(pors_nod@127.0.0.1:3500, DISCONNECTED, rep:50)
+2025-04-09 11:35:17,035 - porw_blockchain.network.discovery - INFO - Trying DNS seeds
+2025-04-09 11:35:17,073 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed1.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 11:35:17,115 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed2.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 11:35:17,160 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed3.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 11:35:17,160 - porw_blockchain.network.discovery - INFO - Saved 1 peers to database
+2025-04-09 11:36:17,219 - porw_blockchain.network.discovery - INFO - Looking for 1 more peers
+2025-04-09 11:36:17,220 - porw_blockchain.network.discovery - INFO - Found 1 connectable peers
+2025-04-09 11:36:17,220 - porw_blockchain.network.peer - WARNING - Failed to connect to peer Peer(pors_nod@127.0.0.1:3500, CONNECTING, rep:48): [Errno 111] Connect call failed ('127.0.0.1', 3500)
+2025-04-09 11:36:17,220 - porw_blockchain.network.discovery - WARNING - Failed to connect to peer Peer(pors_nod@127.0.0.1:3500, DISCONNECTED, rep:48)
+2025-04-09 11:36:17,220 - porw_blockchain.network.discovery - INFO - Trying DNS seeds
+2025-04-09 11:36:17,264 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed1.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 11:36:17,308 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed2.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 11:36:17,357 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed3.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 11:36:17,357 - porw_blockchain.network.discovery - INFO - Saved 1 peers to database
+2025-04-09 11:37:17,417 - porw_blockchain.network.discovery - INFO - Looking for 1 more peers
+2025-04-09 11:37:17,417 - porw_blockchain.network.discovery - INFO - Found 1 connectable peers
+2025-04-09 11:37:17,418 - porw_blockchain.network.peer - WARNING - Failed to connect to peer Peer(pors_nod@127.0.0.1:3500, CONNECTING, rep:46): [Errno 111] Connect call failed ('127.0.0.1', 3500)
+2025-04-09 11:37:17,418 - porw_blockchain.network.discovery - WARNING - Failed to connect to peer Peer(pors_nod@127.0.0.1:3500, DISCONNECTED, rep:46)
+2025-04-09 11:37:17,418 - porw_blockchain.network.discovery - INFO - Trying DNS seeds
+2025-04-09 11:37:17,452 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed1.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 11:37:17,486 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed2.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 11:37:17,523 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed3.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 11:37:17,524 - porw_blockchain.network.discovery - INFO - Saved 1 peers to database
+2025-04-09 11:40:27,781 - porw_blockchain.network.node - INFO - Initialized node 54ea81e5-c402-4de2-bae2-0d6c900fc248 on 0.0.0.0:3000
+2025-04-09 11:40:27,781 - porw_blockchain.network.node - INFO - Starting node 54ea81e5-c402-4de2-bae2-0d6c900fc248
+2025-04-09 11:40:27,781 - porw_blockchain.network.node - INFO - Node listening on 0.0.0.0:3000
+2025-04-09 11:40:27,781 - porw_blockchain.network.discovery - INFO - Started peer discovery
+2025-04-09 11:40:27,782 - porw_blockchain.network.discovery - INFO - Looking for 1 more peers
+2025-04-09 11:40:27,782 - porw_blockchain.network.discovery - INFO - Trying bootstrap nodes
+2025-04-09 11:40:27,782 - porw_blockchain.network.discovery - INFO - Added new peer: Peer(storage_@127.0.0.1:3500, DISCONNECTED, rep:50)
+2025-04-09 11:40:27,782 - porw_blockchain.network.peer - WARNING - Failed to connect to peer Peer(storage_@127.0.0.1:3500, CONNECTING, rep:50): [Errno 111] Connect call failed ('127.0.0.1', 3500)
+2025-04-09 11:40:27,782 - porw_blockchain.network.discovery - WARNING - Failed to connect to peer Peer(storage_@127.0.0.1:3500, DISCONNECTED, rep:50)
+2025-04-09 11:40:27,782 - porw_blockchain.network.discovery - INFO - Trying DNS seeds
+2025-04-09 11:40:28,322 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed1.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 11:40:33,365 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed2.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 11:40:33,400 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed3.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 11:40:33,401 - porw_blockchain.network.discovery - INFO - Saved 1 peers to database
+2025-04-09 11:41:33,460 - porw_blockchain.network.discovery - INFO - Looking for 1 more peers
+2025-04-09 11:41:33,461 - porw_blockchain.network.discovery - INFO - Found 1 connectable peers
+2025-04-09 11:41:33,461 - porw_blockchain.network.peer - WARNING - Failed to connect to peer Peer(storage_@127.0.0.1:3500, CONNECTING, rep:50): [Errno 111] Connect call failed ('127.0.0.1', 3500)
+2025-04-09 11:41:33,461 - porw_blockchain.network.discovery - WARNING - Failed to connect to peer Peer(storage_@127.0.0.1:3500, DISCONNECTED, rep:50)
+2025-04-09 11:41:33,461 - porw_blockchain.network.discovery - INFO - Trying bootstrap nodes
+2025-04-09 11:41:33,462 - porw_blockchain.network.peer - WARNING - Failed to connect to peer Peer(storage_@127.0.0.1:3500, CONNECTING, rep:50): [Errno 111] Connect call failed ('127.0.0.1', 3500)
+2025-04-09 11:41:33,462 - porw_blockchain.network.discovery - WARNING - Failed to connect to peer Peer(storage_@127.0.0.1:3500, DISCONNECTED, rep:50)
+2025-04-09 11:41:33,462 - porw_blockchain.network.discovery - INFO - Trying DNS seeds
+2025-04-09 11:41:33,500 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed1.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 11:41:33,543 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed2.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 11:41:33,577 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed3.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 11:41:33,578 - porw_blockchain.network.discovery - INFO - Saved 1 peers to database
+2025-04-09 11:42:33,637 - porw_blockchain.network.discovery - INFO - Looking for 1 more peers
+2025-04-09 11:42:33,638 - porw_blockchain.network.discovery - INFO - Found 1 connectable peers
+2025-04-09 11:42:33,639 - porw_blockchain.network.peer - WARNING - Failed to connect to peer Peer(storage_@127.0.0.1:3500, CONNECTING, rep:50): [Errno 111] Connect call failed ('127.0.0.1', 3500)
+2025-04-09 11:42:33,639 - porw_blockchain.network.discovery - WARNING - Failed to connect to peer Peer(storage_@127.0.0.1:3500, DISCONNECTED, rep:50)
+2025-04-09 11:42:33,639 - porw_blockchain.network.discovery - INFO - Trying bootstrap nodes
+2025-04-09 11:42:33,640 - porw_blockchain.network.peer - WARNING - Failed to connect to peer Peer(storage_@127.0.0.1:3500, CONNECTING, rep:50): [Errno 111] Connect call failed ('127.0.0.1', 3500)
+2025-04-09 11:42:33,640 - porw_blockchain.network.discovery - WARNING - Failed to connect to peer Peer(storage_@127.0.0.1:3500, DISCONNECTED, rep:50)
+2025-04-09 11:42:33,641 - porw_blockchain.network.discovery - INFO - Trying DNS seeds
+2025-04-09 11:42:33,676 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed1.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 11:42:33,712 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed2.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 11:42:33,765 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed3.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 11:42:33,766 - porw_blockchain.network.discovery - INFO - Saved 1 peers to database
+2025-04-09 11:43:33,826 - porw_blockchain.network.discovery - INFO - Looking for 1 more peers
+2025-04-09 11:43:33,827 - porw_blockchain.network.discovery - INFO - Found 1 connectable peers
+2025-04-09 11:43:33,828 - porw_blockchain.network.peer - WARNING - Failed to connect to peer Peer(storage_@127.0.0.1:3500, CONNECTING, rep:46): [Errno 111] Connect call failed ('127.0.0.1', 3500)
+2025-04-09 11:43:33,829 - porw_blockchain.network.discovery - WARNING - Failed to connect to peer Peer(storage_@127.0.0.1:3500, DISCONNECTED, rep:46)
+2025-04-09 11:43:33,829 - porw_blockchain.network.discovery - INFO - Trying bootstrap nodes
+2025-04-09 11:43:33,830 - porw_blockchain.network.peer - WARNING - Failed to connect to peer Peer(storage_@127.0.0.1:3500, CONNECTING, rep:46): [Errno 111] Connect call failed ('127.0.0.1', 3500)
+2025-04-09 11:43:33,830 - porw_blockchain.network.discovery - WARNING - Failed to connect to peer Peer(storage_@127.0.0.1:3500, DISCONNECTED, rep:46)
+2025-04-09 11:43:33,830 - porw_blockchain.network.discovery - INFO - Trying DNS seeds
+2025-04-09 11:43:33,865 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed1.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 11:43:33,906 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed2.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 11:43:33,945 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed3.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 11:43:33,946 - porw_blockchain.network.discovery - INFO - Saved 1 peers to database
+2025-04-09 11:44:34,005 - porw_blockchain.network.discovery - INFO - Looking for 1 more peers
+2025-04-09 11:44:34,005 - porw_blockchain.network.discovery - INFO - Found 1 connectable peers
+2025-04-09 11:44:34,006 - porw_blockchain.network.peer - WARNING - Failed to connect to peer Peer(storage_@127.0.0.1:3500, CONNECTING, rep:42): [Errno 111] Connect call failed ('127.0.0.1', 3500)
+2025-04-09 11:44:34,006 - porw_blockchain.network.discovery - WARNING - Failed to connect to peer Peer(storage_@127.0.0.1:3500, DISCONNECTED, rep:42)
+2025-04-09 11:44:34,006 - porw_blockchain.network.discovery - INFO - Trying bootstrap nodes
+2025-04-09 11:44:34,006 - porw_blockchain.network.peer - WARNING - Failed to connect to peer Peer(storage_@127.0.0.1:3500, CONNECTING, rep:42): [Errno 111] Connect call failed ('127.0.0.1', 3500)
+2025-04-09 11:44:34,006 - porw_blockchain.network.discovery - WARNING - Failed to connect to peer Peer(storage_@127.0.0.1:3500, DISCONNECTED, rep:42)
+2025-04-09 11:44:34,006 - porw_blockchain.network.discovery - INFO - Trying DNS seeds
+2025-04-09 11:44:34,174 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed1.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 11:44:34,357 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed2.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 11:44:34,525 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed3.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 11:44:34,526 - porw_blockchain.network.discovery - INFO - Saved 1 peers to database
+2025-04-09 11:45:34,585 - porw_blockchain.network.discovery - INFO - Looking for 1 more peers
+2025-04-09 11:45:34,586 - porw_blockchain.network.discovery - INFO - Found 1 connectable peers
+2025-04-09 11:45:34,587 - porw_blockchain.network.peer - WARNING - Failed to connect to peer Peer(storage_@127.0.0.1:3500, CONNECTING, rep:40): [Errno 111] Connect call failed ('127.0.0.1', 3500)
+2025-04-09 11:45:34,587 - porw_blockchain.network.discovery - WARNING - Failed to connect to peer Peer(storage_@127.0.0.1:3500, DISCONNECTED, rep:40)
+2025-04-09 11:45:34,587 - porw_blockchain.network.discovery - INFO - Trying bootstrap nodes
+2025-04-09 11:45:34,588 - porw_blockchain.network.peer - WARNING - Failed to connect to peer Peer(storage_@127.0.0.1:3500, CONNECTING, rep:40): [Errno 111] Connect call failed ('127.0.0.1', 3500)
+2025-04-09 11:45:34,588 - porw_blockchain.network.discovery - WARNING - Failed to connect to peer Peer(storage_@127.0.0.1:3500, DISCONNECTED, rep:40)
+2025-04-09 11:45:34,588 - porw_blockchain.network.discovery - INFO - Trying DNS seeds
+2025-04-09 11:45:34,627 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed1.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 11:45:34,662 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed2.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 11:45:34,699 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed3.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 11:45:34,699 - porw_blockchain.network.peer - WARNING - Peer storage_node (127.0.0.1:3500) banned: Multiple connection attempts with no success
+2025-04-09 11:45:34,701 - porw_blockchain.network.discovery - INFO - Saved 1 peers to database
+2025-04-09 11:46:34,760 - porw_blockchain.network.discovery - INFO - Looking for 1 more peers
+2025-04-09 11:46:34,761 - porw_blockchain.network.discovery - INFO - Trying bootstrap nodes
+2025-04-09 11:46:34,761 - porw_blockchain.network.discovery - WARNING - Not connecting to banned peer Peer(storage_@127.0.0.1:3500, BANNED (BANNED), rep:40): Multiple connection attempts with no success
+2025-04-09 11:46:34,761 - porw_blockchain.network.discovery - INFO - Trying DNS seeds
+2025-04-09 11:46:34,796 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed1.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 11:46:34,834 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed2.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 11:46:39,881 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed3.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 11:46:39,882 - porw_blockchain.network.discovery - INFO - Saved 1 peers to database
+2025-04-09 11:47:39,942 - porw_blockchain.network.discovery - INFO - Looking for 1 more peers
+2025-04-09 11:47:39,943 - porw_blockchain.network.discovery - INFO - Trying bootstrap nodes
+2025-04-09 11:47:39,943 - porw_blockchain.network.discovery - WARNING - Not connecting to banned peer Peer(storage_@127.0.0.1:3500, BANNED (BANNED), rep:40): Multiple connection attempts with no success
+2025-04-09 11:47:39,944 - porw_blockchain.network.discovery - INFO - Trying DNS seeds
+2025-04-09 11:47:39,983 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed1.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 11:47:40,026 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed2.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 11:47:40,067 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed3.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 11:47:40,067 - porw_blockchain.network.discovery - INFO - Saved 1 peers to database
+2025-04-09 11:48:40,127 - porw_blockchain.network.discovery - INFO - Looking for 1 more peers
+2025-04-09 11:48:40,128 - porw_blockchain.network.discovery - INFO - Trying bootstrap nodes
+2025-04-09 11:48:40,128 - porw_blockchain.network.discovery - WARNING - Not connecting to banned peer Peer(storage_@127.0.0.1:3500, BANNED (BANNED), rep:40): Multiple connection attempts with no success
+2025-04-09 11:48:40,129 - porw_blockchain.network.discovery - INFO - Trying DNS seeds
+2025-04-09 11:48:40,170 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed1.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 11:48:40,203 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed2.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 11:48:40,235 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed3.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 11:48:40,236 - porw_blockchain.network.discovery - INFO - Saved 1 peers to database
+2025-04-09 11:49:40,296 - porw_blockchain.network.discovery - INFO - Looking for 1 more peers
+2025-04-09 11:49:40,296 - porw_blockchain.network.discovery - INFO - Trying bootstrap nodes
+2025-04-09 11:49:40,297 - porw_blockchain.network.discovery - WARNING - Not connecting to banned peer Peer(storage_@127.0.0.1:3500, BANNED (BANNED), rep:40): Multiple connection attempts with no success
+2025-04-09 11:49:40,297 - porw_blockchain.network.discovery - INFO - Trying DNS seeds
+2025-04-09 11:49:45,577 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed1.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 11:49:45,612 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed2.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 11:49:45,648 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed3.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 11:49:45,649 - porw_blockchain.network.discovery - INFO - Saved 1 peers to database
+2025-04-09 11:50:45,709 - porw_blockchain.network.discovery - INFO - Looking for 1 more peers
+2025-04-09 11:50:45,710 - porw_blockchain.network.discovery - INFO - Trying bootstrap nodes
+2025-04-09 11:50:45,710 - porw_blockchain.network.discovery - WARNING - Not connecting to banned peer Peer(storage_@127.0.0.1:3500, BANNED (BANNED), rep:40): Multiple connection attempts with no success
+2025-04-09 11:50:45,710 - porw_blockchain.network.discovery - INFO - Trying DNS seeds
+2025-04-09 11:50:45,753 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed1.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 11:50:45,785 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed2.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 11:50:45,817 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed3.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 11:50:45,817 - porw_blockchain.network.discovery - INFO - Saved 1 peers to database
+2025-04-09 11:51:45,877 - porw_blockchain.network.discovery - INFO - Looking for 1 more peers
+2025-04-09 11:51:45,878 - porw_blockchain.network.discovery - INFO - Trying bootstrap nodes
+2025-04-09 11:51:45,879 - porw_blockchain.network.discovery - WARNING - Not connecting to banned peer Peer(storage_@127.0.0.1:3500, BANNED (BANNED), rep:40): Multiple connection attempts with no success
+2025-04-09 11:51:45,879 - porw_blockchain.network.discovery - INFO - Trying DNS seeds
+2025-04-09 11:51:45,919 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed1.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 11:51:45,954 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed2.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 11:51:45,992 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed3.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 11:51:45,992 - porw_blockchain.network.discovery - INFO - Saved 1 peers to database
+2025-04-09 11:52:46,032 - porw_blockchain.network.discovery - INFO - Looking for 1 more peers
+2025-04-09 11:52:46,032 - porw_blockchain.network.discovery - INFO - Trying bootstrap nodes
+2025-04-09 11:52:46,033 - porw_blockchain.network.discovery - WARNING - Not connecting to banned peer Peer(storage_@127.0.0.1:3500, BANNED (BANNED), rep:40): Multiple connection attempts with no success
+2025-04-09 11:52:46,033 - porw_blockchain.network.discovery - INFO - Trying DNS seeds
+2025-04-09 11:52:46,070 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed1.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 11:52:46,105 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed2.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 11:52:46,141 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed3.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 11:52:46,142 - porw_blockchain.network.discovery - INFO - Saved 1 peers to database
+2025-04-09 11:53:46,202 - porw_blockchain.network.discovery - INFO - Looking for 1 more peers
+2025-04-09 11:53:46,202 - porw_blockchain.network.discovery - INFO - Trying bootstrap nodes
+2025-04-09 11:53:46,203 - porw_blockchain.network.discovery - WARNING - Not connecting to banned peer Peer(storage_@127.0.0.1:3500, BANNED (BANNED), rep:40): Multiple connection attempts with no success
+2025-04-09 11:53:46,203 - porw_blockchain.network.discovery - INFO - Trying DNS seeds
+2025-04-09 11:53:46,234 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed1.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 11:53:46,264 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed2.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 11:53:46,294 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed3.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 11:53:46,295 - porw_blockchain.network.discovery - INFO - Saved 1 peers to database
+2025-04-09 11:54:46,354 - porw_blockchain.network.discovery - INFO - Looking for 1 more peers
+2025-04-09 11:54:46,355 - porw_blockchain.network.discovery - INFO - Trying bootstrap nodes
+2025-04-09 11:54:46,355 - porw_blockchain.network.discovery - WARNING - Not connecting to banned peer Peer(storage_@127.0.0.1:3500, BANNED (BANNED), rep:40): Multiple connection attempts with no success
+2025-04-09 11:54:46,355 - porw_blockchain.network.discovery - INFO - Trying DNS seeds
+2025-04-09 11:54:46,396 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed1.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 11:54:46,439 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed2.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 11:54:46,472 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed3.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 11:54:46,473 - porw_blockchain.network.discovery - INFO - Saved 1 peers to database
+2025-04-09 11:55:46,533 - porw_blockchain.network.discovery - INFO - Looking for 1 more peers
+2025-04-09 11:55:46,533 - porw_blockchain.network.discovery - INFO - Trying bootstrap nodes
+2025-04-09 11:55:46,533 - porw_blockchain.network.discovery - WARNING - Not connecting to banned peer Peer(storage_@127.0.0.1:3500, BANNED (BANNED), rep:40): Multiple connection attempts with no success
+2025-04-09 11:55:46,534 - porw_blockchain.network.discovery - INFO - Trying DNS seeds
+2025-04-09 11:55:46,568 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed1.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 11:55:46,601 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed2.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 11:55:46,634 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed3.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 11:55:46,635 - porw_blockchain.network.discovery - INFO - Saved 1 peers to database
+2025-04-09 11:56:46,695 - porw_blockchain.network.discovery - INFO - Looking for 1 more peers
+2025-04-09 11:56:46,696 - porw_blockchain.network.discovery - INFO - Trying bootstrap nodes
+2025-04-09 11:56:46,696 - porw_blockchain.network.discovery - WARNING - Not connecting to banned peer Peer(storage_@127.0.0.1:3500, BANNED (BANNED), rep:40): Multiple connection attempts with no success
+2025-04-09 11:56:46,696 - porw_blockchain.network.discovery - INFO - Trying DNS seeds
+2025-04-09 11:56:46,731 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed1.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 11:56:46,777 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed2.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 11:56:46,810 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed3.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 11:56:46,812 - porw_blockchain.network.discovery - INFO - Saved 1 peers to database
+2025-04-09 11:57:46,872 - porw_blockchain.network.discovery - INFO - Looking for 1 more peers
+2025-04-09 11:57:46,872 - porw_blockchain.network.discovery - INFO - Trying bootstrap nodes
+2025-04-09 11:57:46,873 - porw_blockchain.network.discovery - WARNING - Not connecting to banned peer Peer(storage_@127.0.0.1:3500, BANNED (BANNED), rep:40): Multiple connection attempts with no success
+2025-04-09 11:57:46,873 - porw_blockchain.network.discovery - INFO - Trying DNS seeds
+2025-04-09 11:57:46,924 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed1.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 11:57:46,958 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed2.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 11:57:47,006 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed3.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 11:57:47,007 - porw_blockchain.network.discovery - INFO - Saved 1 peers to database
+2025-04-09 11:58:47,050 - porw_blockchain.network.discovery - INFO - Looking for 1 more peers
+2025-04-09 11:58:47,050 - porw_blockchain.network.discovery - INFO - Trying bootstrap nodes
+2025-04-09 11:58:47,050 - porw_blockchain.network.discovery - WARNING - Not connecting to banned peer Peer(storage_@127.0.0.1:3500, BANNED (BANNED), rep:40): Multiple connection attempts with no success
+2025-04-09 11:58:47,050 - porw_blockchain.network.discovery - INFO - Trying DNS seeds
+2025-04-09 11:58:47,084 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed1.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 11:58:47,117 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed2.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 11:58:47,152 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed3.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 11:58:47,153 - porw_blockchain.network.discovery - INFO - Saved 1 peers to database
+2025-04-09 11:59:47,213 - porw_blockchain.network.discovery - INFO - Looking for 1 more peers
+2025-04-09 11:59:47,214 - porw_blockchain.network.discovery - INFO - Trying bootstrap nodes
+2025-04-09 11:59:47,215 - porw_blockchain.network.discovery - WARNING - Not connecting to banned peer Peer(storage_@127.0.0.1:3500, BANNED (BANNED), rep:40): Multiple connection attempts with no success
+2025-04-09 11:59:47,215 - porw_blockchain.network.discovery - INFO - Trying DNS seeds
+2025-04-09 11:59:47,251 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed1.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 11:59:47,288 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed2.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 11:59:47,322 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed3.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 11:59:47,322 - porw_blockchain.network.discovery - INFO - Saved 1 peers to database
+2025-04-09 12:00:47,382 - porw_blockchain.network.discovery - INFO - Looking for 1 more peers
+2025-04-09 12:00:47,382 - porw_blockchain.network.discovery - INFO - Trying bootstrap nodes
+2025-04-09 12:00:47,383 - porw_blockchain.network.discovery - WARNING - Not connecting to banned peer Peer(storage_@127.0.0.1:3500, BANNED (BANNED), rep:40): Multiple connection attempts with no success
+2025-04-09 12:00:47,383 - porw_blockchain.network.discovery - INFO - Trying DNS seeds
+2025-04-09 12:00:47,419 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed1.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 12:00:47,452 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed2.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 12:00:47,487 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed3.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 12:00:47,488 - porw_blockchain.network.discovery - INFO - Saved 1 peers to database
+2025-04-09 12:01:47,548 - porw_blockchain.network.discovery - INFO - Looking for 1 more peers
+2025-04-09 12:01:47,549 - porw_blockchain.network.discovery - INFO - Trying bootstrap nodes
+2025-04-09 12:01:47,549 - porw_blockchain.network.discovery - WARNING - Not connecting to banned peer Peer(storage_@127.0.0.1:3500, BANNED (BANNED), rep:40): Multiple connection attempts with no success
+2025-04-09 12:01:47,550 - porw_blockchain.network.discovery - INFO - Trying DNS seeds
+2025-04-09 12:01:47,586 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed1.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 12:01:47,623 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed2.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 12:01:47,656 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed3.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 12:01:47,657 - porw_blockchain.network.discovery - INFO - Saved 1 peers to database
+2025-04-09 12:02:47,716 - porw_blockchain.network.discovery - INFO - Looking for 1 more peers
+2025-04-09 12:02:47,717 - porw_blockchain.network.discovery - INFO - Trying bootstrap nodes
+2025-04-09 12:02:47,717 - porw_blockchain.network.discovery - WARNING - Not connecting to banned peer Peer(storage_@127.0.0.1:3500, BANNED (BANNED), rep:40): Multiple connection attempts with no success
+2025-04-09 12:02:47,718 - porw_blockchain.network.discovery - INFO - Trying DNS seeds
+2025-04-09 12:02:47,752 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed1.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 12:02:47,786 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed2.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 12:02:47,819 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed3.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 12:02:47,821 - porw_blockchain.network.discovery - INFO - Saved 1 peers to database
+2025-04-09 12:03:47,881 - porw_blockchain.network.discovery - INFO - Looking for 1 more peers
+2025-04-09 12:03:47,881 - porw_blockchain.network.discovery - INFO - Trying bootstrap nodes
+2025-04-09 12:03:47,882 - porw_blockchain.network.discovery - WARNING - Not connecting to banned peer Peer(storage_@127.0.0.1:3500, BANNED (BANNED), rep:40): Multiple connection attempts with no success
+2025-04-09 12:03:47,882 - porw_blockchain.network.discovery - INFO - Trying DNS seeds
+2025-04-09 12:03:47,914 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed1.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 12:03:47,945 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed2.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 12:03:47,981 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed3.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 12:03:47,983 - porw_blockchain.network.discovery - INFO - Saved 1 peers to database
+2025-04-09 12:04:48,042 - porw_blockchain.network.discovery - INFO - Looking for 1 more peers
+2025-04-09 12:04:48,043 - porw_blockchain.network.discovery - INFO - Trying bootstrap nodes
+2025-04-09 12:04:48,043 - porw_blockchain.network.discovery - WARNING - Not connecting to banned peer Peer(storage_@127.0.0.1:3500, BANNED (BANNED), rep:40): Multiple connection attempts with no success
+2025-04-09 12:04:48,043 - porw_blockchain.network.discovery - INFO - Trying DNS seeds
+2025-04-09 12:04:48,093 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed1.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 12:04:48,293 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed2.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 12:04:48,572 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed3.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 12:04:48,573 - porw_blockchain.network.discovery - INFO - Saved 1 peers to database
+2025-04-09 12:05:48,633 - porw_blockchain.network.discovery - INFO - Looking for 1 more peers
+2025-04-09 12:05:48,634 - porw_blockchain.network.discovery - INFO - Trying bootstrap nodes
+2025-04-09 12:05:48,634 - porw_blockchain.network.discovery - WARNING - Not connecting to banned peer Peer(storage_@127.0.0.1:3500, BANNED (BANNED), rep:40): Multiple connection attempts with no success
+2025-04-09 12:05:48,634 - porw_blockchain.network.discovery - INFO - Trying DNS seeds
+2025-04-09 12:05:48,677 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed1.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 12:05:48,715 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed2.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 12:05:48,758 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed3.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 12:05:48,758 - porw_blockchain.network.discovery - INFO - Saved 1 peers to database
+2025-04-09 12:06:48,817 - porw_blockchain.network.discovery - INFO - Looking for 1 more peers
+2025-04-09 12:06:48,818 - porw_blockchain.network.discovery - INFO - Trying bootstrap nodes
+2025-04-09 12:06:48,818 - porw_blockchain.network.discovery - WARNING - Not connecting to banned peer Peer(storage_@127.0.0.1:3500, BANNED (BANNED), rep:40): Multiple connection attempts with no success
+2025-04-09 12:06:48,818 - porw_blockchain.network.discovery - INFO - Trying DNS seeds
+2025-04-09 12:06:48,854 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed1.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 12:06:48,887 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed2.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 12:06:48,921 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed3.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 12:06:48,922 - porw_blockchain.network.discovery - INFO - Saved 1 peers to database
+2025-04-09 12:07:48,981 - porw_blockchain.network.discovery - INFO - Looking for 1 more peers
+2025-04-09 12:07:48,982 - porw_blockchain.network.discovery - INFO - Trying bootstrap nodes
+2025-04-09 12:07:48,982 - porw_blockchain.network.discovery - WARNING - Not connecting to banned peer Peer(storage_@127.0.0.1:3500, BANNED (BANNED), rep:40): Multiple connection attempts with no success
+2025-04-09 12:07:48,982 - porw_blockchain.network.discovery - INFO - Trying DNS seeds
+2025-04-09 12:07:49,021 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed1.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 12:07:49,068 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed2.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 12:07:49,105 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed3.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 12:07:49,106 - porw_blockchain.network.discovery - INFO - Saved 1 peers to database
+2025-04-09 12:08:49,166 - porw_blockchain.network.discovery - INFO - Looking for 1 more peers
+2025-04-09 12:08:49,167 - porw_blockchain.network.discovery - INFO - Trying bootstrap nodes
+2025-04-09 12:08:49,167 - porw_blockchain.network.discovery - WARNING - Not connecting to banned peer Peer(storage_@127.0.0.1:3500, BANNED (BANNED), rep:40): Multiple connection attempts with no success
+2025-04-09 12:08:49,167 - porw_blockchain.network.discovery - INFO - Trying DNS seeds
+2025-04-09 12:08:54,202 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed1.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 12:08:54,240 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed2.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 12:08:54,276 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed3.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 12:08:54,277 - porw_blockchain.network.discovery - INFO - Saved 1 peers to database
+2025-04-09 12:09:54,337 - porw_blockchain.network.discovery - INFO - Looking for 1 more peers
+2025-04-09 12:09:54,338 - porw_blockchain.network.discovery - INFO - Trying bootstrap nodes
+2025-04-09 12:09:54,338 - porw_blockchain.network.discovery - WARNING - Not connecting to banned peer Peer(storage_@127.0.0.1:3500, BANNED (BANNED), rep:40): Multiple connection attempts with no success
+2025-04-09 12:09:54,338 - porw_blockchain.network.discovery - INFO - Trying DNS seeds
+2025-04-09 12:09:54,372 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed1.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 12:09:54,408 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed2.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 12:09:54,443 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed3.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 12:09:54,443 - porw_blockchain.network.discovery - INFO - Saved 1 peers to database
+2025-04-09 12:10:54,503 - porw_blockchain.network.discovery - INFO - Looking for 1 more peers
+2025-04-09 12:10:54,504 - porw_blockchain.network.discovery - INFO - Trying bootstrap nodes
+2025-04-09 12:10:54,505 - porw_blockchain.network.discovery - WARNING - Not connecting to banned peer Peer(storage_@127.0.0.1:3500, BANNED (BANNED), rep:40): Multiple connection attempts with no success
+2025-04-09 12:10:54,505 - porw_blockchain.network.discovery - INFO - Trying DNS seeds
+2025-04-09 12:10:54,541 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed1.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 12:10:54,572 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed2.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 12:10:54,607 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed3.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 12:10:54,608 - porw_blockchain.network.discovery - INFO - Saved 1 peers to database
+2025-04-09 12:11:54,669 - porw_blockchain.network.discovery - INFO - Looking for 1 more peers
+2025-04-09 12:11:54,670 - porw_blockchain.network.discovery - INFO - Trying bootstrap nodes
+2025-04-09 12:11:54,670 - porw_blockchain.network.discovery - WARNING - Not connecting to banned peer Peer(storage_@127.0.0.1:3500, BANNED (BANNED), rep:40): Multiple connection attempts with no success
+2025-04-09 12:11:54,671 - porw_blockchain.network.discovery - INFO - Trying DNS seeds
+2025-04-09 12:11:54,707 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed1.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 12:11:54,744 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed2.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 12:11:54,780 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed3.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 12:11:54,781 - porw_blockchain.network.discovery - INFO - Saved 1 peers to database
+2025-04-09 12:12:54,819 - porw_blockchain.network.discovery - INFO - Looking for 1 more peers
+2025-04-09 12:12:54,820 - porw_blockchain.network.discovery - INFO - Trying bootstrap nodes
+2025-04-09 12:12:54,820 - porw_blockchain.network.discovery - WARNING - Not connecting to banned peer Peer(storage_@127.0.0.1:3500, BANNED (BANNED), rep:40): Multiple connection attempts with no success
+2025-04-09 12:12:54,820 - porw_blockchain.network.discovery - INFO - Trying DNS seeds
+2025-04-09 12:13:04,852 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed1.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 12:13:04,896 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed2.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 12:13:04,940 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed3.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 12:13:04,941 - porw_blockchain.network.discovery - INFO - Saved 1 peers to database
+2025-04-09 12:14:05,001 - porw_blockchain.network.discovery - INFO - Looking for 1 more peers
+2025-04-09 12:14:05,001 - porw_blockchain.network.discovery - INFO - Trying bootstrap nodes
+2025-04-09 12:14:05,002 - porw_blockchain.network.discovery - WARNING - Not connecting to banned peer Peer(storage_@127.0.0.1:3500, BANNED (BANNED), rep:40): Multiple connection attempts with no success
+2025-04-09 12:14:05,002 - porw_blockchain.network.discovery - INFO - Trying DNS seeds
+2025-04-09 12:14:05,050 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed1.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 12:14:10,099 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed2.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 12:14:10,131 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed3.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 12:14:10,132 - porw_blockchain.network.discovery - INFO - Saved 1 peers to database
+2025-04-09 12:15:10,191 - porw_blockchain.network.discovery - INFO - Looking for 1 more peers
+2025-04-09 12:15:10,192 - porw_blockchain.network.discovery - INFO - Trying bootstrap nodes
+2025-04-09 12:15:10,192 - porw_blockchain.network.discovery - WARNING - Not connecting to banned peer Peer(storage_@127.0.0.1:3500, BANNED (BANNED), rep:40): Multiple connection attempts with no success
+2025-04-09 12:15:10,192 - porw_blockchain.network.discovery - INFO - Trying DNS seeds
+2025-04-09 12:15:10,230 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed1.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 12:15:10,279 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed2.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 12:15:10,335 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed3.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 12:15:10,336 - porw_blockchain.network.discovery - INFO - Saved 1 peers to database
+2025-04-09 12:16:10,395 - porw_blockchain.network.discovery - INFO - Looking for 1 more peers
+2025-04-09 12:16:10,396 - porw_blockchain.network.discovery - INFO - Trying bootstrap nodes
+2025-04-09 12:16:10,396 - porw_blockchain.network.discovery - WARNING - Not connecting to banned peer Peer(storage_@127.0.0.1:3500, BANNED (BANNED), rep:40): Multiple connection attempts with no success
+2025-04-09 12:16:10,396 - porw_blockchain.network.discovery - INFO - Trying DNS seeds
+2025-04-09 12:16:10,429 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed1.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 12:16:10,473 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed2.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 12:16:10,515 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed3.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 12:16:10,515 - porw_blockchain.network.discovery - INFO - Saved 1 peers to database
+2025-04-09 12:17:10,575 - porw_blockchain.network.discovery - INFO - Looking for 1 more peers
+2025-04-09 12:17:10,576 - porw_blockchain.network.discovery - INFO - Trying bootstrap nodes
+2025-04-09 12:17:10,577 - porw_blockchain.network.discovery - WARNING - Not connecting to banned peer Peer(storage_@127.0.0.1:3500, BANNED (BANNED), rep:40): Multiple connection attempts with no success
+2025-04-09 12:17:10,577 - porw_blockchain.network.discovery - INFO - Trying DNS seeds
+2025-04-09 12:17:10,614 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed1.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 12:17:10,663 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed2.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 12:17:10,700 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed3.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 12:17:10,701 - porw_blockchain.network.discovery - INFO - Saved 1 peers to database
+2025-04-09 12:18:10,761 - porw_blockchain.network.discovery - INFO - Looking for 1 more peers
+2025-04-09 12:18:10,762 - porw_blockchain.network.discovery - INFO - Trying bootstrap nodes
+2025-04-09 12:18:10,763 - porw_blockchain.network.discovery - WARNING - Not connecting to banned peer Peer(storage_@127.0.0.1:3500, BANNED (BANNED), rep:40): Multiple connection attempts with no success
+2025-04-09 12:18:10,763 - porw_blockchain.network.discovery - INFO - Trying DNS seeds
+2025-04-09 12:18:10,852 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed1.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 12:18:15,989 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed2.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 12:18:16,073 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed3.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 12:18:16,074 - porw_blockchain.network.discovery - INFO - Saved 1 peers to database
+2025-04-09 12:19:16,134 - porw_blockchain.network.discovery - INFO - Looking for 1 more peers
+2025-04-09 12:19:16,135 - porw_blockchain.network.discovery - INFO - Trying bootstrap nodes
+2025-04-09 12:19:16,135 - porw_blockchain.network.discovery - WARNING - Not connecting to banned peer Peer(storage_@127.0.0.1:3500, BANNED (BANNED), rep:40): Multiple connection attempts with no success
+2025-04-09 12:19:16,136 - porw_blockchain.network.discovery - INFO - Trying DNS seeds
+2025-04-09 12:19:16,220 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed1.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 12:19:16,317 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed2.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 12:19:16,400 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed3.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 12:19:16,401 - porw_blockchain.network.discovery - INFO - Saved 1 peers to database
+2025-04-09 12:20:16,462 - porw_blockchain.network.discovery - INFO - Looking for 1 more peers
+2025-04-09 12:20:16,462 - porw_blockchain.network.discovery - INFO - Trying bootstrap nodes
+2025-04-09 12:20:16,463 - porw_blockchain.network.discovery - WARNING - Not connecting to banned peer Peer(storage_@127.0.0.1:3500, BANNED (BANNED), rep:40): Multiple connection attempts with no success
+2025-04-09 12:20:16,463 - porw_blockchain.network.discovery - INFO - Trying DNS seeds
+2025-04-09 12:20:16,617 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed1.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 12:20:16,822 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed2.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 12:20:17,025 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed3.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 12:20:17,026 - porw_blockchain.network.discovery - INFO - Saved 1 peers to database
+2025-04-09 12:21:17,086 - porw_blockchain.network.discovery - INFO - Looking for 1 more peers
+2025-04-09 12:21:17,086 - porw_blockchain.network.discovery - INFO - Trying bootstrap nodes
+2025-04-09 12:21:17,087 - porw_blockchain.network.discovery - WARNING - Not connecting to banned peer Peer(storage_@127.0.0.1:3500, BANNED (BANNED), rep:40): Multiple connection attempts with no success
+2025-04-09 12:21:17,087 - porw_blockchain.network.discovery - INFO - Trying DNS seeds
+2025-04-09 12:21:17,166 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed1.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 12:21:17,248 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed2.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 12:21:17,331 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed3.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 12:21:17,333 - porw_blockchain.network.discovery - INFO - Saved 1 peers to database
+2025-04-09 12:22:17,393 - porw_blockchain.network.discovery - INFO - Looking for 1 more peers
+2025-04-09 12:22:17,394 - porw_blockchain.network.discovery - INFO - Trying bootstrap nodes
+2025-04-09 12:22:17,394 - porw_blockchain.network.discovery - WARNING - Not connecting to banned peer Peer(storage_@127.0.0.1:3500, BANNED (BANNED), rep:40): Multiple connection attempts with no success
+2025-04-09 12:22:17,395 - porw_blockchain.network.discovery - INFO - Trying DNS seeds
+2025-04-09 12:22:17,481 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed1.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 12:22:17,565 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed2.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 12:22:17,647 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed3.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 12:22:17,649 - porw_blockchain.network.discovery - INFO - Saved 1 peers to database
+2025-04-09 12:23:17,708 - porw_blockchain.network.discovery - INFO - Looking for 1 more peers
+2025-04-09 12:23:17,709 - porw_blockchain.network.discovery - INFO - Trying bootstrap nodes
+2025-04-09 12:23:17,710 - porw_blockchain.network.discovery - WARNING - Not connecting to banned peer Peer(storage_@127.0.0.1:3500, BANNED (BANNED), rep:40): Multiple connection attempts with no success
+2025-04-09 12:23:17,710 - porw_blockchain.network.discovery - INFO - Trying DNS seeds
+2025-04-09 12:23:17,746 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed1.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 12:23:17,784 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed2.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 12:23:17,821 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed3.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 12:23:17,822 - porw_blockchain.network.discovery - INFO - Saved 1 peers to database
+2025-04-09 12:24:17,882 - porw_blockchain.network.discovery - INFO - Looking for 1 more peers
+2025-04-09 12:24:17,884 - porw_blockchain.network.discovery - INFO - Trying bootstrap nodes
+2025-04-09 12:24:17,884 - porw_blockchain.network.discovery - WARNING - Not connecting to banned peer Peer(storage_@127.0.0.1:3500, BANNED (BANNED), rep:40): Multiple connection attempts with no success
+2025-04-09 12:24:17,885 - porw_blockchain.network.discovery - INFO - Trying DNS seeds
+2025-04-09 12:24:22,981 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed1.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 12:24:23,018 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed2.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 12:24:23,054 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed3.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 12:24:23,056 - porw_blockchain.network.discovery - INFO - Saved 1 peers to database
+2025-04-09 12:25:23,117 - porw_blockchain.network.discovery - INFO - Looking for 1 more peers
+2025-04-09 12:25:23,118 - porw_blockchain.network.discovery - INFO - Trying bootstrap nodes
+2025-04-09 12:25:23,118 - porw_blockchain.network.discovery - WARNING - Not connecting to banned peer Peer(storage_@127.0.0.1:3500, BANNED (BANNED), rep:40): Multiple connection attempts with no success
+2025-04-09 12:25:23,119 - porw_blockchain.network.discovery - INFO - Trying DNS seeds
+2025-04-09 12:25:23,156 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed1.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 12:25:23,191 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed2.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 12:25:23,226 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed3.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 12:25:23,228 - porw_blockchain.network.discovery - INFO - Saved 1 peers to database
+2025-04-09 12:26:23,289 - porw_blockchain.network.discovery - INFO - Looking for 1 more peers
+2025-04-09 12:26:23,289 - porw_blockchain.network.discovery - INFO - Trying bootstrap nodes
+2025-04-09 12:26:23,289 - porw_blockchain.network.discovery - WARNING - Not connecting to banned peer Peer(storage_@127.0.0.1:3500, BANNED (BANNED), rep:40): Multiple connection attempts with no success
+2025-04-09 12:26:23,289 - porw_blockchain.network.discovery - INFO - Trying DNS seeds
+2025-04-09 12:26:23,334 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed1.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 12:26:23,368 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed2.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 12:26:23,409 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed3.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 12:26:23,410 - porw_blockchain.network.discovery - INFO - Saved 1 peers to database
+2025-04-09 12:27:23,453 - porw_blockchain.network.discovery - INFO - Looking for 1 more peers
+2025-04-09 12:27:23,453 - porw_blockchain.network.discovery - INFO - Trying bootstrap nodes
+2025-04-09 12:27:23,454 - porw_blockchain.network.discovery - WARNING - Not connecting to banned peer Peer(storage_@127.0.0.1:3500, BANNED (BANNED), rep:40): Multiple connection attempts with no success
+2025-04-09 12:27:23,454 - porw_blockchain.network.discovery - INFO - Trying DNS seeds
+2025-04-09 12:27:23,487 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed1.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 12:27:23,523 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed2.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 12:27:23,558 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed3.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 12:27:23,559 - porw_blockchain.network.discovery - INFO - Saved 1 peers to database
+2025-04-09 12:28:23,619 - porw_blockchain.network.discovery - INFO - Looking for 1 more peers
+2025-04-09 12:28:23,620 - porw_blockchain.network.discovery - INFO - Trying bootstrap nodes
+2025-04-09 12:28:23,620 - porw_blockchain.network.discovery - WARNING - Not connecting to banned peer Peer(storage_@127.0.0.1:3500, BANNED (BANNED), rep:40): Multiple connection attempts with no success
+2025-04-09 12:28:23,621 - porw_blockchain.network.discovery - INFO - Trying DNS seeds
+2025-04-09 12:28:23,727 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed1.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 12:28:23,797 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed2.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 12:28:23,861 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed3.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 12:28:23,863 - porw_blockchain.network.discovery - INFO - Saved 1 peers to database
+2025-04-09 12:29:23,923 - porw_blockchain.network.discovery - INFO - Looking for 1 more peers
+2025-04-09 12:29:23,923 - porw_blockchain.network.discovery - INFO - Trying bootstrap nodes
+2025-04-09 12:29:23,924 - porw_blockchain.network.discovery - WARNING - Not connecting to banned peer Peer(storage_@127.0.0.1:3500, BANNED (BANNED), rep:40): Multiple connection attempts with no success
+2025-04-09 12:29:23,924 - porw_blockchain.network.discovery - INFO - Trying DNS seeds
+2025-04-09 12:29:25,070 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed1.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 12:29:25,426 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed2.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 12:29:25,471 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed3.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 12:29:25,473 - porw_blockchain.network.discovery - INFO - Saved 1 peers to database
+2025-04-09 12:30:25,533 - porw_blockchain.network.discovery - INFO - Looking for 1 more peers
+2025-04-09 12:30:25,534 - porw_blockchain.network.discovery - INFO - Trying bootstrap nodes
+2025-04-09 12:30:25,534 - porw_blockchain.network.discovery - WARNING - Not connecting to banned peer Peer(storage_@127.0.0.1:3500, BANNED (BANNED), rep:40): Multiple connection attempts with no success
+2025-04-09 12:30:25,534 - porw_blockchain.network.discovery - INFO - Trying DNS seeds
+2025-04-09 12:30:25,567 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed1.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 12:30:25,601 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed2.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 12:30:25,639 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed3.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 12:30:25,640 - porw_blockchain.network.discovery - INFO - Saved 1 peers to database
+2025-04-09 12:31:25,700 - porw_blockchain.network.discovery - INFO - Looking for 1 more peers
+2025-04-09 12:31:25,701 - porw_blockchain.network.discovery - INFO - Trying bootstrap nodes
+2025-04-09 12:31:25,701 - porw_blockchain.network.discovery - WARNING - Not connecting to banned peer Peer(storage_@127.0.0.1:3500, BANNED (BANNED), rep:40): Multiple connection attempts with no success
+2025-04-09 12:31:25,701 - porw_blockchain.network.discovery - INFO - Trying DNS seeds
+2025-04-09 12:31:25,811 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed1.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 12:31:25,848 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed2.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 12:31:25,887 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed3.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 12:31:25,889 - porw_blockchain.network.discovery - INFO - Saved 1 peers to database
+2025-04-09 12:32:25,949 - porw_blockchain.network.discovery - INFO - Looking for 1 more peers
+2025-04-09 12:32:25,949 - porw_blockchain.network.discovery - INFO - Trying bootstrap nodes
+2025-04-09 12:32:25,950 - porw_blockchain.network.discovery - WARNING - Not connecting to banned peer Peer(storage_@127.0.0.1:3500, BANNED (BANNED), rep:40): Multiple connection attempts with no success
+2025-04-09 12:32:25,950 - porw_blockchain.network.discovery - INFO - Trying DNS seeds
+2025-04-09 12:32:25,983 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed1.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 12:32:26,017 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed2.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 12:32:26,052 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed3.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 12:32:26,054 - porw_blockchain.network.discovery - INFO - Saved 1 peers to database
+2025-04-09 12:33:26,113 - porw_blockchain.network.discovery - INFO - Looking for 1 more peers
+2025-04-09 12:33:26,113 - porw_blockchain.network.discovery - INFO - Trying bootstrap nodes
+2025-04-09 12:33:26,114 - porw_blockchain.network.discovery - WARNING - Not connecting to banned peer Peer(storage_@127.0.0.1:3500, BANNED (BANNED), rep:40): Multiple connection attempts with no success
+2025-04-09 12:33:26,114 - porw_blockchain.network.discovery - INFO - Trying DNS seeds
+2025-04-09 12:33:27,054 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed1.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 12:33:27,121 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed2.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 12:33:27,173 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed3.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 12:33:27,174 - porw_blockchain.network.discovery - INFO - Saved 1 peers to database
+2025-04-09 12:34:27,233 - porw_blockchain.network.discovery - INFO - Looking for 1 more peers
+2025-04-09 12:34:27,234 - porw_blockchain.network.discovery - INFO - Trying bootstrap nodes
+2025-04-09 12:34:27,234 - porw_blockchain.network.discovery - WARNING - Not connecting to banned peer Peer(storage_@127.0.0.1:3500, BANNED (BANNED), rep:40): Multiple connection attempts with no success
+2025-04-09 12:34:27,234 - porw_blockchain.network.discovery - INFO - Trying DNS seeds
+2025-04-09 12:34:27,278 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed1.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 12:34:27,312 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed2.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 12:34:27,345 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed3.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 12:34:27,346 - porw_blockchain.network.discovery - INFO - Saved 1 peers to database
+2025-04-09 12:35:27,406 - porw_blockchain.network.discovery - INFO - Looking for 1 more peers
+2025-04-09 12:35:27,406 - porw_blockchain.network.discovery - INFO - Trying bootstrap nodes
+2025-04-09 12:35:27,407 - porw_blockchain.network.discovery - WARNING - Not connecting to banned peer Peer(storage_@127.0.0.1:3500, BANNED (BANNED), rep:40): Multiple connection attempts with no success
+2025-04-09 12:35:27,407 - porw_blockchain.network.discovery - INFO - Trying DNS seeds
+2025-04-09 12:35:27,447 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed1.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 12:35:27,491 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed2.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 12:35:27,526 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed3.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 12:35:27,527 - porw_blockchain.network.discovery - INFO - Saved 1 peers to database
+2025-04-09 12:36:27,587 - porw_blockchain.network.discovery - INFO - Looking for 1 more peers
+2025-04-09 12:36:27,588 - porw_blockchain.network.discovery - INFO - Trying bootstrap nodes
+2025-04-09 12:36:27,589 - porw_blockchain.network.discovery - WARNING - Not connecting to banned peer Peer(storage_@127.0.0.1:3500, BANNED (BANNED), rep:40): Multiple connection attempts with no success
+2025-04-09 12:36:27,589 - porw_blockchain.network.discovery - INFO - Trying DNS seeds
+2025-04-09 12:36:27,625 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed1.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 12:36:27,658 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed2.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 12:36:27,692 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed3.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 12:36:27,694 - porw_blockchain.network.discovery - INFO - Saved 1 peers to database
+2025-04-09 12:37:27,755 - porw_blockchain.network.discovery - INFO - Looking for 1 more peers
+2025-04-09 12:37:27,755 - porw_blockchain.network.discovery - INFO - Trying bootstrap nodes
+2025-04-09 12:37:27,756 - porw_blockchain.network.discovery - WARNING - Not connecting to banned peer Peer(storage_@127.0.0.1:3500, BANNED (BANNED), rep:40): Multiple connection attempts with no success
+2025-04-09 12:37:27,756 - porw_blockchain.network.discovery - INFO - Trying DNS seeds
+2025-04-09 12:37:27,826 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed1.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 12:37:27,866 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed2.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 12:37:27,903 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed3.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 12:37:27,904 - porw_blockchain.network.discovery - INFO - Saved 1 peers to database
+2025-04-09 12:38:27,965 - porw_blockchain.network.discovery - INFO - Looking for 1 more peers
+2025-04-09 12:38:27,966 - porw_blockchain.network.discovery - INFO - Trying bootstrap nodes
+2025-04-09 12:38:27,966 - porw_blockchain.network.discovery - WARNING - Not connecting to banned peer Peer(storage_@127.0.0.1:3500, BANNED (BANNED), rep:40): Multiple connection attempts with no success
+2025-04-09 12:38:27,967 - porw_blockchain.network.discovery - INFO - Trying DNS seeds
+2025-04-09 12:38:28,003 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed1.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 12:38:28,037 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed2.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 12:38:28,071 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed3.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 12:38:28,073 - porw_blockchain.network.discovery - INFO - Saved 1 peers to database
+2025-04-09 12:39:28,133 - porw_blockchain.network.discovery - INFO - Looking for 1 more peers
+2025-04-09 12:39:28,133 - porw_blockchain.network.discovery - INFO - Trying bootstrap nodes
+2025-04-09 12:39:28,134 - porw_blockchain.network.discovery - WARNING - Not connecting to banned peer Peer(storage_@127.0.0.1:3500, BANNED (BANNED), rep:40): Multiple connection attempts with no success
+2025-04-09 12:39:28,134 - porw_blockchain.network.discovery - INFO - Trying DNS seeds
+2025-04-09 12:39:28,166 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed1.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 12:39:28,200 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed2.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 12:39:28,236 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed3.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 12:39:28,237 - porw_blockchain.network.discovery - INFO - Saved 1 peers to database
+2025-04-09 12:40:28,297 - porw_blockchain.network.discovery - INFO - Looking for 1 more peers
+2025-04-09 12:40:28,298 - porw_blockchain.network.discovery - INFO - Trying bootstrap nodes
+2025-04-09 12:40:28,299 - porw_blockchain.network.discovery - WARNING - Not connecting to banned peer Peer(storage_@127.0.0.1:3500, BANNED (BANNED), rep:40): Multiple connection attempts with no success
+2025-04-09 12:40:28,299 - porw_blockchain.network.discovery - INFO - Trying DNS seeds
+2025-04-09 12:40:28,332 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed1.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 12:40:28,376 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed2.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 12:40:28,419 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed3.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 12:40:28,420 - porw_blockchain.network.discovery - INFO - Saved 1 peers to database
+2025-04-09 12:41:28,437 - porw_blockchain.network.discovery - INFO - Looking for 1 more peers
+2025-04-09 12:41:28,437 - porw_blockchain.network.discovery - INFO - Trying bootstrap nodes
+2025-04-09 12:41:28,437 - porw_blockchain.network.discovery - WARNING - Not connecting to banned peer Peer(storage_@127.0.0.1:3500, BANNED (BANNED), rep:40): Multiple connection attempts with no success
+2025-04-09 12:41:28,437 - porw_blockchain.network.discovery - INFO - Trying DNS seeds
+2025-04-09 12:41:28,471 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed1.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 12:41:28,505 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed2.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 12:41:28,538 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed3.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 12:41:28,540 - porw_blockchain.network.discovery - INFO - Saved 1 peers to database
+2025-04-09 12:42:28,599 - porw_blockchain.network.discovery - INFO - Looking for 1 more peers
+2025-04-09 12:42:28,599 - porw_blockchain.network.discovery - INFO - Trying bootstrap nodes
+2025-04-09 12:42:28,600 - porw_blockchain.network.discovery - WARNING - Not connecting to banned peer Peer(storage_@127.0.0.1:3500, BANNED (BANNED), rep:40): Multiple connection attempts with no success
+2025-04-09 12:42:28,600 - porw_blockchain.network.discovery - INFO - Trying DNS seeds
+2025-04-09 12:42:28,632 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed1.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 12:42:28,668 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed2.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 12:42:28,717 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed3.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 12:42:28,717 - porw_blockchain.network.discovery - INFO - Saved 1 peers to database
+2025-04-09 12:43:28,777 - porw_blockchain.network.discovery - INFO - Looking for 1 more peers
+2025-04-09 12:43:28,778 - porw_blockchain.network.discovery - INFO - Trying bootstrap nodes
+2025-04-09 12:43:28,778 - porw_blockchain.network.discovery - WARNING - Not connecting to banned peer Peer(storage_@127.0.0.1:3500, BANNED (BANNED), rep:40): Multiple connection attempts with no success
+2025-04-09 12:43:28,779 - porw_blockchain.network.discovery - INFO - Trying DNS seeds
+2025-04-09 12:43:28,815 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed1.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 12:43:28,857 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed2.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 12:43:28,899 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed3.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 12:43:28,899 - porw_blockchain.network.discovery - INFO - Saved 1 peers to database
+2025-04-09 12:44:28,959 - porw_blockchain.network.discovery - INFO - Looking for 1 more peers
+2025-04-09 12:44:28,959 - porw_blockchain.network.discovery - INFO - Trying bootstrap nodes
+2025-04-09 12:44:28,960 - porw_blockchain.network.discovery - WARNING - Not connecting to banned peer Peer(storage_@127.0.0.1:3500, BANNED (BANNED), rep:40): Multiple connection attempts with no success
+2025-04-09 12:44:28,960 - porw_blockchain.network.discovery - INFO - Trying DNS seeds
+2025-04-09 12:44:29,068 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed1.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 12:44:29,135 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed2.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 12:44:29,202 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed3.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 12:44:29,203 - porw_blockchain.network.discovery - INFO - Saved 1 peers to database
+2025-04-09 12:45:29,262 - porw_blockchain.network.discovery - INFO - Looking for 1 more peers
+2025-04-09 12:45:29,262 - porw_blockchain.network.discovery - INFO - Trying bootstrap nodes
+2025-04-09 12:45:29,263 - porw_blockchain.network.discovery - WARNING - Not connecting to banned peer Peer(storage_@127.0.0.1:3500, BANNED (BANNED), rep:40): Multiple connection attempts with no success
+2025-04-09 12:45:29,263 - porw_blockchain.network.discovery - INFO - Trying DNS seeds
+2025-04-09 12:45:29,297 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed1.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 12:45:29,329 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed2.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 12:45:29,368 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed3.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 12:45:29,368 - porw_blockchain.network.discovery - INFO - Saved 1 peers to database
+2025-04-09 12:46:29,428 - porw_blockchain.network.discovery - INFO - Looking for 1 more peers
+2025-04-09 12:46:29,428 - porw_blockchain.network.discovery - INFO - Trying bootstrap nodes
+2025-04-09 12:46:29,429 - porw_blockchain.network.discovery - WARNING - Not connecting to banned peer Peer(storage_@127.0.0.1:3500, BANNED, rep:40): Multiple connection attempts with no success
+2025-04-09 12:46:29,429 - porw_blockchain.network.discovery - INFO - Trying DNS seeds
+2025-04-09 12:46:29,461 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed1.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 12:46:29,494 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed2.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 12:46:29,527 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed3.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 12:46:29,527 - porw_blockchain.network.peer - WARNING - Peer storage_node (127.0.0.1:3500) banned: Multiple connection attempts with no success
+2025-04-09 12:46:29,528 - porw_blockchain.network.discovery - INFO - Saved 1 peers to database
+2025-04-09 12:47:29,587 - porw_blockchain.network.discovery - INFO - Looking for 1 more peers
+2025-04-09 12:47:29,587 - porw_blockchain.network.discovery - INFO - Trying bootstrap nodes
+2025-04-09 12:47:29,587 - porw_blockchain.network.discovery - WARNING - Not connecting to banned peer Peer(storage_@127.0.0.1:3500, BANNED (BANNED), rep:40): Multiple connection attempts with no success
+2025-04-09 12:47:29,588 - porw_blockchain.network.discovery - INFO - Trying DNS seeds
+2025-04-09 12:47:29,622 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed1.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 12:47:29,662 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed2.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 12:47:29,702 - porw_blockchain.network.discovery - WARNING - Error resolving DNS seed seed3.porwblockchain.org: [Errno -2] Name or service not known
+2025-04-09 12:47:29,703 - porw_blockchain.network.discovery - INFO - Saved 1 peers to database

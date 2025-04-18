@@ -1,0 +1,70 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: porw-node
+  labels:
+    app: porw-node
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: porw-node
+  template:
+    metadata:
+      labels:
+        app: porw-node
+    spec:
+      containers:
+      - name: porw-node
+        image: porwblockchain/porw-node:latest
+        ports:
+        - containerPort: 8333  # P2P port
+        - containerPort: 8080  # API port
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "500m"
+          limits:
+            memory: "1Gi"
+            cpu: "1000m"
+        volumeMounts:
+        - name: porw-data
+          mountPath: /data
+        env:
+        - name: NODE_HOST
+          value: "0.0.0.0"
+        - name: P2P_PORT
+          value: "8333"
+        - name: LOG_LEVEL
+          value: "INFO"
+      volumes:
+      - name: porw-data
+        persistentVolumeClaim:
+          claimName: porw-data-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: porw-node-service
+spec:
+  selector:
+    app: porw-node
+  ports:
+  - name: api
+    port: 8080
+    targetPort: 8080
+  - name: p2p
+    port: 8333
+    targetPort: 8333
+  type: ClusterIP
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: porw-data-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi

@@ -1,0 +1,152 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="mb-4">Contact Details</h1>
+    
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="card-title mb-0">{{ contact.name }}</h5>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <p><strong>Address:</strong></p>
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" value="{{ contact.address }}" readonly>
+                        <button class="btn btn-outline-secondary copy-btn" data-clipboard-text="{{ contact.address }}">
+                            <i class="fas fa-copy"></i> Copy
+                        </button>
+                    </div>
+                    
+                    <p><strong>Email:</strong> {{ contact.email or 'Not specified' }}</p>
+                    <p><strong>Phone:</strong> {{ contact.phone or 'Not specified' }}</p>
+                </div>
+                <div class="col-md-6">
+                    <p><strong>Description:</strong></p>
+                    <p>{{ contact.description or 'No description provided.' }}</p>
+                    
+                    <p><strong>Tags:</strong></p>
+                    <div class="mb-3">
+                        {% if contact.tags %}
+                            {% for tag in contact.tags %}
+                                <span class="badge bg-secondary">{{ tag }}</span>
+                            {% endfor %}
+                        {% else %}
+                            <p class="text-muted">No tags</p>
+                        {% endif %}
+                    </div>
+                    
+                    <p><strong>Created:</strong> {{ contact.created_at|date }}</p>
+                    <p><strong>Last Updated:</strong> {{ contact.updated_at|date }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="card-title mb-0">Manage Tags</h5>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <h6>Add Tag</h6>
+                    <form action="/contacts/{{ contact.contact_id }}/add-tag" method="post" class="mb-3">
+                        <div class="input-group">
+                            <input type="text" class="form-control" name="tag" placeholder="Enter tag name" required>
+                            <button type="submit" class="btn btn-primary">Add</button>
+                        </div>
+                    </form>
+                </div>
+                <div class="col-md-6">
+                    <h6>Remove Tags</h6>
+                    {% if contact.tags %}
+                        <div class="mb-3">
+                            {% for tag in contact.tags %}
+                                <form action="/contacts/{{ contact.contact_id }}/remove-tag" method="post" class="d-inline-block mb-2">
+                                    <input type="hidden" name="tag" value="{{ tag }}">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger">
+                                        <i class="fas fa-times"></i> {{ tag }}
+                                    </button>
+                                </form>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="text-muted">No tags to remove</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="card-title mb-0">Actions</h5>
+        </div>
+        <div class="card-body">
+            <div class="d-flex gap-2">
+                <a href="/wallet/send?recipient={{ contact.address }}&contact_name={{ contact.name }}" class="btn btn-success">
+                    <i class="fas fa-paper-plane"></i> Send Funds
+                </a>
+                <a href="/contacts/{{ contact.contact_id }}/edit" class="btn btn-primary">
+                    <i class="fas fa-edit"></i> Edit Contact
+                </a>
+                <button type="button" class="btn btn-danger delete-contact-btn" data-contact-id="{{ contact.contact_id }}" data-contact-name="{{ contact.name }}">
+                    <i class="fas fa-trash"></i> Delete Contact
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="mb-4">
+        <a href="/contacts" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left"></i> Back to Address Book
+        </a>
+    </div>
+</div>
+
+<!-- Delete Contact Modal -->
+<div class="modal fade" id="deleteContactModal" tabindex="-1" aria-labelledby="deleteContactModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteContactModalLabel">Delete Contact</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete the contact <strong id="deleteContactName"></strong>?</p>
+                <p>This action cannot be undone.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <form id="deleteContactForm" action="/contacts/delete" method="post">
+                    <input type="hidden" id="deleteContactId" name="contact_id" value="{{ contact.contact_id }}">
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize clipboard.js
+        new ClipboardJS('.copy-btn');
+        
+        // Handle delete contact button click
+        document.querySelector('.delete-contact-btn').addEventListener('click', function() {
+            const contactId = this.getAttribute('data-contact-id');
+            const contactName = this.getAttribute('data-contact-name');
+            
+            // Set values in modal
+            document.getElementById('deleteContactId').value = contactId;
+            document.getElementById('deleteContactName').textContent = contactName;
+            
+            // Show modal
+            const modal = new bootstrap.Modal(document.getElementById('deleteContactModal'));
+            modal.show();
+        });
+    });
+</script>
+{% endblock %}

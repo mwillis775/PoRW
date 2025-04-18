@@ -1,0 +1,230 @@
+{% extends "base.html" %}
+
+{% block title %}Transaction {{ tx.id|truncate(10, True, '') }} - Blockchain Explorer{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row mb-4">
+        <div class="col-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{{ url_for('explorer_index') }}">Explorer</a></li>
+                    <li class="breadcrumb-item"><a href="{{ url_for('explorer_transactions') }}">Transactions</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Transaction {{ tx.id|truncate(10, True, '') }}</li>
+                </ol>
+            </nav>
+            <h1 class="mb-4">Transaction Details</h1>
+        </div>
+    </div>
+
+    <!-- Transaction Status -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body text-center">
+                    {% if tx.status == 'confirmed' %}
+                    <div class="alert alert-success mb-0" role="alert">
+                        <h4 class="alert-heading">Confirmed</h4>
+                        <p class="mb-0">This transaction has been confirmed and included in block #{{ tx.block_height }}.</p>
+                        <p class="mb-0">Confirmations: {{ tx.confirmations }}</p>
+                    </div>
+                    {% elif tx.status == 'pending' %}
+                    <div class="alert alert-warning mb-0" role="alert">
+                        <h4 class="alert-heading">Pending</h4>
+                        <p class="mb-0">This transaction is pending and waiting to be included in a block.</p>
+                    </div>
+                    {% else %}
+                    <div class="alert alert-danger mb-0" role="alert">
+                        <h4 class="alert-heading">Failed</h4>
+                        <p class="mb-0">This transaction has failed and will not be included in the blockchain.</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Transaction Details -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="card-title mb-0">Transaction Details</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <tbody>
+                                <tr>
+                                    <th style="width: 200px;">Transaction ID</th>
+                                    <td class="text-break">{{ tx.id }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Block</th>
+                                    <td>
+                                        {% if tx.block_height %}
+                                        <a href="{{ url_for('explorer_block', height=tx.block_height) }}">{{ tx.block_height }}</a>
+                                        {% else %}
+                                        Not yet included in a block
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Timestamp</th>
+                                    <td>{{ tx.timestamp|timestamp_to_datetime }} ({{ tx.timestamp|timestamp_to_age }} ago)</td>
+                                </tr>
+                                <tr>
+                                    <th>From</th>
+                                    <td>
+                                        <a href="{{ url_for('explorer_address', address=tx.sender) }}">{{ tx.sender }}</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>To</th>
+                                    <td>
+                                        <a href="{{ url_for('explorer_address', address=tx.recipient) }}">{{ tx.recipient }}</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Amount</th>
+                                    <td>{{ "%.8f"|format(tx.amount) }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Fee</th>
+                                    <td>{{ "%.8f"|format(tx.fee) }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Nonce</th>
+                                    <td>{{ tx.nonce }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Status</th>
+                                    <td>
+                                        {% if tx.status == 'confirmed' %}
+                                        <span class="badge bg-success">Confirmed</span>
+                                        {% elif tx.status == 'pending' %}
+                                        <span class="badge bg-warning">Pending</span>
+                                        {% else %}
+                                        <span class="badge bg-danger">Failed</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Confirmations</th>
+                                    <td>{{ tx.confirmations }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Type</th>
+                                    <td>
+                                        {% if tx.type == 'regular' %}
+                                        <span class="badge bg-primary">Regular</span>
+                                        {% elif tx.type == 'contract' %}
+                                        <span class="badge bg-info">Contract</span>
+                                        {% elif tx.type == 'confidential' %}
+                                        <span class="badge bg-secondary">Confidential</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% if tx.memo %}
+                                <tr>
+                                    <th>Memo</th>
+                                    <td>
+                                        {% if tx.is_memo_encrypted %}
+                                        <span class="text-muted"><i class="fas fa-lock"></i> Encrypted</span>
+                                        {% else %}
+                                        {{ tx.memo }}
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Contract Data -->
+    {% if tx.type == 'contract' and tx.contract_data %}
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-info text-white">
+                    <h5 class="card-title mb-0">Contract Data</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <tbody>
+                                <tr>
+                                    <th style="width: 200px;">Contract Address</th>
+                                    <td>
+                                        <a href="{{ url_for('explorer_address', address=tx.contract_data.contract_address) }}">{{ tx.contract_data.contract_address }}</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Method</th>
+                                    <td>{{ tx.contract_data.method }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Gas Used</th>
+                                    <td>{{ tx.contract_data.gas_used }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Gas Price</th>
+                                    <td>{{ "%.8f"|format(tx.contract_data.gas_price) }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <h6 class="mt-4">Input Data</h6>
+                    <pre class="bg-light p-3 rounded"><code>{{ tx.contract_data.input|tojson(indent=2) }}</code></pre>
+
+                    <h6 class="mt-4">Output Data</h6>
+                    <pre class="bg-light p-3 rounded"><code>{{ tx.contract_data.output|tojson(indent=2) }}</code></pre>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Confidential Data -->
+    {% if tx.type == 'confidential' and tx.confidential_data %}
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-secondary text-white">
+                    <h5 class="card-title mb-0">Confidential Transaction Data</h5>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info" role="alert">
+                        <i class="fas fa-shield-alt"></i> This is a confidential transaction. Most details are encrypted and only visible to the sender and recipient.
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <tbody>
+                                <tr>
+                                    <th style="width: 200px;">Commitment</th>
+                                    <td class="text-break">{{ tx.confidential_data.commitment }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Range Proof Size</th>
+                                    <td>{{ tx.confidential_data.range_proof_size|format_bytes }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Confidential Type</th>
+                                    <td>{{ tx.confidential_data.type }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

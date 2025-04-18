@@ -1,0 +1,269 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="mb-4">Recurring Transactions</h1>
+    
+    <div class="alert alert-info">
+        <h4 class="alert-heading">What are Recurring Transactions?</h4>
+        <p>
+            Recurring transactions allow you to automate regular payments to specific recipients.
+            You can set up transactions to occur daily, weekly, monthly, or at custom intervals.
+        </p>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Create Recurring Transaction</h5>
+                </div>
+                <div class="card-body">
+                    <form action="/recurring/create" method="post">
+                        <div class="mb-3">
+                            <label for="recipient" class="form-label">Recipient Address</label>
+                            <input type="text" class="form-control" id="recipient" name="recipient" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="amount" class="form-label">Amount (PORW)</label>
+                            <input type="number" class="form-control" id="amount" name="amount" step="0.000001" min="0.000001" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="interval" class="form-label">Interval</label>
+                            <select class="form-select" id="interval" name="interval" required>
+                                <option value="daily">Daily</option>
+                                <option value="weekly">Weekly</option>
+                                <option value="biweekly">Biweekly</option>
+                                <option value="monthly" selected>Monthly</option>
+                                <option value="quarterly">Quarterly</option>
+                                <option value="yearly">Yearly</option>
+                                <option value="custom">Custom</option>
+                            </select>
+                        </div>
+                        <div class="mb-3 custom-days-container d-none">
+                            <label for="custom_days" class="form-label">Custom Interval (days)</label>
+                            <input type="number" class="form-control" id="custom_days" name="custom_days" min="1" value="30">
+                        </div>
+                        <div class="mb-3">
+                            <label for="start_date" class="form-label">Start Date</label>
+                            <input type="date" class="form-control" id="start_date" name="start_date">
+                            <div class="form-text">If not specified, starts immediately</div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="end_date" class="form-label">End Date (Optional)</label>
+                            <input type="date" class="form-control" id="end_date" name="end_date">
+                        </div>
+                        <div class="mb-3">
+                            <label for="max_executions" class="form-label">Maximum Executions (Optional)</label>
+                            <input type="number" class="form-control" id="max_executions" name="max_executions" min="1">
+                            <div class="form-text">Leave blank for unlimited executions</div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="memo" class="form-label">Memo (Optional)</label>
+                            <textarea class="form-control" id="memo" name="memo" rows="2"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="fee" class="form-label">Fee (Optional)</label>
+                            <input type="number" class="form-control" id="fee" name="fee" step="0.000001" min="0">
+                            <div class="form-text">Leave blank for default fee</div>
+                        </div>
+                        <div class="mb-3 form-check">
+                            <input type="checkbox" class="form-check-input" id="enabled" name="enabled" value="true" checked>
+                            <label class="form-check-label" for="enabled">Enable this recurring transaction</label>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Create Recurring Transaction</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-8">
+            <div class="card mb-4">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="card-title mb-0">Your Recurring Transactions</h5>
+                    <span class="badge bg-primary">{{ recurring_transactions|length }} Transaction(s)</span>
+                </div>
+                <div class="card-body">
+                    {% if recurring_transactions %}
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Recipient</th>
+                                        <th>Amount</th>
+                                        <th>Interval</th>
+                                        <th>Next Execution</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for transaction in recurring_transactions %}
+                                    <tr>
+                                        <td>
+                                            <div class="text-truncate" style="max-width: 100px;" title="{{ transaction.recipient }}">
+                                                {{ transaction.recipient }}
+                                            </div>
+                                        </td>
+                                        <td>{{ transaction.amount }} PORW</td>
+                                        <td>
+                                            {% if transaction.interval == 'custom' %}
+                                                Every {{ transaction.custom_days }} days
+                                            {% else %}
+                                                {{ transaction.interval|capitalize }}
+                                            {% endif %}
+                                        </td>
+                                        <td>{{ transaction.next_execution|date }}</td>
+                                        <td>
+                                            {% if transaction.enabled %}
+                                                <span class="badge bg-success">Active</span>
+                                            {% else %}
+                                                <span class="badge bg-secondary">Disabled</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <div class="btn-group">
+                                                <a href="/recurring/{{ transaction.transaction_id }}" class="btn btn-sm btn-outline-primary">
+                                                    <i class="fas fa-info-circle"></i>
+                                                </a>
+                                                <a href="/recurring/{{ transaction.transaction_id }}/edit" class="btn btn-sm btn-outline-secondary">
+                                                    <i class="fas fa-edit"></i>
+                                                </a>
+                                                {% if transaction.enabled %}
+                                                <form action="/recurring/{{ transaction.transaction_id }}/disable" method="post" class="d-inline">
+                                                    <button type="submit" class="btn btn-sm btn-outline-warning">
+                                                        <i class="fas fa-pause"></i>
+                                                    </button>
+                                                </form>
+                                                {% else %}
+                                                <form action="/recurring/{{ transaction.transaction_id }}/enable" method="post" class="d-inline">
+                                                    <button type="submit" class="btn btn-sm btn-outline-success">
+                                                        <i class="fas fa-play"></i>
+                                                    </button>
+                                                </form>
+                                                {% endif %}
+                                                <form action="/recurring/{{ transaction.transaction_id }}/execute" method="post" class="d-inline">
+                                                    <button type="submit" class="btn btn-sm btn-outline-info">
+                                                        <i class="fas fa-bolt"></i>
+                                                    </button>
+                                                </form>
+                                                <button type="button" class="btn btn-sm btn-outline-danger delete-recurring-btn" data-transaction-id="{{ transaction.transaction_id }}">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <div class="alert alert-info">
+                            No recurring transactions found. Create a recurring transaction to get started.
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            {% if due_transactions %}
+            <div class="card mb-4">
+                <div class="card-header bg-warning text-dark">
+                    <h5 class="card-title mb-0">Due Transactions</h5>
+                </div>
+                <div class="card-body">
+                    <p>The following transactions are due for execution:</p>
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Recipient</th>
+                                    <th>Amount</th>
+                                    <th>Due Since</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for transaction in due_transactions %}
+                                <tr>
+                                    <td>
+                                        <div class="text-truncate" style="max-width: 100px;" title="{{ transaction.recipient }}">
+                                            {{ transaction.recipient }}
+                                        </div>
+                                    </td>
+                                    <td>{{ transaction.amount }} PORW</td>
+                                    <td>{{ transaction.next_execution|date }}</td>
+                                    <td>
+                                        <form action="/recurring/{{ transaction.transaction_id }}/execute" method="post" class="d-inline">
+                                            <button type="submit" class="btn btn-sm btn-outline-primary">
+                                                Execute Now
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <form action="/recurring/execute-all" method="post" class="mt-3">
+                        <button type="submit" class="btn btn-warning">Execute All Due Transactions</button>
+                    </form>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- Delete Recurring Transaction Modal -->
+<div class="modal fade" id="deleteRecurringModal" tabindex="-1" aria-labelledby="deleteRecurringModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteRecurringModalLabel">Delete Recurring Transaction</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete this recurring transaction?</p>
+                <p>This action cannot be undone.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <form id="deleteRecurringForm" action="/recurring/delete" method="post">
+                    <input type="hidden" id="deleteTransactionId" name="transaction_id">
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Handle interval selection for custom days
+        const intervalSelect = document.getElementById('interval');
+        const customDaysContainer = document.querySelector('.custom-days-container');
+        
+        intervalSelect.addEventListener('change', function() {
+            if (this.value === 'custom') {
+                customDaysContainer.classList.remove('d-none');
+            } else {
+                customDaysContainer.classList.add('d-none');
+            }
+        });
+        
+        // Handle delete button click
+        document.querySelectorAll('.delete-recurring-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const transactionId = this.getAttribute('data-transaction-id');
+                
+                // Set values in modal
+                document.getElementById('deleteTransactionId').value = transactionId;
+                
+                // Show modal
+                const modal = new bootstrap.Modal(document.getElementById('deleteRecurringModal'));
+                modal.show();
+            });
+        });
+    });
+</script>
+{% endblock %}

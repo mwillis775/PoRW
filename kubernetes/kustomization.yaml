@@ -1,0 +1,10 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - deployment.yaml
+  - mining-node.yaml
+  - storage-node.yaml
+  - web-interface.yaml
+
+namespace: porw-blockchain

@@ -1,0 +1,121 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="mb-4">Multi-Signature Transaction Details</h1>
+    
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="card-title mb-0">Transaction Information</h5>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <p><strong>Transaction ID:</strong></p>
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" value="{{ transaction.transaction_id }}" readonly>
+                        <button class="btn btn-outline-secondary copy-btn" data-clipboard-text="{{ transaction.transaction_id }}">
+                            <i class="fas fa-copy"></i> Copy
+                        </button>
+                    </div>
+                    <p><strong>Sender:</strong> {{ transaction.sender }}</p>
+                    <p><strong>Recipient:</strong> {{ transaction.recipient }}</p>
+                    <p><strong>Amount:</strong> {{ transaction.amount }} PORW</p>
+                </div>
+                <div class="col-md-6">
+                    <p><strong>Fee:</strong> {{ transaction.fee or 'Automatic' }} PORW</p>
+                    <p><strong>Timestamp:</strong> {{ transaction.timestamp|date }}</p>
+                    <p><strong>Memo:</strong> {{ transaction.memo or 'None' }}</p>
+                    <p><strong>Status:</strong>
+                        {% if transaction.signatures|length >= wallet.required_signatures %}
+                            <span class="badge bg-success">Ready to Submit</span>
+                        {% else %}
+                            <span class="badge bg-warning">Awaiting Signatures ({{ transaction.signatures|length }}/{{ wallet.required_signatures }})</span>
+                        {% endif %}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="card-title mb-0">Signatures</h5>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Signer (Public Key)</th>
+                            <th>Signature</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if transaction.signatures %}
+                            {% for public_key, signature in transaction.signatures.items() %}
+                            <tr>
+                                <td>{{ loop.index }}</td>
+                                <td>
+                                    <div class="text-truncate" style="max-width: 300px;">{{ public_key }}</div>
+                                </td>
+                                <td>
+                                    <div class="text-truncate" style="max-width: 300px;">{{ signature }}</div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td colspan="3" class="text-center">No signatures yet</td>
+                            </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+            
+            {% if transaction.signatures|length < wallet.required_signatures %}
+                <div class="mt-3">
+                    <form action="/multisig/wallet/{{ wallet.wallet_id }}/sign-transaction" method="post">
+                        <input type="hidden" name="transaction_id" value="{{ transaction.transaction_id }}">
+                        <button type="submit" class="btn btn-success">
+                            <i class="fas fa-signature"></i> Sign Transaction
+                        </button>
+                    </form>
+                </div>
+            {% else %}
+                <div class="mt-3">
+                    <form action="/multisig/wallet/{{ wallet.wallet_id }}/submit-transaction" method="post">
+                        <input type="hidden" name="transaction_id" value="{{ transaction.transaction_id }}">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-paper-plane"></i> Submit Transaction
+                        </button>
+                    </form>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+    
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="card-title mb-0">Raw Transaction Data</h5>
+        </div>
+        <div class="card-body">
+            <pre class="bg-light p-3 rounded">{{ transaction|tojson(indent=2) }}</pre>
+        </div>
+    </div>
+    
+    <div class="mb-4">
+        <a href="/multisig/wallet/{{ wallet.wallet_id }}" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left"></i> Back to Wallet
+        </a>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize clipboard.js
+        new ClipboardJS('.copy-btn');
+    });
+</script>
+{% endblock %}

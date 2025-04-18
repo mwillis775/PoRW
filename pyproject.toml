@@ -1,0 +1,103 @@
+# pyproject.toml
+
+[tool.poetry]
+name = "porw-blockchain"
+version = "0.1.0"
+description = "Proof of Real Work Blockchain Node"
+authors = ["Michael Willis <mwillis775@gmail.com>"]
+readme = "README.md"
+packages = [{include = "porw_blockchain", from = "src"}]
+license = "MIT"
+repository = "https://github.com/mwillis775/PoRW-PoRS"
+keywords = ["blockchain", "protein folding", "distributed computing", "consensus"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Topic :: Scientific/Engineering :: Bio-Informatics",
+    "Topic :: System :: Distributed Computing"
+]
+
+[tool.poetry.dependencies]
+python = "^3.10" # Specify compatible Python versions
+fastapi = "^0.110.0" # Or latest stable version
+uvicorn = {extras = ["standard"], version = "^0.29.0"}
+sqlalchemy = "^2.0.29"
+psycopg2-binary = "^2.9.9" # PostgreSQL driver
+python-dotenv = "^1.0.1"
+pydantic = "^2.6.4"
+# Add other core dependencies here
+pytest = "^8.1.1"
+pytest-cov = "^4.1.0"
+black = "^24.3.0"
+ruff = "^0.3.5"
+bandit = "^1.7.8"
+mypy = "^1.9.0"
+sphinx = "^7.2.6"
+sphinx-rtd-theme = "^2.0.0"
+cryptography = "^44.0.2"
+aiohttp = "^3.11.16"
+httpx = "^0.28.1"
+pytest-asyncio = "^0.26.0"
+pytest-benchmark = "^5.1.0"
+aiohttp-jinja2 = "^1.6"
+ecdsa = "^0.19.1"
+base58 = "^2.1.1"
+
+[tool.poetry.scripts]
+porw-node = "porw_blockchain.bin.porw-node:main"
+porw-storage = "porw_blockchain.bin.porw-storage:main"
+porw-web = "porw_blockchain.web.app:main"
+porw-shell = "porw_blockchain.cli.shell:main"
+
+[tool.poetry.extras]
+mining = ["pyrosetta", "numpy", "scipy"]
+storage = ["aiofiles", "aiohttp"]
+web = ["aiohttp-jinja2", "jinja2"]
+all = ["pyrosetta", "numpy", "scipy", "aiofiles", "aiohttp", "aiohttp-jinja2", "jinja2"]
+
+[tool.poetry.dev-dependencies]
+pytest-benchmark = "^5.1.0"
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+
+[tool.black]
+line-length = 88
+target-version = ['py310']
+
+[tool.ruff]
+line-length = 88
+select = [
+    "E",  # pycodestyle errors
+    "W",  # pycodestyle warnings
+    "F",  # pyflakes
+    "I",  # isort
+    "C",  # flake8-comprehensions
+    "B",  # flake8-bugbear
+]
+ignore = []
+
+[tool.ruff.format]
+quote-style = "double"
+
+[tool.ruff.lint.isort]
+known-first-party = ["porw_blockchain"]
+
+[tool.mypy]
+python_version = "3.10"
+warn_return_any = true
+warn_unused_configs = true
+ignore_missing_imports = true # Start with this, tighten later if possible
+# Add packages to check if needed, e.g., files = ["src/porw_blockchain"]
+
+
+[tool.bandit]
+# Example: exclude test directories if needed, though often good to check tests too
+# exclude_dirs = ["tests"]
+skips = ["B101"] # Example: skip assert_used check if necessary

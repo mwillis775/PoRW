@@ -1,0 +1,211 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="mb-4">Multi-Signature Wallets</h1>
+    
+    <div class="alert alert-info">
+        <h4 class="alert-heading">What are Multi-Signature Wallets?</h4>
+        <p>
+            Multi-signature wallets require multiple signatures to authorize transactions, providing enhanced security
+            and enabling shared control of funds. For example, a 2-of-3 multisig wallet requires any 2 out of 3 designated
+            signers to approve a transaction.
+        </p>
+        <p>
+            Common use cases include:
+        </p>
+        <ul>
+            <li>Business accounts requiring approval from multiple partners</li>
+            <li>Escrow services</li>
+            <li>Enhanced personal security (requiring multiple devices to sign)</li>
+            <li>Inheritance planning</li>
+        </ul>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Create Multi-Signature Wallet</h5>
+                </div>
+                <div class="card-body">
+                    <p class="card-text">
+                        Create a new multi-signature wallet by specifying the number of required signatures,
+                        total number of signers, and optionally a list of public keys for the signers.
+                    </p>
+                    <form action="/multisig/create" method="post">
+                        <div class="mb-3">
+                            <label for="required_signatures" class="form-label">Required Signatures</label>
+                            <input type="number" class="form-control" id="required_signatures" name="required_signatures" min="1" value="2" required>
+                            <div class="form-text">Number of signatures required to authorize transactions.</div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="total_signers" class="form-label">Total Signers</label>
+                            <input type="number" class="form-control" id="total_signers" name="total_signers" min="1" value="3" required>
+                            <div class="form-text">Total number of signers for this wallet.</div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="public_keys" class="form-label">Public Keys (Optional)</label>
+                            <textarea class="form-control" id="public_keys" name="public_keys" rows="3" placeholder="Enter one public key per line"></textarea>
+                            <div class="form-text">List of public keys for all signers (optional). Your public key will be added automatically.</div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Description (Optional)</label>
+                            <input type="text" class="form-control" id="description" name="description" placeholder="e.g., Business Account">
+                            <div class="form-text">Optional description for the wallet.</div>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Create Wallet</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Join Multi-Signature Wallet</h5>
+                </div>
+                <div class="card-body">
+                    <p class="card-text">
+                        Join an existing multi-signature wallet by providing the wallet data shared by another signer.
+                    </p>
+                    <form action="/multisig/join" method="post">
+                        <div class="mb-3">
+                            <label for="wallet_data" class="form-label">Wallet Data</label>
+                            <textarea class="form-control" id="wallet_data" name="wallet_data" rows="5" required></textarea>
+                            <div class="form-text">Paste the wallet data shared by another signer (JSON format).</div>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Join Wallet</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="card-title mb-0">My Multi-Signature Wallets</h5>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Wallet ID</th>
+                            <th>Description</th>
+                            <th>Configuration</th>
+                            <th>Address</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if multisig_wallets %}
+                            {% for wallet in multisig_wallets %}
+                            <tr>
+                                <td>{{ wallet.wallet_id }}</td>
+                                <td>{{ wallet.description }}</td>
+                                <td>{{ wallet.required_signatures }}-of-{{ wallet.total_signers }}</td>
+                                <td>
+                                    {% if wallet.address %}
+                                        <div class="input-group">
+                                            <input type="text" class="form-control form-control-sm" value="{{ wallet.address }}" readonly>
+                                            <button class="btn btn-sm btn-outline-secondary copy-btn" data-clipboard-text="{{ wallet.address }}">
+                                                <i class="fas fa-copy"></i>
+                                            </button>
+                                        </div>
+                                    {% else %}
+                                        <span class="text-muted">Not yet generated</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <a href="/multisig/wallet/{{ wallet.wallet_id }}" class="btn btn-sm btn-outline-primary">
+                                        <i class="fas fa-info-circle"></i> Details
+                                    </a>
+                                    <button class="btn btn-sm btn-outline-success share-wallet-btn" data-wallet-id="{{ wallet.wallet_id }}">
+                                        <i class="fas fa-share-alt"></i> Share
+                                    </button>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td colspan="5" class="text-center">No multi-signature wallets found</td>
+                            </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Share Wallet Modal -->
+<div class="modal fade" id="shareWalletModal" tabindex="-1" aria-labelledby="shareWalletModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="shareWalletModalLabel">Share Multi-Signature Wallet</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>
+                    Share this wallet data with other signers. They can use this data to join the multi-signature wallet.
+                </p>
+                <div class="mb-3">
+                    <label for="share-wallet-data" class="form-label">Wallet Data</label>
+                    <textarea class="form-control" id="share-wallet-data" rows="10" readonly></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary copy-wallet-data-btn">
+                    <i class="fas fa-copy"></i> Copy to Clipboard
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize clipboard.js
+        new ClipboardJS('.copy-btn');
+        
+        // Handle share wallet button click
+        document.querySelectorAll('.share-wallet-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const walletId = this.getAttribute('data-wallet-id');
+                
+                // Get wallet data
+                fetch(`/api/multisig/wallet/${walletId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        // Set wallet data in modal
+                        document.getElementById('share-wallet-data').value = JSON.stringify(data, null, 2);
+                        
+                        // Show modal
+                        const modal = new bootstrap.Modal(document.getElementById('shareWalletModal'));
+                        modal.show();
+                    })
+                    .catch(error => {
+                        console.error('Error getting wallet data:', error);
+                        alert('Error getting wallet data. Please try again.');
+                    });
+            });
+        });
+        
+        // Handle copy wallet data button click
+        document.querySelector('.copy-wallet-data-btn').addEventListener('click', function() {
+            const walletData = document.getElementById('share-wallet-data');
+            walletData.select();
+            document.execCommand('copy');
+            
+            // Show success message
+            this.innerHTML = '<i class="fas fa-check"></i> Copied!';
+            setTimeout(() => {
+                this.innerHTML = '<i class="fas fa-copy"></i> Copy to Clipboard';
+            }, 2000);
+        });
+    });
+</script>
+{% endblock %}
